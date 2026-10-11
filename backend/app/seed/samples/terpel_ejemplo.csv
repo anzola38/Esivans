@@ -1,0 +1,11 @@
+external_id,timestamp,vehicle,plate,station,region,product,quantity,unit,unit_price,amount,odometer,sale_type
+TER-900101,{{D1}} 06:48:10,VEH905,ZZA905,EDS Montería Centro,NORTE,Gasolina Corriente,3.674,gal,16330,60000,91455,En línea
+TER-900102,{{D1}} 07:42:35,VEH023,ZZA023,EDS Montería Centro,NORTE,Gasolina Extra,5.647,gal,21250,119999,87512,En línea
+TER-900103,{{D1}} 08:15:02,VEH903,ZZA903,EDS Cereté Norte,NORTE,Gasolina Corriente,5.000,gal,16000,80000,72262,En línea
+TER-900104,{{D1}} 09:02:48,VEH907,ZZA907,EDS Cereté Norte,NORTE,Gasolina Corriente,0.094,gal,16000,1500,58771,En línea
+TER-900105,{{D1}} 10:20:00,VEH918,ZZA918,EDS Cereté Norte,NORTE,Gasolina Corriente,4.375,gal,16000,70000,,Fuera del sistema
+TER-900106,{{D1}} 11:05:21,VEH912,ZZA912,EDS Cereté Norte,NORTE,Diesel,9.000,gal,11100,99900,144010,En línea
+TER-900107,{{D1}} 11:17:44,VEH912,ZZA912,EDS Cereté Norte,NORTE,Diesel,6.500,gal,11100,72150,144010,En línea
+TER-900108,{{D1}} 13:30:15,VEH904,ZZA904,EDS Cereté Norte,NORTE,Gasolina Corriente,3.125,gal,19200,60000,65934,En línea
+TER-900109,{{D1}} 14:10:09,VEH914,ZZA914,EDS GNV Montería Sur,NORTE,GNV,9.400,m3,3200,30080,121640,En línea
+TER-900110,{{D1}} 16:25:37,VEH916,ZZA916,EDS Cereté Norte,NORTE,Gasolina Corriente,5.000,gal,16000,80000,77349,En línea

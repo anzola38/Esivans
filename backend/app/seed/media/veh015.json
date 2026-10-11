@@ -1,0 +1,10 @@
+{
+  "media_id": "media-veh015",
+  "vehicle": "VEH015",
+  "odometer_km": 24086,
+  "fuel_level": 0.25,
+  "confidence": {
+    "odometer_km": 0.78,
+    "fuel_level": 0.9
+  }
+}
