@@ -1,0 +1,310 @@
+/* Shell: barra lateral navy + barra superior + contenido con scroll + pie fijo. */
+.shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* ---------- Barra lateral ---------- */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background: var(--navy);
+  color: var(--white);
+  padding: 1rem 0.75rem;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.15rem 0.5rem 1rem;
+  border-bottom: 1px solid rgba(201, 216, 236, 0.18);
+  color: var(--white);
+}
+
+.sidebar__brand:hover {
+  text-decoration: none;
+}
+
+.sidebar__logo {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: var(--radius);
+  background: var(--orange);
+  color: var(--white);
+}
+
+.sidebar__name {
+  display: block;
+  font-weight: 900;
+  font-size: 0.98rem;
+  line-height: 1.15;
+}
+
+.sidebar__org {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--ice);
+  margin-top: 0.15rem;
+}
+
+.sidebar__label {
+  margin: 1.1rem 0.6rem 0.45rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ice);
+  opacity: 0.8;
+}
+
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.65rem;
+  border-radius: 8px;
+  color: var(--ice);
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--white);
+  text-decoration: none;
+}
+
+.nav-item.is-active {
+  background: var(--navy-2);
+  color: var(--white);
+}
+
+.nav-item.is-active::before {
+  content: '';
+  position: absolute;
+  left: -0.75rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: var(--orange);
+}
+
+.nav-item__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.nav-item.is-active .nav-item__icon {
+  background: var(--white);
+  color: var(--navy);
+}
+
+.nav-item__text {
+  min-width: 0;
+}
+
+.nav-item__title {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.nav-item__hint {
+  display: block;
+  font-size: 0.74rem;
+  color: var(--ice);
+  opacity: 0.85;
+  margin-top: 0.1rem;
+}
+
+.sidebar__spacer {
+  flex: 1;
+  min-height: 1rem;
+}
+
+.sidebar__pilot {
+  background: var(--navy-2);
+  border-radius: var(--radius);
+  padding: 0.75rem 0.85rem;
+  font-size: 0.78rem;
+  color: var(--ice);
+  line-height: 1.4;
+}
+
+.sidebar__pilot strong {
+  display: block;
+  color: var(--white);
+  font-size: 0.86rem;
+  margin-bottom: 0.1rem;
+}
+
+/* ---------- Columna principal ---------- */
+.shell__main {
+  display: grid;
+  grid-template-rows: var(--topbar-h) minmax(0, 1fr) var(--footer-h);
+  min-width: 0;
+  min-height: 0;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.5rem;
+  background: var(--white);
+  border-bottom: 1px solid var(--line);
+  min-width: 0;
+}
+
+.topbar__titles {
+  flex: 1;
+  min-width: 0;
+}
+
+.topbar__title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topbar__subtitle {
+  font-size: 0.82rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: none;
+}
+
+.role-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0.5rem 0.3rem 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--soft);
+}
+
+.role-picker__avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.role-picker__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.role-picker__label {
+  font-size: 0.68rem;
+  color: var(--muted);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.role-picker__select {
+  border: 0;
+  background: transparent;
+  padding: 0 0.2rem 0 0;
+  margin-left: -0.2rem;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--navy);
+  cursor: pointer;
+  max-width: 15.5rem;
+}
+
+.role-picker__select:focus-visible {
+  outline-offset: 0;
+}
+
+.content {
+  overflow: auto;
+  padding: 1.25rem 1.5rem;
+  min-height: 0;
+  min-width: 0;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  background: var(--white);
+  border-top: 1px solid var(--line);
+  font-size: 0.76rem;
+  color: var(--muted);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+/* ---------- Contenedores de página ---------- */
+/* .page: columna con separación estándar. .page--fill: ocupa el alto visible
+   (para pantallas con paneles que hacen scroll por dentro, como el simulador). */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 110rem;
+  margin: 0 auto;
+}
+
+.page--fill {
+  height: 100%;
+  min-height: 0;
+}
+
+.page--narrow {
+  max-width: 72rem;
+}
+
+/* Panel que crece y hace scroll dentro de una .page--fill */
+.fill {
+  flex: 1 1 0;
+  min-height: 0;
+  min-width: 0;
+}
+
+.scroll-y {
+  overflow-y: auto;
+  min-height: 0;
+}

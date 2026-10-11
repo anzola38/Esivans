@@ -1,0 +1,360 @@
+<div class="page">
+  <app-section-header
+    eyebrow="Referencia interna"
+    title="Componentes compartidos"
+    subtitle="Todo lo que hay en shared/ y en core/: úsalo tal cual en cada pantalla para que el prototipo se vea de una sola familia."
+  >
+    <app-status-chip status="in_review" />
+    <app-traffic-light value="green" />
+  </app-section-header>
+
+  <div class="grid grid--2">
+    <!-- Colores -->
+    <app-card title="Colores" subtitle="Variables CSS: var(--navy), var(--blue-soft)…">
+      <div class="swatches">
+        @for (color of colors; track color.token) {
+          <div class="swatch">
+            <div class="swatch__color" [style.background]="'var(--' + color.token + ')'"></div>
+            <div class="swatch__text">
+              <strong>{{ color.token }}</strong>&nbsp; <span class="text-muted">{{ color.hex }}</span><br />
+              <span class="text-muted">{{ color.use }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </app-card>
+
+    <!-- Tipografía -->
+    <app-card title="Tipografía" subtitle="Lato autoalojada; respaldo Calibri, Carlito, sans-serif">
+      <div class="col gap-2">
+        <h1>Título de pantalla (h1, 900)</h1>
+        <h2>Título de sección (h2, 900)</h2>
+        <h3>Título de tarjeta (h3, 900)</h3>
+        <div class="eyebrow">Rótulo superior (.eyebrow)</div>
+        <p>Texto principal en <strong>ink</strong>: el técnico de Control y Monitoreo decide.</p>
+        <p class="text-ink-2">Texto secundario (.text-ink-2): libro único de tanqueos.</p>
+        <p class="text-muted text-sm">Texto de apoyo (.text-muted .text-sm): prueba con datos históricos.</p>
+        <p class="italic text-orange text-sm">La IA no decide ni calcula el valor: devuelve datos que el backend valida.</p>
+        <p>
+          Código en línea: <span class="ui-code">POST /api/requests/&#123;id&#125;/decision</span>
+        </p>
+        <div class="row gap-5 mt-2">
+          <div class="ui-stat">
+            <span class="ui-stat__value">66,7 h</span>
+            <span class="ui-stat__label">de gestión al día hoy</span>
+          </div>
+          <div class="ui-stat">
+            <span class="ui-stat__value ui-stat__value--orange">10 h</span>
+            <span class="ui-stat__label">con 3 min por solicitud</span>
+          </div>
+          <div class="row gap-2">
+            <span class="ui-step">1</span>
+            <span class="ui-step ui-step--orange">2</span>
+            <span class="text-sm text-muted">.ui-step</span>
+          </div>
+        </div>
+      </div>
+    </app-card>
+  </div>
+
+  <div class="grid grid--3">
+    <!-- Semáforo y chips -->
+    <app-card title="Semáforo, estado y prioridad" subtitle="Siempre color + texto">
+      <div class="col gap-3">
+        <div class="row row--wrap gap-2">
+          <app-traffic-light value="green" />
+          <app-traffic-light value="yellow" [points]="1" />
+          <app-traffic-light value="red" [points]="7" />
+          <app-traffic-light [value]="null" />
+        </div>
+        <div class="row row--wrap gap-2">
+          <app-traffic-light value="green" size="lg" />
+          <app-traffic-light value="yellow" size="lg" />
+          <app-traffic-light value="red" size="lg" [points]="7" />
+        </div>
+        <hr class="ui-divider" />
+        <div class="row row--wrap gap-2">
+          @for (status of statuses; track status) {
+            <app-status-chip [status]="status" />
+          }
+        </div>
+        <hr class="ui-divider" />
+        <div class="row row--wrap gap-2">
+          <app-priority-chip priority="high" />
+          <app-priority-chip priority="medium" />
+          <app-priority-chip priority="low" />
+          <app-priority-chip priority="high" compact />
+        </div>
+        <div class="row row--wrap gap-2">
+          <span class="ui-badge ui-badge--navy">R05 · 3 puntos</span>
+          <span class="ui-badge ui-badge--blue">Automática</span>
+          <span class="ui-badge ui-badge--orange">Lectura de la IA</span>
+          <span class="ui-badge">.ui-badge</span>
+        </div>
+      </div>
+    </app-card>
+
+    <!-- Botones -->
+    <app-card title="Botones" subtitle="El naranja es uno por vista: la acción principal">
+      <div class="col gap-3">
+        <div class="row row--wrap gap-2">
+          <button appButton type="button">Aprobar</button>
+          <button appButton="secondary" type="button">Ajustar</button>
+          <button appButton="danger" type="button">Rechazar</button>
+        </div>
+        <div class="row row--wrap gap-2">
+          <button appButton="outline" type="button">
+            <app-icon name="refresh" [size]="16" /> Actualizar
+          </button>
+          <button appButton="ghost" type="button">Ver bitácora</button>
+          <button appButton="danger-solid" type="button">Confirmar rechazo</button>
+        </div>
+        <div class="row row--wrap gap-2">
+          <button appButton size="sm" type="button">Pequeño</button>
+          <button appButton="secondary" size="lg" type="button">Grande</button>
+          <button appButton type="button" disabled>Deshabilitado</button>
+          <button appButton="secondary" type="button" [loading]="loading()" (click)="simulateLoading()">
+            Probar carga
+          </button>
+        </div>
+        <div class="ui-note">
+          <app-icon name="lock" [size]="16" />
+          <span>
+            Rol actual: <strong>{{ roles.label() }}</strong>. Decide solicitudes:
+            {{ roles.can('request.decide') ? 'sí' : 'no' }} · revisa alertas:
+            {{ roles.can('alert.review') ? 'sí' : 'no' }} · cambia umbrales:
+            {{ roles.can('rules.edit') ? 'sí' : 'no' }}.
+          </span>
+        </div>
+      </div>
+    </app-card>
+
+    <!-- Toast y modal -->
+    <app-card title="Avisos, modal y formularios" subtitle="ToastService y app-modal">
+      <div class="col gap-3">
+        <div class="row row--wrap gap-2">
+          <button appButton="outline" size="sm" type="button" (click)="toasts.success('La decisión quedó en la bitácora.', 'Solicitud autorizada')">
+            Éxito
+          </button>
+          <button appButton="outline" size="sm" type="button" (click)="toasts.error('No hay conexión con el servidor.')">
+            Error
+          </button>
+          <button appButton="outline" size="sm" type="button" (click)="toasts.warning('El SLA vence en 2 minutos.')">
+            Advertencia
+          </button>
+          <button appButton="outline" size="sm" type="button" (click)="toasts.info('Hay una solicitud nueva en la cola.')">
+            Información
+          </button>
+        </div>
+        <div class="row row--wrap gap-2">
+          <button appButton="secondary" size="sm" type="button" data-testid="open-modal" (click)="modalOpen.set(true)">
+            Abrir modal
+          </button>
+          <button appButton="ghost" size="sm" type="button" (click)="callMissingEndpoint()">
+            Llamar a /api/health
+          </button>
+        </div>
+        <div class="ui-field">
+          <label class="ui-label" for="sg-reason">Motivo <span class="req">*</span></label>
+          <textarea id="sg-reason" class="ui-textarea" placeholder="Obligatorio para ajustar o rechazar"></textarea>
+          <span class="ui-help">Queda guardado en la bitácora junto con el cálculo original.</span>
+        </div>
+        <div class="grid grid--2 gap-2">
+          <div class="ui-field">
+            <label class="ui-label" for="sg-amount">Valor</label>
+            <input id="sg-amount" class="ui-input" value="$80.000" />
+          </div>
+          <div class="ui-field">
+            <label class="ui-label" for="sg-result">Resultado</label>
+            <select id="sg-result" class="ui-select">
+              <option>Confirmado</option>
+              <option>Justificado</option>
+              <option>Error de dato</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </app-card>
+  </div>
+
+  <div class="grid grid--aside-right">
+    <div class="col gap-4">
+      <!-- Tabla -->
+      <app-card title="Tabla base" subtitle="app-table envuelve una tabla nativa" flush>
+        <span card-actions class="row gap-2">
+          <app-traffic-light value="red" [points]="7" />
+          <button appButton="outline" size="sm" type="button">Acción de tarjeta</button>
+        </span>
+        <app-table plain>
+          <table>
+            <thead>
+              <tr>
+                <th>Vehículo</th>
+                <th>Placa</th>
+                <th>Semáforo</th>
+                <th class="num">Valor sugerido</th>
+                <th class="num">En espera</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of sampleRows; track row.vehicle; let first = $first) {
+                <tr class="is-clickable" [class.is-selected]="first">
+                  <td class="fw-700">{{ row.vehicle }}</td>
+                  <td class="mono">{{ row.plate }}</td>
+                  <td><app-traffic-light [value]="row.light" [points]="row.points" /></td>
+                  <td class="num">{{ row.amount | cop }}</td>
+                  <td class="num">{{ row.wait | duration }}</td>
+                  <td><app-status-chip status="in_review" /></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </app-table>
+        <span card-footer class="text-sm text-muted">
+          Pie de tarjeta (slot card-footer). Filas con .is-clickable y .is-selected.
+        </span>
+      </app-card>
+
+      <div class="grid grid--2">
+        <!-- Pipes -->
+        <app-card title="Formato es-CO" subtitle="Pipes propios (shared/pipes)">
+          <app-table dense class="pipes">
+            <table>
+              <thead>
+                <tr>
+                  <th>Pipe</th>
+                  <th class="num">Resultado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1234.5 | esNumber:1</td><td class="num">{{ 1234.5 | esNumber: 1 }}</td></tr>
+                <tr><td>5.647 | esNumber:0:3</td><td class="num">{{ 5.647 | esNumber: 0 : 3 }}</td></tr>
+                <tr><td>27783 | cop</td><td class="num">{{ 27783 | cop }}</td></tr>
+                <tr><td>73 | esPercent</td><td class="num">{{ 73 | esPercent }}</td></tr>
+                <tr><td>0.615 | esPercent:1:true</td><td class="num">{{ 0.615 | esPercent: 1 : true }}</td></tr>
+                <tr><td>iso | esDate</td><td class="num">{{ sampleInstant | esDate }}</td></tr>
+                <tr><td>iso | esTime</td><td class="num">{{ sampleInstant | esTime }}</td></tr>
+                <tr><td>iso | esDateTime</td><td class="num">{{ sampleInstant | esDateTime }}</td></tr>
+                <tr><td>185 | duration</td><td class="num">{{ 185 | duration }}</td></tr>
+                <tr><td>fecha | timeAgo</td><td class="num">{{ threeMinutesAgo | timeAgo }}</td></tr>
+              </tbody>
+            </table>
+          </app-table>
+        </app-card>
+
+        <div class="col gap-4">
+          <!-- Estado vacío y esqueleto -->
+          <app-card title="Estado vacío">
+            <app-empty-state
+              compact
+              icon="check-circle"
+              title="No hay solicitudes en espera"
+              message="Cuando un conductor escriba, su solicitud aparece aquí."
+            >
+              <button appButton="outline" size="sm" type="button">Ir al simulador</button>
+            </app-empty-state>
+          </app-card>
+          <app-card title="Esqueleto de carga">
+            <div class="col gap-3">
+              <app-skeleton [lines]="3" />
+              <app-skeleton height="3rem" />
+            </div>
+          </app-card>
+        </div>
+      </div>
+
+      <!-- Tonos de tarjeta y avisos -->
+      <div class="grid grid--3">
+        <app-card tone="soft" title="Tarjeta suave" subtitle='tone="soft"'>
+          <dl class="ui-kv">
+            <dt>Último tanqueo</dt>
+            <dd>05/10/2026</dd>
+            <dt>Km recorridos</dt>
+            <dd>{{ 312 | esNumber }} km</dd>
+            <dt>Rendimiento</dt>
+            <dd>{{ 41.8 | esNumber: 1 }} km/gal</dd>
+          </dl>
+        </app-card>
+        <app-card tone="accent" title="Tarjeta de acento" subtitle='tone="accent": lo que hace la IA'>
+          <p class="text-sm">Odómetro leído: {{ 34086 | esNumber }} km, con confianza de {{ 96 | esPercent }}.</p>
+        </app-card>
+        <app-card tone="dark" title="Tarjeta oscura" subtitle='tone="dark"'>
+          <div class="ui-stat">
+            <span class="ui-stat__value" style="color: var(--white)">{{ 80000 | cop }}</span>
+            <span class="ui-stat__label" style="color: var(--ice)">Valor sugerido</span>
+          </div>
+        </app-card>
+      </div>
+
+      <div class="grid grid--2">
+        <div class="col gap-2">
+          <div class="ui-note"><app-icon name="info" [size]="16" /> Aviso neutro (.ui-note).</div>
+          <div class="ui-note ui-note--good"><app-icon name="check-circle" [size]="16" /> Se aprueba en un clic (.ui-note--good).</div>
+          <div class="ui-note ui-note--ai"><app-icon name="spark" [size]="16" /> El asistente propone 34.086 km (.ui-note--ai).</div>
+        </div>
+        <div class="col gap-2">
+          <div class="ui-note ui-note--warn"><app-icon name="alert" [size]="16" /> Requiere motivo (.ui-note--warn).</div>
+          <div class="ui-note ui-note--crit"><app-icon name="alert" [size]="16" /> 7 puntos: R05, R08 y R09 (.ui-note--crit).</div>
+          <div class="ui-note"><app-icon name="clock" [size]="16" /> Reloj compartido (ClockService): {{ clock.now() | esTime }}</div>
+        </div>
+      </div>
+
+      <!-- Íconos -->
+      <app-card title="Íconos" subtitle='app-icon name="…": trazos genéricos propios, sin marcas'>
+        <div class="icons">
+          @for (name of iconNames; track name) {
+            <div><app-icon [name]="name" [size]="22" /> {{ name }}</div>
+          }
+        </div>
+      </app-card>
+    </div>
+
+    <!-- Marco de teléfono -->
+    <app-card title="Marco de teléfono" subtitle="app-phone-frame, sin logos">
+      <div class="phone-box">
+        <app-phone-frame title="Asistente de combustible" subtitle="En línea" time="9:41">
+          <div class="ui-bubble ui-bubble--out">
+            Buenos días, necesito tanquear
+            <span class="ui-bubble__time">9:40 a. m.</span>
+          </div>
+          <div class="ui-bubble">
+            Hola, Andrés. Veo que conduces el ZZA901. ¿Es para el servicio de las 10:30 a. m.?
+            <span class="ui-bubble__time">9:40 a. m.</span>
+          </div>
+          <div class="ui-bubble ui-bubble--out">
+            Sí, ese
+            <span class="ui-bubble__time">9:41 a. m.</span>
+          </div>
+          <div class="ui-bubble">
+            Listo. Envíame una foto del tablero donde se vean el odómetro y el nivel de combustible.
+            <span class="ui-bubble__time">9:41 a. m.</span>
+          </div>
+          <div phone-footer class="row gap-2">
+            <button type="button" class="ui-icon-btn" aria-label="Adjuntar foto">
+              <app-icon name="clip" [size]="18" />
+            </button>
+            <input class="ui-input grow" placeholder="Escribe un mensaje" />
+            <button appButton="secondary" size="sm" type="button" aria-label="Enviar">
+              <app-icon name="send" [size]="16" />
+            </button>
+          </div>
+        </app-phone-frame>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<app-modal title="Ajustar el valor" [open]="modalOpen()" (closed)="modalOpen.set(false)">
+  <div class="col gap-3">
+    <p>El cálculo original queda guardado. El motivo es obligatorio.</p>
+    <div class="ui-field">
+      <label class="ui-label" for="sg-modal-reason">Motivo <span class="req">*</span></label>
+      <textarea id="sg-modal-reason" class="ui-textarea"></textarea>
+    </div>
+  </div>
+  <ng-container ngProjectAs="[modal-actions]">
+    <button appButton="outline" type="button" (click)="modalOpen.set(false)">Cancelar</button>
+    <button appButton="secondary" type="button" (click)="modalOpen.set(false)">Guardar ajuste</button>
+  </ng-container>
+</app-modal>

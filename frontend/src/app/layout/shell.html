@@ -1,0 +1,117 @@
+<div class="shell">
+  <aside class="sidebar">
+    <a class="sidebar__brand" routerLink="/">
+      <span class="sidebar__logo"><app-icon name="fuel" [size]="22" [strokeWidth]="2" /></span>
+      <span>
+        <span class="sidebar__name">Suministro de combustible</span>
+        <span class="sidebar__org">Transportes Esivans S.A.S.</span>
+      </span>
+    </a>
+
+    <div class="sidebar__label">Recorrido de la demo</div>
+    <nav class="sidebar__nav" aria-label="Navegación principal">
+      @for (item of navItems; track item.path) {
+        <a class="nav-item" [routerLink]="item.path" routerLinkActive="is-active">
+          <span class="nav-item__icon"><app-icon [name]="item.icon" [size]="19" /></span>
+          <span class="nav-item__text">
+            <span class="nav-item__title">{{ item.label }}</span>
+            <span class="nav-item__hint">{{ item.hint }}</span>
+          </span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar__spacer"></div>
+
+    <div class="sidebar__pilot">
+      <strong>Piloto de 6 semanas</strong>
+      Córdoba, zona CARIBE COR<br />
+      La IA lee y propone; la decisión la toma una persona.
+    </div>
+  </aside>
+
+  <div class="shell__main">
+    <header class="topbar">
+      <div class="topbar__titles">
+        <h1 class="topbar__title">{{ title() }}</h1>
+        @if (subtitle()) {
+          <div class="topbar__subtitle">{{ subtitle() }}</div>
+        }
+      </div>
+
+      <div class="topbar__actions">
+        <label class="role-picker" title="Ingreso simulado: en producción es con SSO (OIDC) y MFA">
+          <span class="role-picker__avatar" aria-hidden="true">{{ roles.user().initials }}</span>
+          <span class="role-picker__body">
+            <span class="role-picker__label">Rol simulado · {{ roles.user().name }}</span>
+            <select
+              class="role-picker__select"
+              aria-label="Rol"
+              data-testid="role-select"
+              [value]="roles.role()"
+              (change)="onRoleChange($event)"
+            >
+              @for (option of roles.options; track option.role) {
+                <option [value]="option.role" [selected]="option.role === roles.role()">
+                  {{ option.label }}
+                </option>
+              }
+            </select>
+          </span>
+        </label>
+
+        @if (config.demoMode) {
+          <button
+            appButton="outline"
+            type="button"
+            data-testid="reset-demo"
+            (click)="confirmOpen.set(true)"
+          >
+            <app-icon name="refresh" [size]="16" />
+            Reiniciar demo
+          </button>
+        }
+      </div>
+    </header>
+
+    <main class="content">
+      <router-outlet />
+    </main>
+
+    <footer class="footer" data-testid="footer">{{ config.footerLabel }}</footer>
+  </div>
+</div>
+
+<app-modal
+  title="¿Reiniciar la demo?"
+  size="sm"
+  [open]="confirmOpen()"
+  [dismissible]="!demo.resetting()"
+  (closed)="confirmOpen.set(false)"
+>
+  <p>
+    Se vuelve a cargar la semilla de datos ilustrativos. Las solicitudes, decisiones y revisiones
+    hechas durante la demo se reemplazan por el estado inicial.
+  </p>
+  <ng-container ngProjectAs="[modal-actions]">
+    <button
+      appButton="outline"
+      type="button"
+      [disabled]="demo.resetting()"
+      (click)="confirmOpen.set(false)"
+    >
+      Cancelar
+    </button>
+    <button
+      appButton="secondary"
+      type="button"
+      data-testid="reset-demo-confirm"
+      [loading]="demo.resetting()"
+      (click)="confirmReset()"
+    >
+      Reiniciar demo
+    </button>
+  </ng-container>
+</app-modal>
+
+<app-toast-host />

@@ -1,0 +1,59 @@
+/* Tokens de la identidad visual: los mismos de los documentos y la presentación. */
+:root {
+  /* Paleta del prompt */
+  --navy: #1f3a5f;
+  --navy-2: #2a4a75;
+  --blue: #2a78d6;
+  --blue-soft: #eef4fc;
+  --ice: #c9d8ec;
+  --orange: #eb6834;
+  --orange-light: #f7a47c;
+  --soft: #f5f7fa;
+  --line: #e4e7ec;
+  --ink: #101828;
+  --ink-2: #475467;
+  --muted: #667085;
+  --good: #0ca30c;
+  --warn: #e09a00;
+  --crit: #d03b3b;
+
+  /* Derivados (fondos suaves y texto legible sobre ellos) */
+  --white: #ffffff;
+  --navy-dark: #18304f;
+  --blue-dark: #1f63b8;
+  --orange-dark: #d4551f;
+  --orange-soft: #fef1ea;
+  --good-soft: #e8f6e8;
+  --good-ink: #0a7a0a;
+  --warn-soft: #fdf4dd;
+  --warn-ink: #8a5f00;
+  --crit-soft: #fbebeb;
+  --crit-ink: #a82a2a;
+  --crit-dark: #b53030;
+  --line-strong: #d0d5dd;
+
+  /* Tipografía */
+  --font: 'Lato', Calibri, Carlito, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', Consolas, 'Liberation Mono', monospace;
+
+  /* Forma */
+  --radius: 10px;
+  --radius-sm: 6px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --shadow-md: 0 4px 12px rgba(16, 24, 40, 0.08);
+  --shadow-lg: 0 16px 40px rgba(16, 24, 40, 0.18);
+
+  /* Espaciado */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+
+  /* Estructura */
+  --sidebar-w: 15.5rem;
+  --topbar-h: 4rem;
+  --footer-h: 2rem;
+}
