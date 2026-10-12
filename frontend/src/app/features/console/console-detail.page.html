@@ -213,7 +213,7 @@
         <span>
           <strong>Autorizada: {{ a.amount | cop }} de {{ a.product }}.</strong>
           Referencia {{ a.reference }} en {{ a.provider_label }} ({{ paymentMethodLabel(a.payment_method) }}), habilitada por
-          {{ a.enabled_by }}. Vigencia: {{ validityLabel(a.valid_minutes) }} (hasta las {{ a.expires_at | esTime }})
+          {{ a.enabled_by }}. Vigencia: {{ validityLabel(a.valid_minutes) }} (hasta las {{ a.expires_at_case_time | esTime }})
           @if (d.decision?.action === 'adjust') {
             · Valor sugerido original: {{ d.decision?.original_amount | cop }}
           }
@@ -391,7 +391,7 @@
               } @empty {
                 <div class="det__flag det__flag--none">
                   <app-icon name="check-circle" [size]="15" />
-                  Sin banderas activas para este vehículo.
+                  {{ d.vehicle ? 'Sin banderas activas para este vehículo.' : 'Sin vehículo identificado.' }}
                 </div>
               }
             </div>

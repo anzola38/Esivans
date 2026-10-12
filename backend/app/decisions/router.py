@@ -18,7 +18,7 @@ from app.models import AuditLog, Authorization, Decision, FuelRequest
 from app.requests import conversation
 from app.requests.service import (ACTION_LABELS, AUTHORIZATION_VALID_MINUTES, decision_payload, request_detail,
                                   set_status)
-from app.timeutil import fmt_cop, iso, now
+from app.timeutil import clock12, ddmmyyyy, fmt_cop, iso, now
 
 router = APIRouter(tags=["decisions"])
 DECISION_ROLES = ("technician", "coordinator")
@@ -38,7 +38,7 @@ class AuthorizationIn(BaseModel):
 def _already_decided(req: FuelRequest) -> ApiError:
     d = req.decision
     return ApiError(409, f"Esta solicitud ya fue decidida por {d.decided_by} ({ACTION_LABELS.get(d.action, d.action).lower()}) "
-                         f"el {iso(d.decided_at)[:16].replace('T', ' a las ')}.",
+                         f"el {ddmmyyyy(d.decided_at)} a las {clock12(d.decided_at)}",
                     "already_decided", {"decision": decision_payload(req)})
 
 

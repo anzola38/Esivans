@@ -42,6 +42,13 @@ def hhmm(dt: datetime) -> str:
     return to_local(dt).strftime("%H:%M")
 
 
+def clock12(dt: datetime) -> str:
+    """Hour as the interface shows it: '11:40 a. m.' (single convention across the app)."""
+    local = to_local(dt)
+    hour = local.hour % 12 or 12
+    return f"{hour}:{local.minute:02d}{NBSP}{'a.' if local.hour < 12 else 'p.'}{NBSP}m."
+
+
 def ddmmyyyy(dt: datetime) -> str:
     return to_local(dt).strftime("%d/%m/%Y")
 

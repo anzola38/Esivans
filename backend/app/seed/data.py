@@ -52,7 +52,7 @@ VEHICLES = [
      "last": {"hour": "18:10", "amount": 100000, "station": S2, "product": "Gasolina Corriente"}, "last_odo": 61480},
     {"code": "VEH015", "plate": "ZZA015", "driver": "Jorge Iván Castaño", "phone": "573005550015",
      "group": "dual_fuel", "efficiency": 26.3, "provider": "terpel", "eom": None, "flags": ["V01", "V05"],
-     "stats": {"refuels_90d": 99, "amount_90d": 4951202, "alert_share": 0.071},
+     "stats": {"refuels_90d": 99, "amount_90d": 4984000, "alert_share": 0.071},
      "streams": [
          {"provider": "terpel", "product": "GNV", "n": 80, "quantities": [14.0, 13.5, 14.5, 14.0],
           "stations": [G1, G2], "start": 90, "end": 2},
@@ -73,7 +73,7 @@ VEHICLES = [
      "streams": [gas(30, [60000, 70000, 80000], station=S1)], "last_odo": 87420},
     {"code": "VEH129", "plate": "ZZA129", "driver": "Hernán Darío Bula", "phone": "573005550129",
      "group": "dual_fuel", "efficiency": 20.3, "provider": "terpel", "eom": None, "flags": ["V01", "V05", "V08"],
-     "stats": {"refuels_90d": 102, "amount_90d": 4129120, "alert_share": 0.265},
+     "stats": {"refuels_90d": 102, "amount_90d": 4128960, "alert_share": 0.26},
      "streams": [{"provider": "terpel", "product": "GNV", "n": 102, "quantities": [12.0, 13.3, 12.65, 12.4, 12.9],
                   "stations": [G1, G2], "start": 90, "end": 1}],
      "last_odo": 164870},

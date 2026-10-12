@@ -49,12 +49,15 @@
         @if (chart(); as c) {
           <svg class="chart" viewBox="0 0 360 128" role="img" [attr.aria-label]="d.context.text" data-testid="context-chart">
             <!-- Turnos disponibles: línea de referencia -->
-            <line [attr.x1]="c.shiftX" [attr.x2]="c.shiftX" y1="2" y2="110" class="chart__ref" />
             <text [attr.x]="c.shiftX" y="124" text-anchor="middle" class="chart__ref-label">{{ c.shiftLabel }}</text>
             @for (bar of c.bars; track bar.label) {
               <text [attr.x]="c.left" [attr.y]="bar.y - 7" class="chart__label">{{ bar.label }}</text>
               <rect [attr.x]="c.left" [attr.y]="bar.y" [attr.width]="bar.width" height="24" rx="3" [attr.class]="'chart__bar chart__bar--' + bar.tone" />
               <text [attr.x]="c.left + bar.width + 6" [attr.y]="bar.y + 17" class="chart__value">{{ bar.value }}</text>
+            }
+            <!-- Drawn over the bars and only beside them, so it never crosses a label -->
+            @for (bar of c.bars; track bar.label; let last = $last) {
+              <line [attr.x1]="c.shiftX" [attr.x2]="c.shiftX" [attr.y1]="bar.y - 3" [attr.y2]="last ? 110 : bar.y + 27" class="chart__ref" />
             }
           </svg>
           <p class="context__text">

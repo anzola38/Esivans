@@ -1,0 +1,11 @@
+referencias/
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+node_modules/
+dist/
+.angular/
+.venv/
+*.log
+backend/storage/media/inbound/

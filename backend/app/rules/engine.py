@@ -219,7 +219,7 @@ def evaluate_transaction(tx: dict, rules: dict[str, ActiveRule]) -> list[dict]:
     deviation = tx.get("price_deviation")
     if deviation is not None and abs(deviation) > r.params["max_deviation"]:
         sign = "+" if deviation > 0 else "-"
-        out.append(_check(r, True, f"precio {sign}{fmt_num(abs(deviation) * 100, 0)} % vs. mediana de la estación"))
+        out.append(_check(r, True, f"precio {sign}{fmt_num(abs(deviation) * 100, 0)} % frente a la mediana de la estación"))
     return out
 
 

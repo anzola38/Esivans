@@ -175,7 +175,7 @@ def evaluate(db: Session, req: FuelRequest) -> Evaluation:
     codes = ", ".join(r["code"] for r in reasons if r.get("kind") == "rule") or "sin reglas"
     audit(db, SYSTEM, "request.evaluated", "evaluation", evaluation.id, request_id=req.id,
           summary=(f"Semáforo {TRAFFIC_LIGHT_LABELS[light].lower()} con {points} {"punto" if points == 1 else "puntos"} ({codes}); "
-                   f"valor sugerido {fmt_cop(calculation.get('amount'))}; reglas {version}"),
+                   f"valor sugerido {fmt_cop(calculation.get('amount')) if calculation.get('amount') is not None else 'sin calcular'}; reglas {version}"),
           after={"traffic_light": light, "points": points, "rules": [r["code"] for r in reasons],
                  "suggested_amount": calculation.get("amount"), "rules_version": version})
     return evaluation

@@ -25,7 +25,7 @@ from app.requests.service import (AUTHORIZATION_VALID_MINUTES, OPEN_STATUSES, ca
                                   set_status, sla_due)
 from app.rules import odometer as odo
 from app.rules.repository import current_rules
-from app.timeutil import fmt_cop, fmt_int, fmt_num, fmt_pct, fmt_unit, hhmm, now, to_local
+from app.timeutil import clock12, fmt_cop, fmt_int, fmt_num, fmt_pct, fmt_unit, now, parse_iso, to_local
 
 log = logging.getLogger(__name__)
 
@@ -59,13 +59,16 @@ def notify_authorized(db: Session, req: FuelRequest, authorization: Authorizatio
     expiry = to_local(req.occurred_at) + (to_local(authorization.expires_at) - to_local(req.created_at))
     hours = AUTHORIZATION_VALID_MINUTES // 60
     body = (f"Autorizado, {first_name(req.driver)}: {fmt_cop(authorization.amount)} de {authorization.product}. "
-            f"Referencia: {authorization.reference}. Vigencia: {hours} horas (hasta las {hhmm(expiry)}). "
+            f"Referencia: {authorization.reference}. Vigencia: {hours} horas (hasta las {clock12(expiry)}). "
             f"Tu {ledger.PROVIDER_METHODS.get(authorization.provider, 'chip')} ya está habilitado solo por ese valor.")
+    decision = req.decision
+    if decision is not None and decision.action == "adjust" and decision.reason:
+        body += f" El técnico ajustó el valor. Motivo: {decision.reason.rstrip('. ')}."
     _say(db, req, req.wa_id, body, kind="authorization")
 
 
 def notify_rejected(db: Session, req: FuelRequest, decision: Decision) -> None:
-    body = (f"{first_name(req.driver) or 'Hola'}, tu solicitud no fue autorizada. Motivo: {decision.reason}. "
+    body = (f"{first_name(req.driver) or 'Hola'}, tu solicitud no fue autorizada. Motivo: {decision.reason.rstrip('. ')}. "
             "Si necesitas ayuda, responde este mensaje y te atiende el técnico de turno.")
     _say(db, req, req.wa_id, body, kind="rejection")
 
@@ -364,7 +367,7 @@ def _advance(db: Session, req: FuelRequest) -> None:
             data["proposed_service_id"] = nxt["id"]
             others = services["pending_count"] - 1
             extra = f" y tienes {others} más pendientes hoy" if others > 0 else ""
-            body = (f"Tu próximo servicio en EOM es a las {nxt['start'][11:16]} ({nxt['origin']} → {nxt['destination']})"
+            body = (f"Tu próximo servicio en EOM es a las {clock12(parse_iso(nxt['start']))} ({nxt['origin']} → {nxt['destination']})"
                     f"{extra}. ¿El tanqueo es para esa ruta?")
             replies = ["Sí, es para esa ruta", "Es otro recorrido"]
         else:
@@ -453,6 +456,8 @@ def _reply_status(db: Session, req: FuelRequest, duplicate: bool = False) -> Non
         pending = [labels[m] for m in missing_items(req) if m in labels]
         body = prefix + ("para continuar me falta " + " y ".join(pending) + "." if pending
                          else "estoy terminando de armar tu solicitud.")
+    if duplicate:  # the prefix ends with a period: the next sentence starts in upper case
+        body = prefix + body[len(prefix):len(prefix) + 1].upper() + body[len(prefix) + 1:]
     _say(db, req, req.wa_id, body, kind="duplicate" if duplicate else "status")
 
 

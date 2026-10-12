@@ -99,7 +99,7 @@
             @for (line of r.lines; track line.line) {
               <tr>
                 <td class="num">{{ line.line }}</td>
-                <td class="mono">{{ line.external_id }}</td>
+                <td class="mono nowrap">{{ line.external_id }}</td>
                 <td>{{ line.vehicle ?? '—' }}</td>
                 <td>
                   <span [class]="'ui-badge ui-badge--' + lineStatus(line.status).tone">{{ lineStatus(line.status).label }}</span>
