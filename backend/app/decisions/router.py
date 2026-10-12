@@ -135,6 +135,9 @@ def confirm_authorization(request_id: int, body: AuthorizationIn, db: Session = 
         raise ApiError(409, "Solo se habilita una solicitud aprobada o ajustada.", "not_approved")
 
     reference = body.reference.strip()
+    if len(reference) < 3:  # only spaces pass the length check of the body
+        raise ApiError(422, "Escribe la referencia que devuelve el portal del proveedor (mínimo 3 caracteres).",
+                       "reference_required")
     provider = body.provider or req.vehicle.provider
     current = now()
     authorization = Authorization(request_id=req.id, decision_id=decision.id, provider=provider, reference=reference,
@@ -149,9 +152,12 @@ def confirm_authorization(request_id: int, body: AuthorizationIn, db: Session = 
         raise ApiError(409, "Esta solicitud ya fue habilitada.", "already_authorized") from exc
     req.authorization = authorization
     method = ledger.PROVIDER_METHODS.get(provider, "chip")
-    set_status(db, req, "authorized", f"{method.capitalize()} habilitado por {actor.user}, referencia {reference}")
+    feminine = method == "tarjeta"  # "la tarjeta" (GoPass) and "el chip" (Terpel)
+    set_status(db, req, "authorized",
+               f"{method.capitalize()} {'habilitada' if feminine else 'habilitado'} por {actor.user}, referencia {reference}")
     audit(db, actor, "authorization.enabled", "authorization", authorization.id, request_id=req.id,
-          summary=(f"{actor.user} habilitó el {method} en {ledger.PROVIDER_LABELS.get(provider, provider)}: "
+          summary=(f"{actor.user} habilitó {'la' if feminine else 'el'} {method} en "
+                   f"{ledger.PROVIDER_LABELS.get(provider, provider)}: "
                    f"{fmt_cop(authorization.amount)} de {authorization.product}, referencia {reference}, "
                    f"vigente {AUTHORIZATION_VALID_MINUTES // 60} horas"),
           after={"provider": provider, "reference": reference, "product": authorization.product,

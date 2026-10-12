@@ -135,7 +135,10 @@ def _number(value: str | None) -> float | None:
         text = text.replace(".", "").replace(",", ".")
     elif "," in text:
         text = text.replace(",", ".")
-    return float(text)
+    try:
+        return float(text)
+    except ValueError:  # the reason of the rejected row is shown to the user, in Spanish
+        raise ValueError(f"número no válido: {(value or '').strip()}") from None
 
 
 def _timestamp(value: str) -> datetime:
@@ -145,7 +148,10 @@ def _timestamp(value: str) -> datetime:
             return datetime.strptime(text, pattern).replace(tzinfo=BOGOTA)
         except ValueError:
             continue
-    return to_local(datetime.fromisoformat(value.strip()))
+    try:
+        return to_local(datetime.fromisoformat(value.strip()))
+    except ValueError:  # the reason of the rejected row is shown to the user, in Spanish
+        raise ValueError(f"fecha no reconocida: {value.strip()}") from None
 
 
 def _corriente_price(db: Session, tx: ProviderTransaction) -> tuple[float, str]:
@@ -172,7 +178,8 @@ def _evaluate_new_transaction(db: Session, tx: ProviderTransaction, rules: dict[
         ProviderTransaction.id != tx.id, ProviderTransaction.timestamp >= tx.timestamp - days,
         ProviderTransaction.timestamp <= tx.timestamp + days)).all()
     station_median = float(median(neighbors)) if len(neighbors) >= 3 else None
-    deviation = (tx.unit_price / station_median - 1) if station_median else None
+    # Rounded so that exactly -15 % and +15 % behave the same (0.85 - 1 is -0.15000000000000002 in floating point).
+    deviation = round(tx.unit_price / station_median - 1, 6) if station_median else None
     data = {
         "sale_type": tx.sale_type,
         "amount": tx.amount,

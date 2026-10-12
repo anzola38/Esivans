@@ -99,9 +99,13 @@ def evaluate(db: Session, req: FuelRequest) -> Evaluation:
         suggested_quantity = calculation["quantity"] if calculation.get("needs_refuel") else None
         load = req.requested_quantity or suggested_quantity
         local = to_local(req.occurred_at)
+        # What was reported: the reading of the photo or, if the driver typed the km, the typed value.
+        reported = None
+        if evidence:
+            reported = evidence.odometer_km if evidence.odometer_source == "driver" else evidence.odometer_read
         rule_ctx = {
             "odometer": odometer,
-            "odometer_reported": evidence.odometer_read if evidence else None,
+            "odometer_reported": reported,
             "odometer_error": evidence.error_type if evidence else None,
             "odometer_proposed": evidence.proposed_odometer if evidence else None,
             "last_valid_odometer": book["last_valid_odometer"],
@@ -275,7 +279,9 @@ def request_summary(req: FuelRequest) -> dict:
         "points": ev.points if ev else None,
         "rule_codes": [r["code"] for r in reasons if r.get("kind") == "rule"],
         "has_inconsistency": any(r.get("kind") == "inconsistency" for r in reasons),
-        "one_click_allowed": bool(ev and ev.traffic_light == "green" and req.status == "in_review" and not decided),
+        # One click needs a suggested amount to approve: without it the decision endpoint answers 422.
+        "one_click_allowed": bool(ev and ev.traffic_light == "green" and req.status == "in_review" and not decided
+                                  and (ev.suggested_amount or 0) > 0),
         "suggested_amount": ev.suggested_amount if ev else None,
         "requested_quantity": req.requested_quantity,
         "driver": _driver_payload(req),

@@ -56,6 +56,9 @@ def review_alert(alert_id: int, body: AlertReviewIn, db: Session = Depends(get_d
     if result not in service.REVIEW_RESULTS:
         raise ApiError(422, "El resultado debe ser Confirmado, Justificado o Error de dato.", "invalid_review_result",
                        {"allowed": list(service.REVIEW_RESULTS)})
-    alert = service.review_alert(db, alert_id, result, body.comment.strip(), actor)
+    comment = body.comment.strip()
+    if len(comment) < 3:  # only spaces pass the length check of the body
+        raise ApiError(422, "El comentario es obligatorio (mínimo 3 caracteres).", "comment_required")
+    alert = service.review_alert(db, alert_id, result, comment, actor)
     db.commit()
     return service.alert_payload(alert)

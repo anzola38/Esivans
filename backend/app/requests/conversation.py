@@ -58,9 +58,11 @@ def _say(db: Session, req: FuelRequest | None, wa_id: str, body: str, *, kind: s
 def notify_authorized(db: Session, req: FuelRequest, authorization: Authorization) -> None:
     expiry = to_local(req.occurred_at) + (to_local(authorization.expires_at) - to_local(req.created_at))
     hours = AUTHORIZATION_VALID_MINUTES // 60
+    method = ledger.PROVIDER_METHODS.get(authorization.provider, "chip")
+    enabled = "habilitada" if method == "tarjeta" else "habilitado"      # "tu tarjeta" (GoPass) is feminine
     body = (f"Autorizado, {first_name(req.driver)}: {fmt_cop(authorization.amount)} de {authorization.product}. "
             f"Referencia: {authorization.reference}. Vigencia: {hours} horas (hasta las {clock12(expiry)}). "
-            f"Tu {ledger.PROVIDER_METHODS.get(authorization.provider, 'chip')} ya está habilitado solo por ese valor.")
+            f"Tu {method} ya está {enabled} solo por ese valor.")
     decision = req.decision
     if decision is not None and decision.action == "adjust" and decision.reason:
         body += f" El técnico ajustó el valor. Motivo: {decision.reason.rstrip('. ')}."
@@ -400,16 +402,18 @@ def _advance(db: Session, req: FuelRequest) -> None:
             _say(db, req, req.wa_id, "Escríbeme el kilometraje que marca el odómetro, solo el número.", kind="ask_km")
             return
         req.step, req.data = "confirm", data
-        level = level_text(evidence.fuel_level)
+        # Without a readable level the message says so instead of "nivel de sin lectura".
+        level = (f"nivel de {level_text(evidence.fuel_level)}" if evidence.fuel_level is not None
+                 else "no pude leer el nivel de combustible")
         if evidence.error_type in odo.TYPO_TYPES and evidence.proposed_odometer:
             fix = odo.describe_fix(evidence.odometer_read, evidence.proposed_odometer, evidence.error_type)
-            body = (f"En la foto leí {fmt_int(evidence.odometer_read)} km y nivel de {level}. Tu último registro es de "
+            body = (f"En la foto leí {fmt_int(evidence.odometer_read)} km y {level}. Tu último registro es de "
                     f"{fmt_int(data.get('last_valid_odometer'))} km, así que parece un error de un dígito ({fix}). "
                     f"¿El kilometraje correcto es {fmt_int(evidence.proposed_odometer)} km?")
             replies = [f"Sí, es {fmt_int(evidence.proposed_odometer)}", "No, corregir"]
             kind = "confirm_correction"
         else:
-            body = f"Leí en la foto {fmt_int(evidence.odometer_read)} km y nivel de {level}. ¿Es correcto?"
+            body = f"Leí en la foto {fmt_int(evidence.odometer_read)} km y {level}. ¿Es correcto?"
             replies = ["Sí, es correcto", "No, corregir"]
             kind = "confirm_reading"
         _say(db, req, req.wa_id, body, kind=kind, quick_replies=replies)

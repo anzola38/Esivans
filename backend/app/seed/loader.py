@@ -52,6 +52,9 @@ def reset_and_load(db: Session) -> dict:
     tables = ", ".join(f'"{t.name}"' for t in Base.metadata.sorted_tables)
     db.execute(text(f"TRUNCATE TABLE {tables} RESTART IDENTITY CASCADE"))
     db.commit()
+    # Rows loaded earlier in this session (ensure_seed reads app_meta) no longer exist: without this the
+    # merge of app_meta below issues an UPDATE that matches nothing and the reload fails at startup.
+    db.expunge_all()
     summary = load(db)
     db.commit()
     return summary

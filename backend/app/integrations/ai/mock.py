@@ -15,7 +15,9 @@ from app.integrations.media import reading_for_hash
 YES = ("si", "correcto", "confirmo", "confirmado", "ok", "dale", "listo", "claro", "de acuerdo", "asi es",
        "es para esa", "entendido")
 NO = ("no", "incorrecto", "corregir", "esta mal", "negativo")
-STATUS = ("estado", "como va", "como vamos", "ya me autoriz", "ya autoriz", "que paso con", "novedad", "consulta")
+# Whole words only (see _starts_or_contains): a stem such as "ya me autoriz" would never match.
+STATUS = ("estado", "como va", "como vamos", "ya me autorizaron", "ya me autorizo", "ya autorizaron", "ya autorizo",
+          "que paso con", "novedad", "consulta")
 REFUEL = ("tanque", "tanquear", "combustible", "gasolina", "diesel", "acpm", "gas", "cargar", "llenar", "recarga")
 GREETING = ("hola", "buenos dias", "buenas tardes", "buenas noches", "buenas")
 
