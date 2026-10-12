@@ -366,7 +366,8 @@ def _advance(db: Session, req: FuelRequest) -> None:
         if nxt:
             data["proposed_service_id"] = nxt["id"]
             others = services["pending_count"] - 1
-            extra = f" y tienes {others} más pendientes hoy" if others > 0 else ""
+            pending_word = "pendiente" if others == 1 else "pendientes"
+            extra = f" y tienes {others} más {pending_word} hoy" if others > 0 else ""
             body = (f"Tu próximo servicio en EOM es a las {clock12(parse_iso(nxt['start']))} ({nxt['origin']} → {nxt['destination']})"
                     f"{extra}. ¿El tanqueo es para esa ruta?")
             replies = ["Sí, es para esa ruta", "Es otro recorrido"]

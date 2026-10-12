@@ -249,7 +249,8 @@ export class ConsoleDetailPage {
 
   private submitDecision(body: Record<string, unknown>): void {
     const d = this.detail();
-    if (!d) return;
+    // A fast double click must not send the decision twice (the second one would answer 409).
+    if (!d || this.busy()) return;
     this.busy.set(true);
     this.serverError.set(null);
     this.api
@@ -308,7 +309,7 @@ export class ConsoleDetailPage {
   protected confirmEnablement(): void {
     const d = this.detail();
     this.referenceTouched.set(true);
-    if (!d || this.referenceError() || !this.canDecide()) return;
+    if (!d || this.referenceError() || !this.canDecide() || this.busy()) return;
     this.busy.set(true);
     this.api
       .post<RequestDetail>('/requests/' + d.id + '/authorization', {

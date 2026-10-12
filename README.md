@@ -135,10 +135,12 @@ Si falta la clave o el modelo, se usa el `MockProvider`. Si Gemini falla o la co
 cd e2e
 npm run setup      # una vez: instala Playwright y Chromium dentro de e2e/node_modules
 npm run demo       # recorre el guion, valida y guarda las capturas; reinicia la demo al terminar
-npm test           # pruebas del shell (menú, pie, roles, reinicio)
+npm test           # pruebas E2E de toda la interfaz, a 1366×768 y a 1920×1080 (reinician la demo)
 ```
 
 `npm run demo` falla (código 1) si hay errores de JavaScript, desborde horizontal, el pie de página no es el esperado o alguna cifra de los casos no coincide.
+
+`npm test` recorre las cuatro pantallas con aserciones sobre cifras, estados, textos y permisos; qué cubre cada archivo y cómo correr una parte está en [`e2e/README.md`](e2e/README.md).
 
 ## Estructura
 
@@ -146,7 +148,7 @@ npm test           # pruebas del shell (menú, pie, roles, reinicio)
 docker-compose.yml   db (PostgreSQL 17), backend (FastAPI) y frontend (Angular + nginx)
 backend/             app/{requests,ledger,rules,decisions,reconciliation,integrations,dashboard,dev,seed}, alembic/, tests/
 frontend/            Angular 22: core/, shared/, layout/ y features/{simulator,console,alerts,dashboard}
-e2e/                 Playwright: guion de la demo, capturas y pruebas del shell
+e2e/                 Playwright: guion de la demo, capturas y pruebas E2E de la interfaz
 docs/screenshots/    capturas revisadas
 PLAN.md              hitos
 DECISIONES.md        cada decisión con su motivo y lo que no cubre el prototipo

@@ -135,10 +135,11 @@ export class AlertsReviewTab {
 
   protected setFilter(filter: StatusFilter): void {
     this.filter.set(filter);
-    const rows = this.rows();
-    if (rows.length && !rows.some((a) => a.id === this.selectedId() && (filter === 'all' || a.status === filter))) {
-      this.select(rows[0].id);
-    }
+    // `rows()` keeps the selected alert even when it does not match the filter (so a just-reviewed
+    // alert stays in view), so the next selection is picked from the alerts that do match.
+    const matching = this.source().filter((a) => filter === 'all' || a.status === filter);
+    if (!matching.some((a) => a.id === this.selectedId())) this.selectedId.set(null);
+    if (matching.length && this.selectedId() === null) this.select(matching[0].id);
   }
 
   protected pickResult(value: ReviewResult): void {
