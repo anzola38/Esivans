@@ -49,6 +49,7 @@ El resultado sale en la consola (reporte `list`) y en `e2e/playwright-report/` (
 | `cross-cutting.spec.mjs` | Con datos cargados y en todas las pantallas: sin desborde horizontal, sin estados crudos ni textos en inglés, formatos es-CO, semáforo con texto, F5 en `/consola/:id`. |
 | `robustness.spec.mjs` | El caso verde dos veces seguidas da lo mismo; doble clic no duplica decisiones, habilitaciones, mensajes ni revisiones; dos pestañas a la vez. |
 | `demo-script.spec.mjs` | El guion de 3 minutos del README, completo y solo por la interfaz. |
+| `hard-to-reach-states.spec.mjs` | Estados que la demo no produce sola: SLA de 10 minutos vencido en la cola y en el detalle, y la decisión "Detener" o "Ajustar" del tablero en sus bordes. Toma la respuesta real de la API y cambia solo los campos que nombra cada prueba. |
 
 `tests/support/fixtures.mjs` tiene lo compartido: el reinicio de la demo antes de cada prueba, los ayudantes para sembrar casos por la API y el **guardián del navegador**, que hace fallar cualquier prueba si aparece un error de JavaScript, un error en la consola o una respuesta HTTP 4xx/5xx que la prueba no haya declarado con `guard.allow(...)`.
 

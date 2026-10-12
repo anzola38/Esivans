@@ -116,6 +116,10 @@ def process_inbound(db: Session, inbound_id: int) -> None:
         log.exception("Error procesando el mensaje %s", inbound_id)
         message = db.get(InboundMessage, inbound_id)
         message.processed_at = now()
+        # The privacy notice of a first contact was rolled back with the failed transaction: send it again here,
+        # because the error message below makes the next message look like a second contact.
+        if db.scalars(select(OutboundMessage.id).where(OutboundMessage.wa_id == message.wa_id).limit(1)).first() is None:
+            send_message(db, wa_id=message.wa_id, body=PRIVACY_NOTICE, case_time=message.case_time, kind="privacy_notice")
         send_message(db, wa_id=message.wa_id, case_time=message.case_time, kind="error",
                      body="Tuvimos un problema procesando tu mensaje. El técnico de turno ya fue avisado y te atiende por este medio.")
         audit(db, SYSTEM, "message.failed", "inbound_message", inbound_id,
@@ -346,6 +350,7 @@ def _advance(db: Session, req: FuelRequest) -> None:
     if req.step == "not_needed" and data.get("not_needed_answer"):
         if data["not_needed_answer"] == "review":
             req.step = None
+            requests_service.mark_review_requested(req)
             set_status(db, req, "in_review", "El cálculo dice que no necesita tanquear; el conductor pidió revisión")
             _say(db, req, req.wa_id, kind="in_review",
                  body=f"Listo, {name}. Le pasé tu solicitud al técnico de Control y Monitoreo para que la revise.")

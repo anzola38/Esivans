@@ -40,6 +40,9 @@ MISSING_LABELS = {
     "confirmation": "Confirmación del kilometraje",
 }
 ACTION_LABELS = {"approve": "Aprobada", "adjust": "Ajustada", "reject": "Rechazada"}
+NOT_NEEDED_NAME = "No necesita tanquear según el cálculo"
+NOT_NEEDED_EXPLANATION = "Con el nivel leído y la ruta pendiente, a cargar da 0 o menos"
+NOT_NEEDED_REVIEW = "; el conductor pidió que lo revise el técnico."
 
 
 def set_status(db: Session, req: FuelRequest, status: str, note: str | None = None) -> None:
@@ -131,9 +134,8 @@ def evaluate(db: Session, req: FuelRequest) -> Evaluation:
         if cross and not cross["consistent"]:
             extras.append(_inconsistency("Inconsistencia entre fuentes", cross["explanation"]))
         if calculation.get("needs_refuel") is False:
-            extras.append(_inconsistency("No necesita tanquear según el cálculo",
-                                         "Con el nivel leído y la ruta pendiente, a cargar da 0 o menos; "
-                                         "el conductor pidió que lo revise el técnico."))
+            # Evaluated before the driver answers: who asked for the review is added later, only if he did.
+            extras.append(_inconsistency(NOT_NEEDED_NAME, NOT_NEEDED_EXPLANATION + "."))
         context.update({
             "vehicle": ledger.vehicle_payload(vehicle, rules),
             "ledger": book,
@@ -145,6 +147,10 @@ def evaluate(db: Session, req: FuelRequest) -> Evaluation:
             "requested_quantity": req.requested_quantity,
             "service_note": req.service_note,
         })
+    elif req.driver_id is not None:  # known driver whose assignment is not current: not an unknown number
+        extras.append(_inconsistency("Conductor sin vehículo asignado",
+                                     "El conductor está registrado, pero no tiene un vehículo con asignación vigente; "
+                                     "el técnico identifica el vehículo y decide."))
     else:
         extras.append(_inconsistency("Número no registrado",
                                      "El número de WhatsApp no corresponde a un conductor con asignación vigente; "
@@ -183,6 +189,16 @@ def evaluate(db: Session, req: FuelRequest) -> Evaluation:
           after={"traffic_light": light, "points": points, "rules": [r["code"] for r in reasons],
                  "suggested_amount": calculation.get("amount"), "rules_version": version})
     return evaluation
+
+
+def mark_review_requested(req: FuelRequest) -> None:
+    """The calculation said no refuel is needed and the driver asked for a review: the reason says so."""
+    evaluation = req.evaluation
+    if evaluation is None:
+        return
+    evaluation.reasons = [
+        {**reason, "explanation": NOT_NEEDED_EXPLANATION + NOT_NEEDED_REVIEW} if reason.get("name") == NOT_NEEDED_NAME
+        else reason for reason in (evaluation.reasons or [])]
 
 
 def missing_items(req: FuelRequest) -> list[str]:

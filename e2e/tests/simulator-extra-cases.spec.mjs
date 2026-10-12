@@ -124,18 +124,13 @@ test.describe('Simulador: casos extra', () => {
   });
 
   test('cerrada sin tanqueo: las razones del detalle no dicen que el conductor pidió revisión', async ({ page }) => {
-    test.fail(
-      true,
-      'Bug conocido del backend (requests/service.py): la razón "No necesita tanquear según el cálculo" se guarda al evaluar, ' +
-        'antes de que el conductor responda, y siempre termina en "el conductor pidió que lo revise el técnico", ' +
-        'aunque haya aceptado. No se corrige aquí porque exige reevaluar o reescribir la razón guardada.',
-    );
     await seedCase('NO_FUEL');
     const request = (await api('/requests')).json.items[0];
     expect(request.status).toBe('cancelled');
     await page.goto('/consola/' + request.id);
     await expect(page.getByText('el conductor lo aceptó')).toBeVisible();
     await expect(page.getByTestId('reasons-card')).toContainText('No necesita tanquear según el cálculo');
+    await expect(page.getByTestId('reasons-card')).toContainText('Con el nivel leído y la ruta pendiente, a cargar da 0 o menos.');
     await expect(page.getByTestId('reasons-card')).not.toContainText('el conductor pidió que lo revise el técnico', { timeout: 2000 });
   });
 
