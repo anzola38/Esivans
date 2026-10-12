@@ -1,0 +1,144 @@
+.rules__group td {
+  padding: 0.3rem 0.6rem;
+  background: var(--blue-soft);
+  color: var(--navy);
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.rules__code {
+  display: inline-block;
+  min-width: 2.6rem;
+  padding: 0.12rem 0.4rem;
+  border-radius: 6px;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.rules__code--lg {
+  font-size: 1rem;
+  padding: 0.3rem 0.6rem;
+}
+
+.rules__sub {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+.rules__bumped {
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  background: var(--orange-soft);
+  color: var(--orange-dark);
+  font-weight: 900;
+}
+
+.rules__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.rule__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.85rem 1rem 0.6rem;
+}
+
+.rule__titles {
+  min-width: 0;
+}
+
+.rule__name {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.2;
+}
+
+.rule__text {
+  font-size: 0.86rem;
+  color: var(--ink-2);
+}
+
+.rule__stats {
+  margin: 0 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.rule__meta {
+  margin: 0.6rem 1rem 0.8rem;
+  font-size: 0.82rem;
+  color: var(--ink-2);
+}
+
+.rule__form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.6rem;
+}
+
+.rule__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+}
+
+.history {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.history__item {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft);
+}
+
+.history__item.is-current {
+  background: var(--white);
+  border-color: #bfe5bf;
+}
+
+.history__version {
+  flex: none;
+  font-weight: 900;
+  color: var(--navy);
+}
+
+.history__values {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.history__meta,
+.history__reason {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.history__reason {
+  font-style: italic;
+}

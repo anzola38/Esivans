@@ -1,0 +1,220 @@
+<div class="split split--even">
+  <!-- Carga del archivo -->
+  <app-card title="Archivo del proveedor" subtitle="Lo autorizado frente a lo que el proveedor registró" scroll>
+    <div class="upload">
+      <div class="upload__icon"><app-icon name="file" [size]="22" /></div>
+      <div class="upload__text">
+        <strong>Exporte diario de Terpel (CSV)</strong>
+        <span>Entra al libro único de tanqueos. Si se carga dos veces no duplica.</span>
+      </div>
+      <button
+        type="button"
+        appButton
+        data-testid="import-sample"
+        [loading]="importing()"
+        [disabled]="!canImport()"
+        (click)="loadSample()"
+      >
+        <app-icon name="upload" [size]="16" />
+        Cargar exporte de ejemplo de Terpel
+      </button>
+    </div>
+    @if (!canImport()) {
+      <div class="ui-note ui-note--warn mt-2" data-testid="import-readonly">
+        <app-icon name="lock" [size]="16" />
+        <span>Con el rol {{ roles.label() }} solo puedes consultar. El archivo lo carga {{ roles.rolesFor('provider.import') }}.</span>
+      </div>
+    }
+
+    @if (result(); as r) {
+      <div class="stats import__stats" data-testid="import-summary">
+        <div class="stat">
+          <span class="stat__value" data-testid="import-rows">{{ r.rows }}</span>
+          <span class="stat__label">filas</span>
+        </div>
+        <div class="stat is-good">
+          <span class="stat__value" data-testid="import-imported">{{ r.imported }}</span>
+          <span class="stat__label">cargadas</span>
+        </div>
+        <div class="stat">
+          <span class="stat__value" data-testid="import-duplicates">{{ r.duplicates }}</span>
+          <span class="stat__label">duplicadas</span>
+        </div>
+        <div class="stat" [class.is-crit]="r.rejected > 0">
+          <span class="stat__value" data-testid="import-rejected">{{ r.rejected }}</span>
+          <span class="stat__label">rechazadas</span>
+        </div>
+        <div class="stat" [class.is-warn]="r.alerts_created > 0">
+          <span class="stat__value" data-testid="import-alerts">{{ r.alerts_created }}</span>
+          <span class="stat__label">alertas</span>
+        </div>
+      </div>
+      <p class="import__message">{{ r.message }}</p>
+
+      @if (r.matched_authorizations.length) {
+        <h3 class="block__title block__title--spaced">Autorizaciones conciliadas</h3>
+        <app-table dense data-testid="matched">
+          <table>
+            <thead>
+              <tr>
+                <th>Vehículo</th>
+                <th>Referencia</th>
+                <th class="num">Autorizado</th>
+                <th class="num">Registrado</th>
+                <th>Resultado</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (m of r.matched_authorizations; track m.authorization_id) {
+                <tr>
+                  <td class="fw-700">{{ m.vehicle }}</td>
+                  <td class="mono">{{ m.reference }}</td>
+                  <td class="num">{{ m.authorized_amount | cop }}</td>
+                  <td class="num">{{ m.recorded_amount | cop }}</td>
+                  <td>
+                    <span [class]="'ui-badge ui-badge--' + (m.within_tolerance ? 'green' : 'yellow')">
+                      {{ m.within_tolerance ? 'Cuadra' : 'Diferencia de ' + (m.difference_share | esPercent: 0 : true) }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </app-table>
+      }
+
+      <h3 class="block__title block__title--spaced">Filas del archivo</h3>
+      <app-table dense data-testid="import-lines">
+        <table>
+          <thead>
+            <tr>
+              <th class="num">Fila</th>
+              <th>Transacción</th>
+              <th>Vehículo</th>
+              <th>Estado</th>
+              <th>Alerta</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (line of r.lines; track line.line) {
+              <tr>
+                <td class="num">{{ line.line }}</td>
+                <td class="mono">{{ line.external_id }}</td>
+                <td>{{ line.vehicle ?? '—' }}</td>
+                <td>
+                  <span [class]="'ui-badge ui-badge--' + lineStatus(line.status).tone">{{ lineStatus(line.status).label }}</span>
+                </td>
+                <td>
+                  @if (line.rule_codes?.length) {
+                    @for (code of line.rule_codes; track code) {
+                      <span class="ui-code">{{ code }}</span>
+                    }
+                  } @else if (line.message) {
+                    <span class="text-muted text-sm">{{ line.message }}</span>
+                  } @else {
+                    <span class="text-muted">Sin alerta</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </app-table>
+    } @else {
+      <app-empty-state
+        compact
+        icon="scale"
+        title="Aún no se ha cargado el archivo de hoy"
+        message="Al cargarlo verás cuántas filas entraron, cuáles estaban duplicadas o rechazadas y qué no cuadra con lo autorizado."
+      />
+    }
+  </app-card>
+
+  <!-- Desviaciones -->
+  <app-card title="Lo que no cuadra" subtitle="Desviaciones detectadas al conciliar" scroll>
+    @if (overpaid(); as alert) {
+      @if (alert.evidence.product_difference; as diff) {
+        <div class="hero" data-testid="overpaid-card">
+          <div class="hero__head">
+            <span class="hero__vehicle" data-testid="overpaid-vehicle">{{ alert.vehicle?.code }}</span>
+            <span class="hero__plate">{{ alert.vehicle?.plate }} · {{ alert.vehicle?.fuel_type_label }}</span>
+            <span class="grow"></span>
+            @for (code of alert.rule_codes; track code) {
+              <span class="ui-code">{{ code }}</span>
+            }
+            <app-priority-chip [priority]="alert.priority" />
+          </div>
+          <div class="hero__body">
+            <div class="hero__amount">
+              <span class="hero__value" data-testid="overpaid-amount">{{ diff.overpaid | cop }}</span>
+              <span class="hero__label">pagados de más</span>
+            </div>
+            <div class="hero__prices">
+              <div class="price price--bad">
+                <span class="price__label">Cargó</span>
+                <span class="price__product">{{ diff.sold_product }}</span>
+                <span class="price__value">{{ diff.sold_price | cop }} por galón</span>
+              </div>
+              <div class="price price--good">
+                <span class="price__label">Su ficha pide</span>
+                <span class="price__product">{{ diff.authorized_product }}</span>
+                <span class="price__value">{{ diff.corriente_price | cop }} por galón</span>
+              </div>
+            </div>
+          </div>
+          <p class="hero__math" data-testid="overpaid-math">
+            {{ diff.gallons | esNumber: 3 }} galones × {{ diff.difference_per_gallon | cop }} de diferencia =
+            <strong>{{ diff.overpaid | cop }}</strong>. Precio de la Corriente: {{ diff.corriente_price_source }}.
+            @if (alert.evidence.transaction; as tx) {
+              <span class="nowrap">{{ tx.station }},</span> {{ tx.timestamp | esDateTime }}
+            }
+          </p>
+          <div class="hero__foot">
+            <span class="text-muted text-sm">
+              @if (alert.status === 'reviewed') {
+                Revisada: {{ alert.review_result_label }} · {{ alert.reviewed_by }}
+              } @else {
+                Plazo: en la semana · sin revisar
+              }
+            </span>
+            <button type="button" appButton="outline" size="sm" data-testid="overpaid-review" (click)="review.emit(alert.id)">
+              Revisar la alerta
+              <app-icon name="chevron-right" [size]="14" />
+            </button>
+          </div>
+        </div>
+      }
+    }
+
+    @if (otherDeviations().length) {
+      <h3 class="block__title block__title--spaced">Otras desviaciones del archivo</h3>
+      <ul class="devs" data-testid="deviations">
+        @for (alert of otherDeviations(); track alert.id) {
+          <li class="dev">
+            <span class="dev__head">
+              <app-priority-chip [priority]="alert.priority" compact />
+              <strong class="text-navy">{{ alert.vehicle?.code }}</strong>
+              @for (code of alert.rule_codes; track code) {
+                <span class="ui-code">{{ code }}</span>
+              }
+              <span class="grow"></span>
+              <button type="button" appButton="ghost" size="sm" (click)="review.emit(alert.id)">Revisar</button>
+            </span>
+            @for (reason of alert.reasons; track reason.code) {
+              <span class="dev__reason"><strong>{{ reason.name }}:</strong> {{ reason.explanation }}</span>
+            }
+          </li>
+        }
+      </ul>
+    }
+
+    @if (!deviations().length) {
+      <app-empty-state
+        compact
+        icon="scale"
+        title="Sin desviaciones todavía"
+        message="Carga el exporte de Terpel: aquí aparecen el producto distinto al de la ficha, los precios atípicos y las ventas fuera del sistema."
+      />
+    }
+  </app-card>
+</div>

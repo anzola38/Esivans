@@ -1,0 +1,173 @@
+/* Shared by the tabs of the alerts screen. */
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: 1rem;
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.split--even {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.split--wide-left {
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+}
+
+.pad {
+  padding: 1rem;
+}
+
+/* Segmented filter */
+.seg {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 8px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+}
+
+.seg__btn {
+  padding: 0.25rem 0.6rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.seg__btn.is-active {
+  background: var(--white);
+  color: var(--navy);
+  box-shadow: var(--shadow-sm);
+}
+
+.seg--sm .seg__btn {
+  padding: 0.15rem 0.5rem;
+  font-size: 0.76rem;
+}
+
+/* Detail blocks */
+.block {
+  padding: 0.85rem 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.block__title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0 0 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+
+.block__title--spaced {
+  margin-top: 1rem;
+}
+
+.block__meta {
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted);
+}
+
+/* Small stat tiles */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: 0.5rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft);
+  min-width: 0;
+}
+
+.stat__value {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.stat__label {
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.stat.is-crit {
+  background: var(--crit-soft);
+  border-color: #f1c4c4;
+}
+
+.stat.is-crit .stat__value {
+  color: var(--crit-ink);
+}
+
+.stat.is-warn {
+  background: var(--warn-soft);
+  border-color: #f3dc9c;
+}
+
+.stat.is-warn .stat__value {
+  color: var(--warn-ink);
+}
+
+.stat.is-good .stat__value {
+  color: var(--good-ink);
+}
+
+/* Overpaid highlight (VEH023) */
+.overpaid {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 0.6rem;
+  border: 1px solid #f1c4c4;
+  border-left: 4px solid var(--crit);
+  border-radius: 8px;
+  background: var(--crit-soft);
+}
+
+.overpaid__value {
+  font-size: 1.7rem;
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--crit-ink);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.overpaid__label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--crit-ink);
+}
+
+.overpaid__text {
+  font-size: 0.86rem;
+  color: var(--ink-2);
+}

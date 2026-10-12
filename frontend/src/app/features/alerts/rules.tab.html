@@ -1,0 +1,195 @@
+<div class="split split--wide-left">
+  <app-card flush scroll>
+    @if (loading()) {
+      <div class="pad"><app-skeleton [lines]="8" /></div>
+    } @else if (failed() && !rules().length) {
+      <app-empty-state icon="alert" title="No se pudo cargar el catálogo de reglas" />
+    } @else {
+      <app-table plain dense data-testid="rules-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Regla y umbral vigente</th>
+              <th>Tratamiento</th>
+              <th class="num">Puntos</th>
+              <th class="num">Versión</th>
+              <th class="num">Precisión</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (group of groups(); track group.key) {
+              <tr class="rules__group">
+                <td colspan="6">{{ group.label }}</td>
+              </tr>
+              @for (rule of group.items; track rule.code) {
+                <tr
+                  class="is-clickable"
+                  [class.is-selected]="rule.code === selectedCode()"
+                  [attr.data-testid]="'rule-row-' + rule.code"
+                  (click)="select(rule.code)"
+                >
+                  <td><span class="rules__code">{{ rule.code }}</span></td>
+                  <td>
+                    <div class="fw-700">{{ rule.name }}</div>
+                    <div class="rules__sub">{{ rule.version > 1 ? thresholdText(rule, rule.threshold) : rule.threshold_text }}</div>
+                  </td>
+                  <td>
+                    <span [class]="'ui-badge ui-badge--' + (rule.treatment === 'automatic' ? 'orange' : 'blue')">{{ rule.treatment_label }}</span>
+                  </td>
+                  <td class="num fw-700">{{ rule.points }}</td>
+                  <td class="num">
+                    <span [class.rules__bumped]="rule.version > 1">v{{ rule.version }}</span>
+                  </td>
+                  <td class="num">
+                    @if (rule.precision === null) {
+                      <span class="text-muted">Sin revisar</span>
+                    } @else {
+                      {{ rule.precision | esPercent: 0 : true }}
+                      <span class="rules__sub">{{ rule.confirmed }} de {{ rule.reviewed }}</span>
+                    }
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </app-table>
+    }
+    <div card-footer class="rules__footer">
+      <span>Catálogo vigente: <strong data-testid="rules-version">{{ rulesVersion() }}</strong> · {{ rules().length }} reglas</span>
+      <span>Precisión = confirmadas ÷ revisadas</span>
+    </div>
+  </app-card>
+
+  <app-card flush scroll>
+    @if (selected(); as rule) {
+      <div data-testid="rule-detail">
+        <header class="rule__head">
+          <span class="rules__code rules__code--lg">{{ rule.code }}</span>
+          <div class="rule__titles">
+            <div class="rule__name">{{ rule.name }}</div>
+            <div class="rule__text">{{ rule.threshold_text }}</div>
+          </div>
+        </header>
+        <div class="stats rule__stats">
+          <div class="stat">
+            <span class="stat__value">{{ rule.points }}</span>
+            <span class="stat__label">{{ rule.points === 1 ? 'punto' : 'puntos' }}</span>
+          </div>
+          <div class="stat">
+            <span class="stat__value" data-testid="rule-version">v{{ rule.version }}</span>
+            <span class="stat__label">versión vigente</span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">{{ rule.precision === null ? '—' : (rule.precision | esPercent: 0 : true) }}</span>
+            <span class="stat__label">precisión ({{ rule.confirmed }} de {{ rule.reviewed }})</span>
+          </div>
+        </div>
+        <p class="rule__meta">
+          <strong>{{ rule.stage_label }}</strong> · {{ rule.treatment_label }}.
+          {{
+            rule.treatment === 'automatic'
+              ? 'Control determinista: marca sola, pero nunca rechaza ni bloquea el vehículo.'
+              : 'Con precisión de 90 % o más durante 4 semanas pasa a automática; entre 50 y 90 % sigue como alerta; por debajo de 50 % se ajusta o se retira.'
+          }}
+        </p>
+
+        <section class="block">
+          <h3 class="block__title">Cambiar el umbral <span class="block__meta">crea la versión {{ rule.version + 1 }} y conserva la anterior</span></h3>
+          @if (!canEdit()) {
+            <div class="ui-note ui-note--warn mb-2" data-testid="rules-readonly">
+              <app-icon name="lock" [size]="16" />
+              <span>Solo el {{ roles.rolesFor('rules.edit') }} puede cambiar un umbral. Con el rol {{ roles.label() }} el catálogo es de consulta.</span>
+            </div>
+          }
+          <div class="rule__form">
+            @for (param of params(); track param.key) {
+              <div class="ui-field">
+                <label class="ui-label" [attr.for]="'param-' + param.key">{{ param.label }}</label>
+                <input
+                  class="ui-input"
+                  inputmode="decimal"
+                  [id]="'param-' + param.key"
+                  [attr.data-testid]="'param-' + param.key"
+                  [disabled]="!canEdit()"
+                  [value]="draft()[param.key] ?? ''"
+                  (input)="setParam(param.key, $any($event.target).value)"
+                />
+                <span class="ui-help">Vigente: {{ fmt(param.current) }}</span>
+              </div>
+            }
+            <div class="ui-field">
+              <label class="ui-label" for="rule-points">Puntos (0 a 5)</label>
+              <input
+                id="rule-points"
+                class="ui-input"
+                inputmode="numeric"
+                data-testid="rule-points"
+                [disabled]="!canEdit()"
+                [value]="pointsDraft()"
+                (input)="pointsDraft.set($any($event.target).value)"
+              />
+              <span class="ui-help">Vigente: {{ rule.points }}</span>
+            </div>
+          </div>
+          <div class="ui-field mt-2">
+            <label class="ui-label" for="rule-reason">Motivo del cambio <span class="req">*</span></label>
+            <input
+              id="rule-reason"
+              class="ui-input"
+              maxlength="200"
+              placeholder="Por qué se cambia y con quién se acordó"
+              data-testid="rule-reason"
+              [class.is-invalid]="submitted() && hasChanges() && reasonInvalid()"
+              [disabled]="!canEdit()"
+              [value]="reason()"
+              (input)="reason.set($any($event.target).value)"
+            />
+          </div>
+          @if (submitted() && canEdit()) {
+            @if (changes() === null) {
+              <div class="ui-error mt-1" data-testid="rule-error">Revisa los valores: números de 0 en adelante y puntos enteros de 0 a 5.</div>
+            } @else if (!hasChanges()) {
+              <div class="ui-error mt-1" data-testid="rule-error">Cambia al menos un valor frente a la versión vigente.</div>
+            } @else if (reasonInvalid()) {
+              <div class="ui-error mt-1" data-testid="rule-error">El motivo del cambio es obligatorio.</div>
+            }
+          }
+          <div class="rule__actions">
+            <button type="button" appButton="ghost" [disabled]="!canEdit()" (click)="resetForm()">Deshacer</button>
+            <button type="button" appButton [loading]="saving()" [disabled]="!canEdit()" data-testid="rule-save" (click)="save(rule)">
+              <app-icon name="check" [size]="16" />
+              Guardar como versión {{ rule.version + 1 }}
+            </button>
+          </div>
+        </section>
+
+        <section class="block">
+          <h3 class="block__title">Historial de versiones</h3>
+          <ul class="history" data-testid="rule-history">
+            @for (version of rule.history; track version.version) {
+              <li class="history__item" [class.is-current]="version.version === rule.version">
+                <span class="history__version">v{{ version.version }}</span>
+                <div class="history__body">
+                  <div class="history__values">
+                    {{ thresholdText(rule, version.threshold) }} · {{ version.points }} {{ version.points === 1 ? 'punto' : 'puntos' }}
+                    @if (version.version === rule.version) {
+                      <span class="ui-badge ui-badge--green">Vigente</span>
+                    }
+                  </div>
+                  <div class="history__meta">{{ version.author }} · {{ version.valid_from | esDateTime }}</div>
+                  @if (version.change_reason) {
+                    <div class="history__reason">{{ version.change_reason }}</div>
+                  }
+                </div>
+              </li>
+            }
+          </ul>
+        </section>
+      </div>
+    } @else if (!loading()) {
+      <app-empty-state icon="sliders" title="Elige una regla" message="Verás su umbral, sus puntos y el historial de versiones." />
+    }
+  </app-card>
+</div>

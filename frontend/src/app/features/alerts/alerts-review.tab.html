@@ -1,0 +1,434 @@
+<div class="split">
+  <!-- Lista por prioridad -->
+  <app-card class="split__list" flush scroll>
+    <div class="list__bar">
+      <div class="seg" role="group" aria-label="Filtrar por estado">
+        <button type="button" class="seg__btn" [class.is-active]="filter() === 'open'" (click)="setFilter('open')" data-testid="filter-open">
+          Abiertas · {{ counts().open }}
+        </button>
+        <button type="button" class="seg__btn" [class.is-active]="filter() === 'reviewed'" (click)="setFilter('reviewed')" data-testid="filter-reviewed">
+          Revisadas · {{ counts().reviewed }}
+        </button>
+        <button type="button" class="seg__btn" [class.is-active]="filter() === 'all'" (click)="setFilter('all')" data-testid="filter-all">
+          Todas · {{ counts().all }}
+        </button>
+      </div>
+      <span class="list__hint">Por prioridad y puntos</span>
+    </div>
+
+    @if (store.loading()) {
+      <div class="pad"><app-skeleton [lines]="6" /></div>
+    } @else if (store.failed() && !rows().length) {
+      <app-empty-state icon="alert" title="No se pudieron cargar las alertas" message="Verifica que el backend esté arriba y vuelve a entrar." />
+    } @else if (!rows().length) {
+      <app-empty-state
+        compact
+        icon="check-circle"
+        [title]="filter() === 'reviewed' ? 'Todavía no hay alertas revisadas' : 'No hay alertas abiertas'"
+        message="Cambia el filtro para ver las demás."
+      />
+    } @else {
+      <ul class="list" data-testid="alert-list">
+        @for (alert of rows(); track alert.id) {
+          <li>
+            <button
+              type="button"
+              class="item"
+              [class.is-selected]="alert.id === selectedId()"
+              [class.is-reviewed]="alert.status === 'reviewed'"
+              [attr.data-testid]="'alert-row-' + alert.id"
+              [attr.data-vehicle]="alert.vehicle?.code"
+              [attr.data-rules]="alert.rule_codes.join(' ')"
+              (click)="select(alert.id)"
+            >
+              <span class="item__top">
+                <app-priority-chip [priority]="alert.priority" compact />
+                <span class="item__points">{{ alert.points }} {{ alert.points === 1 ? 'punto' : 'puntos' }}</span>
+                <span class="item__vehicle">{{ alert.vehicle?.code ?? 'Sin vehículo' }}</span>
+                <span class="item__plate">{{ alert.vehicle?.plate }}</span>
+                <span class="grow"></span>
+                @if (alert.status === 'reviewed') {
+                  <span class="ui-badge ui-badge--blue">{{ alert.review_result_label }}</span>
+                } @else if (alert.overdue) {
+                  <span class="ui-badge ui-badge--red">Vencida</span>
+                } @else {
+                  <span class="item__deadline"><app-icon name="clock" [size]="13" />{{ alert.deadline_label }}</span>
+                }
+              </span>
+              <span class="item__rules">
+                @for (code of alert.rule_codes; track code) {
+                  <span class="ui-code">{{ code }}</span>
+                }
+                <span class="item__names">{{ alert.reasons[0]?.name }}{{ alert.reasons.length > 1 ? ' y ' + (alert.reasons.length - 1) + ' más' : '' }}</span>
+              </span>
+              <span class="item__reason">{{ alert.reasons[0]?.explanation }}</span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </app-card>
+
+  <!-- Detalle -->
+  <app-card class="split__detail" flush scroll>
+    @if (selected(); as alert) {
+      <div class="detail" data-testid="alert-detail">
+        <header class="detail__head">
+          <div class="detail__title">
+            <span class="detail__code" data-testid="alert-vehicle">{{ alert.vehicle?.code ?? 'Sin vehículo' }}</span>
+            <span class="detail__plate">{{ alert.vehicle?.plate }} · {{ alert.vehicle?.fuel_type_label }}</span>
+          </div>
+          <div class="detail__chips">
+            <app-priority-chip [priority]="alert.priority" data-testid="alert-priority" />
+            <span class="ui-badge ui-badge--navy" data-testid="alert-points">{{ alert.points }} {{ alert.points === 1 ? 'punto' : 'puntos' }}</span>
+            <span class="ui-badge ui-badge--neutral" title="Versión de las reglas que generó la alerta">Reglas {{ alert.rules_version }}</span>
+          </div>
+        </header>
+
+        <div class="detail__deadline" [class.is-late]="alert.overdue" [class.is-done]="alert.status === 'reviewed'" data-testid="alert-deadline">
+          <app-icon [name]="alert.status === 'reviewed' ? 'check-circle' : alert.overdue ? 'alert' : 'clock'" [size]="16" />
+          <span>
+            <strong>Plazo: {{ alert.deadline_label === '48 horas' ? '48 horas' : 'en la semana' }}.</strong>
+            @if (alert.status === 'reviewed') {
+              Revisada el {{ alert.reviewed_at | esDateTime }}.
+            } @else {
+              {{ due(alert) }} ({{ alert.due_at | esDateTime }}).
+            }
+          </span>
+          <span class="grow"></span>
+          <span class="text-muted nowrap">Generada el {{ alert.created_at | esDate }}</span>
+        </div>
+
+        <!-- Razones -->
+        <section class="block">
+          <h3 class="block__title">Por qué se marcó</h3>
+          <ul class="reasons" data-testid="alert-reasons">
+            @for (reason of alert.reasons; track reason.code) {
+              <li class="reason">
+                <span class="reason__code">{{ reason.code }}</span>
+                <span class="reason__body">
+                  <span class="reason__name">{{ reason.name }}</span>
+                  <span class="reason__text">{{ reason.explanation }}</span>
+                </span>
+                <span class="reason__points">+{{ reason.points }}</span>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <!-- Evidencia -->
+        <section class="block">
+          <h3 class="block__title">
+            Evidencia
+            @if (alert.evidence.source) {
+              <span class="block__meta">{{ alert.evidence.source }}</span>
+            }
+          </h3>
+
+          @if (alert.evidence.product_difference; as diff) {
+            <div class="overpaid" data-testid="alert-overpaid">
+              <div>
+                <div class="overpaid__value">{{ diff.overpaid | cop }}</div>
+                <div class="overpaid__label">pagados de más</div>
+              </div>
+              <div class="overpaid__text">
+                Cargó <strong>{{ diff.sold_product }}</strong> a {{ diff.sold_price | cop }} por galón; su ficha pide
+                <strong>{{ diff.authorized_product }}</strong>, que estaba a {{ diff.corriente_price | cop }} ({{ diff.corriente_price_source }}).
+                {{ diff.difference_per_gallon | cop }} de diferencia × {{ diff.gallons | esNumber: 3 }} galones.
+              </div>
+            </div>
+          }
+
+          @if (alert.evidence.transaction; as tx) {
+            <div class="tx-grid">
+              <div class="tx">
+                <div class="tx__title">Tanqueo con alerta</div>
+                <dl class="ui-kv">
+                  <dt>Fecha</dt>
+                  <dd>{{ tx.timestamp | esDateTime }}</dd>
+                  <dt>Estación</dt>
+                  <dd>{{ tx.station }}</dd>
+                  <dt>Proveedor</dt>
+                  <dd>{{ tx.provider_label }} · {{ tx.sale_type }}</dd>
+                  <dt>Producto</dt>
+                  <dd>{{ tx.product }}</dd>
+                  <dt>Cantidad</dt>
+                  <dd>{{ tx.quantity | esNumber: 1 : 3 }} {{ unit(tx.unit) }} · {{ tx.amount | cop }}</dd>
+                  <dt>Odómetro</dt>
+                  <dd>{{ tx.odometer === null ? 'Sin dato' : (tx.odometer | esNumber) + ' km' }}</dd>
+                </dl>
+              </div>
+              @if (alert.evidence.previous_transaction; as prev) {
+                <div class="tx tx--muted">
+                  <div class="tx__title">Carga anterior</div>
+                  <dl class="ui-kv">
+                    <dt>Fecha</dt>
+                    <dd>{{ prev.timestamp | esDateTime }}</dd>
+                    <dt>Estación</dt>
+                    <dd>{{ prev.station }}</dd>
+                    <dt>Proveedor</dt>
+                    <dd>{{ prev.provider_label }} · {{ prev.sale_type }}</dd>
+                    <dt>Producto</dt>
+                    <dd>{{ prev.product }}</dd>
+                    <dt>Cantidad</dt>
+                    <dd>{{ prev.quantity | esNumber: 1 : 3 }} {{ unit(prev.unit) }} · {{ prev.amount | cop }}</dd>
+                    <dt>Odómetro</dt>
+                    <dd>{{ prev.odometer === null ? 'Sin dato' : (prev.odometer | esNumber) + ' km' }}</dd>
+                  </dl>
+                </div>
+              }
+            </div>
+          }
+
+          @if (alert.kind === 'vehicle') {
+            <div class="veh-evidence">
+              @if (efficiencyBars(); as bars) {
+                <div class="eff" data-testid="alert-efficiency">
+                  <div class="eff__row">
+                    <span class="eff__label">{{ alert.vehicle?.code }}</span>
+                    <span class="eff__track">
+                      <span [class]="'eff__bar eff__bar--' + bars.tone" [style.width.%]="bars.value"></span>
+                      <span class="eff__limit" [style.left.%]="bars.limit"></span>
+                    </span>
+                    <span class="eff__value">{{ bars.eff.value | esNumber: 1 }}</span>
+                  </div>
+                  <div class="eff__row">
+                    <span class="eff__label">Mediana del grupo</span>
+                    <span class="eff__track">
+                      <span class="eff__bar eff__bar--ref" [style.width.%]="bars.median"></span>
+                      <span class="eff__limit" [style.left.%]="bars.limit"></span>
+                    </span>
+                    <span class="eff__value">{{ bars.eff.group_median | esNumber: 1 }}</span>
+                  </div>
+                  <div class="eff__note">
+                    Rendimiento en {{ bars.eff.unit }} · grupo {{ bars.eff.group_label }} · la línea punteada es el límite bajo
+                    ({{ bars.eff.low_limit | esNumber: 1 }}) ·
+                    <strong [class]="'text-' + bars.tone">{{ bars.eff.status_label }}</strong>
+                  </div>
+                </div>
+              }
+              @if (alert.evidence.stats; as stats) {
+                <div class="stats">
+                  <div class="stat">
+                    <span class="stat__value">{{ stats.refuels_90d | esNumber }}</span>
+                    <span class="stat__label">tanqueos en 90 días</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat__value">{{ stats.amount_90d | cop }}</span>
+                    <span class="stat__label">pagados en 90 días</span>
+                  </div>
+                  <div class="stat" [class.is-crit]="stats.services_90d === 0">
+                    <span class="stat__value">{{ stats.services_90d | esNumber }}</span>
+                    <span class="stat__label">servicios en EOM</span>
+                  </div>
+                  @if (stats.alert_share !== undefined) {
+                    <div class="stat">
+                      <span class="stat__value">{{ stats.alert_share | esPercent: 0 : true }}</span>
+                      <span class="stat__label">tanqueos con alerta</span>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </section>
+
+        <!-- Libro único -->
+        <section class="block" data-testid="ledger">
+          <h3 class="block__title">
+            Libro único de tanqueos
+            @if (ledger(); as book) {
+              <span class="block__meta">
+                {{ book.summary.refuels | esNumber }} cargas · {{ book.summary.amount | cop }} ·
+                {{ book.summary.first | esDate }} a {{ book.summary.last | esDate }}
+              </span>
+            }
+          </h3>
+          @if (ledger(); as book) {
+            @if (book.comparison; as cmp) {
+              <div class="compare" data-testid="ledger-comparison">
+                <div class="compare__cols">
+                  <div class="compare__col compare__col--bad">
+                    <span class="compare__label">GoPass solo calcularía</span>
+                    <span class="compare__value">{{ cmp.gopass_only.efficiency | esNumber }} km por galón</span>
+                    <span class="compare__sub">{{ cmp.km | esNumber }} km ÷ {{ cmp.gopass_only.gallons | esNumber: 3 }} gal</span>
+                  </div>
+                  <div class="compare__col compare__col--good">
+                    <span class="compare__label">Con el libro único</span>
+                    <span class="compare__value">{{ cmp.single_ledger.efficiency | esNumber: 1 }} {{ cmp.single_ledger.unit }}</span>
+                    <span class="compare__sub">suma {{ cmp.hidden_cng_loads }} cargas de gas en Terpel ({{ cmp.single_ledger.cng_m3 | esNumber: 1 }} m³)</span>
+                  </div>
+                </div>
+                <p class="compare__text">{{ cmp.explanation }}</p>
+              </div>
+            }
+
+            <div class="ledger__bar">
+              <div class="ledger__providers">
+                @for (p of book.summary.providers; track p.provider) {
+                  <span [class]="'prov prov--' + p.provider">
+                    <strong>{{ p.provider_label }}</strong> {{ p.refuels }} cargas · {{ p.amount | cop }}
+                  </span>
+                }
+                <span class="prov prov--eom"><strong>EOM</strong> {{ book.stats.services_90d | esNumber }} servicios en 90 días</span>
+              </div>
+              @if (book.summary.providers.length > 1) {
+                <div class="seg seg--sm" role="group" aria-label="Filtrar por proveedor">
+                  <button type="button" class="seg__btn" [class.is-active]="ledgerProvider() === 'all'" (click)="ledgerProvider.set('all')">Todos</button>
+                  @for (p of book.summary.providers; track p.provider) {
+                    <button
+                      type="button"
+                      class="seg__btn"
+                      [class.is-active]="ledgerProvider() === p.provider"
+                      [attr.data-testid]="'ledger-provider-' + p.provider"
+                      (click)="ledgerProvider.set(p.provider)"
+                    >
+                      {{ p.provider_label }}
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+
+            <app-table dense>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Proveedor</th>
+                    <th>Producto</th>
+                    <th class="num">Cantidad</th>
+                    <th class="num">Valor</th>
+                    <th class="num">Odómetro</th>
+                    <th class="num">km</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (entry of ledgerRows().items; track entry.id) {
+                    <tr [class.is-selected]="entry.id === alert.evidence.transaction?.id">
+                      <td class="nowrap">{{ entry.timestamp | esDateTime }}</td>
+                      <td>
+                        <span [class]="'prov-dot prov-dot--' + entry.provider"></span>{{ entry.provider_label }}
+                        @if (entry.source === 'import') {
+                          <span class="ui-badge ui-badge--orange ledger__new">Archivo</span>
+                        }
+                      </td>
+                      <td>{{ entry.product }}</td>
+                      <td class="num">{{ entry.quantity | esNumber: 1 : 3 }} {{ unit(entry.unit) }}</td>
+                      <td class="num">{{ entry.amount | cop }}</td>
+                      <td class="num">{{ entry.odometer === null ? 'Sin dato' : (entry.odometer | esNumber) }}</td>
+                      <td class="num">{{ entry.km_since_previous === null ? '—' : (entry.km_since_previous | esNumber) }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </app-table>
+            @if (ledgerRows().total > ledgerRows().items.length || ledgerExpanded()) {
+              <button type="button" appButton="ghost" size="sm" class="ledger__more" (click)="ledgerExpanded.set(!ledgerExpanded())">
+                {{ ledgerExpanded() ? 'Ver solo los últimos' : 'Ver los ' + ledgerRows().total + ' movimientos' }}
+              </button>
+            }
+          } @else if (ledgerLoading()) {
+            <app-skeleton [lines]="4" />
+          } @else {
+            <p class="text-muted text-sm">No hay libro único para esta alerta.</p>
+          }
+        </section>
+
+        <!-- Resultado de la revisión -->
+        <section class="block block--review" data-testid="review">
+          @if (alert.status === 'reviewed' && !editing()) {
+            <h3 class="block__title">Resultado de la revisión</h3>
+            <div class="closed" data-testid="review-closed">
+              <div class="closed__head">
+                <span class="ui-badge ui-badge--blue ui-badge--lg" data-testid="review-result">{{ alert.review_result_label }}</span>
+                <span class="closed__who">
+                  <app-icon name="user" [size]="14" />
+                  <strong data-testid="review-author">{{ alert.reviewed_by }}</strong>
+                  · {{ alert.reviewed_at | esDateTime }}
+                </span>
+                <span class="grow"></span>
+                @if (canReview()) {
+                  <button type="button" appButton="ghost" size="sm" (click)="startEditing(alert)">
+                    <app-icon name="edit" [size]="14" />
+                    Corregir
+                  </button>
+                }
+              </div>
+              <p class="closed__comment">“{{ alert.review_comment }}”</p>
+              @for (step of actions(); track step.title) {
+                <div class="next" data-testid="next-action">
+                  <app-icon name="arrow-right" [size]="16" />
+                  <div>
+                    <div class="next__eyebrow">Acción que sigue · {{ step.title }}</div>
+                    <div class="next__action">{{ step.action }}</div>
+                    <div class="next__meta">Responsable: {{ step.owner }}. Se cierra: {{ step.closes }}</div>
+                  </div>
+                </div>
+              }
+              <p class="closed__foot">Ninguna alerta detiene el suministro; el resultado queda en la bitácora y mide la precisión de la regla.</p>
+            </div>
+          } @else {
+            <h3 class="block__title">Registrar el resultado</h3>
+            @if (!canReview()) {
+              <div class="ui-note ui-note--warn mb-2" data-testid="review-readonly">
+                <app-icon name="lock" [size]="16" />
+                <span>Con el rol {{ roles.label() }} solo puedes consultar. El resultado lo registra el {{ roles.rolesFor('alert.review') }}.</span>
+              </div>
+            }
+            <div class="results" role="radiogroup" aria-label="Resultado de la revisión">
+              @for (option of results; track option.value) {
+                <button
+                  type="button"
+                  role="radio"
+                  class="result"
+                  [class.is-active]="result() === option.value"
+                  [attr.aria-checked]="result() === option.value"
+                  [attr.data-testid]="'result-' + option.value"
+                  [disabled]="!canReview()"
+                  (click)="pickResult(option.value)"
+                >
+                  <span class="result__label">{{ option.label }}</span>
+                  <span class="result__hint">{{ option.hint }}</span>
+                </button>
+              }
+            </div>
+            @if (submitted() && !result()) {
+              <div class="ui-error mt-1" data-testid="result-error">Elige el resultado de la revisión.</div>
+            }
+            <div class="ui-field mt-2">
+              <label class="ui-label" for="review-comment">Comentario <span class="req">*</span></label>
+              <textarea
+                id="review-comment"
+                class="ui-textarea"
+                rows="2"
+                maxlength="500"
+                placeholder="Qué se encontró y con quién se revisó"
+                data-testid="review-comment"
+                [class.is-invalid]="submitted() && commentInvalid()"
+                [disabled]="!canReview()"
+                [value]="comment()"
+                (input)="comment.set($any($event.target).value)"
+              ></textarea>
+              @if (submitted() && commentInvalid()) {
+                <span class="ui-error" data-testid="comment-error">El comentario es obligatorio.</span>
+              }
+            </div>
+            <div class="review__actions">
+              <span class="ui-help">Queda con tu nombre, la fecha y la versión de la regla.</span>
+              @if (editing()) {
+                <button type="button" appButton="ghost" (click)="editing.set(false)">Cancelar</button>
+              }
+              <button type="button" appButton [loading]="saving()" [disabled]="!canReview()" data-testid="review-save" (click)="save(alert)">
+                <app-icon name="check" [size]="16" />
+                Registrar resultado
+              </button>
+            </div>
+          }
+        </section>
+      </div>
+    } @else if (!store.loading()) {
+      <app-empty-state icon="bell" title="Elige una alerta de la lista" message="Aquí verás la razón, la evidencia, el libro único del vehículo y el resultado de la revisión." />
+    }
+  </app-card>
+</div>

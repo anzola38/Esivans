@@ -1,9 +1,10 @@
-// Recorre el guion de la demo (hito H4) contra el stack real y guarda capturas de cada paso
+// Recorre el guion de la demo (hitos H4 a H6) contra el stack real y guarda capturas de cada paso
 // a 1366x768 y 1920x1080. Sale con codigo 1 si algo no cuadra.
 //
 //   node scripts/demo-flow.mjs                          -> capturas en ../docs/screenshots
 //   BASE_URL=http://localhost:8080 OUT_DIR=screenshots node scripts/demo-flow.mjs
 //   VIEWPORT=1366x768 node scripts/demo-flow.mjs        -> un solo tamano
+//   FROM=alerts node scripts/demo-flow.mjs              -> solo alertas y tablero (pasos 5 y 6)
 //
 // Empieza y termina con POST /api/dev/reset: la demo queda limpia.
 import { mkdirSync } from 'node:fs';
@@ -17,6 +18,8 @@ const here = dirname(fileURLToPath(import.meta.url));
 const outDir = resolve(here, '..', process.env.OUT_DIR ?? '../docs/screenshots');
 const FOOTER = 'Prototipo con datos ilustrativos | Uso exclusivo del proceso de selección';
 const only = process.env.VIEWPORT;
+// FROM=alerts salta los pasos 1 a 4 y los casos de borde: sirve para repasar solo alertas y tablero.
+const quick = process.env.FROM === 'alerts';
 
 mkdirSync(outDir, { recursive: true });
 
@@ -44,7 +47,7 @@ for (const viewport of VIEWPORTS.filter((v) => !only || v.name === only)) {
     }
   });
 
-  let counter = 0;
+  let counter = quick ? 22 : 0;
   /** Captura + revision de desbordes, pie y tipografia. */
   async function shot(name) {
     counter += 1;
@@ -93,6 +96,7 @@ for (const viewport of VIEWPORTS.filter((v) => !only || v.name === only)) {
     }, position);
   }
 
+  if (!quick) {
   // ---------- 1. Caso verde ----------
   await page.goto(BASE_URL + '/simulador', { waitUntil: 'networkidle' });
   await expect(page.getByTestId('case-driver')).toHaveText('Carlos Andrés Pérez');
@@ -269,8 +273,190 @@ for (const viewport of VIEWPORTS.filter((v) => !only || v.name === only)) {
   await page.goto(BASE_URL + '/consola', { waitUntil: 'networkidle' });
   await expect(page.getByTestId('queue-table').locator('tbody tr')).toHaveCount(3);
   await shot('consola-cola-al-final');
+  } // fin de los pasos 1 a 4
 
-  // ---------- 4. Casos de borde: no necesita tanquear y numero no registrado ----------
+  // ---------- 5. Alertas del coordinador ----------
+  const asRole = (role) => ({ 'X-Demo-Role': role, 'X-Demo-User': 'Guion e2e' });
+  await page.goto(BASE_URL + '/alertas', { waitUntil: 'networkidle' });
+  await page.getByTestId('role-select').selectOption('coordinator');
+  await expect(page.getByTestId('alerts-summary')).toContainText('Prioridad alta: 4');
+
+  // (a) Tanqueos con alerta: ordenados por prioridad y puntos, con plazo y marca de vencida.
+  await page.getByTestId('tab-refuels').click();
+  const list = page.getByTestId('alert-list');
+  await expect(list.locator('.item').first()).toContainText('Alta');
+  await expect(list).toContainText('Vencida');
+  await expect(page.getByTestId('alert-deadline')).toContainText('Plazo: 48 horas');
+  await expect(page.getByTestId('alert-detail')).toContainText('Reglas v1');
+  await expect(page.getByTestId('ledger').locator('tbody tr').first()).toBeVisible();
+  await shot('alertas-tanqueos-por-prioridad');
+
+  // (c) Conciliacion: el exporte de ejemplo de Terpel y el VEH023.
+  await page.getByTestId('tab-reconciliation').click();
+  await expect(page.getByTestId('import-sample')).toBeEnabled();
+  await shot('conciliacion-antes-de-cargar');
+  await page.getByTestId('import-sample').click();
+  await expect(page.getByTestId('import-summary')).toBeVisible();
+  const rows = Number(await page.getByTestId('import-rows').textContent());
+  if (!(rows >= 10)) problems.push('Conciliacion: el archivo trae ' + rows + ' filas');
+  await expect(page.getByTestId('import-imported')).toHaveText(String(rows));
+  await expect(page.getByTestId('import-duplicates')).toHaveText('0');
+  await expect(page.getByTestId('import-rejected')).toHaveText('0');
+  await expect(page.getByTestId('import-alerts')).toHaveText('5');
+  if (!quick) await expect(page.getByTestId('matched')).toContainText('Cuadra');
+  const overpaid = page.getByTestId('overpaid-card');
+  await expect(page.getByTestId('overpaid-vehicle')).toHaveText('VEH023');
+  await expect(page.getByTestId('overpaid-amount')).toHaveText('$27.783');
+  for (const text of ['Gasolina Extra', '$21.250 por galón', 'Gasolina Corriente', '$16.330 por galón', '5,647 galones']) {
+    await expect(overpaid).toContainText(text);
+  }
+  await expect(page.getByTestId('deviations').locator('.dev')).toHaveCount(4);
+  await shot('conciliacion-veh023-pagado-de-mas');
+
+  // El mismo archivo dos veces no duplica.
+  await page.getByTestId('import-sample').click();
+  await expect(page.getByTestId('import-imported')).toHaveText('0');
+  // Las autorizaciones ya conciliadas no vuelven a salir en el exporte: quedan las filas de la plantilla.
+  const rowsAgain = await page.getByTestId('import-rows').textContent();
+  await expect(page.getByTestId('import-duplicates')).toHaveText(rowsAgain);
+  await expect(page.getByTestId('import-alerts')).toHaveText('0');
+  await shot('conciliacion-segunda-carga-no-duplica');
+
+  await page.getByTestId('overpaid-review').click();
+  await expect(page.getByTestId('alert-vehicle')).toHaveText('VEH023');
+  await expect(page.getByTestId('alert-overpaid')).toContainText('$27.783');
+  await expect(page.getByTestId('ledger')).toContainText('Archivo');
+  await shot('alertas-veh023-detalle');
+
+  // (b) Vehiculos: VEH129 con 8 puntos y prioridad alta.
+  await page.getByTestId('tab-vehicles').click();
+  const vehicles = page.getByTestId('alert-list');
+  await expect(vehicles.locator('.item').first()).toHaveAttribute('data-vehicle', 'VEH129');
+  await expect(page.getByTestId('alert-vehicle')).toHaveText('VEH129');
+  await expect(page.getByTestId('alert-points')).toHaveText('8 puntos');
+  await expect(page.getByTestId('alert-priority')).toHaveText('Prioridad alta');
+  await expect(page.getByTestId('alert-deadline')).toContainText('Plazo: 48 horas');
+  const reasons = page.getByTestId('alert-reasons');
+  for (const text of ['V01', 'V05', 'V08', '20,3 km/gal-eq', '61 % menos', '102 tanqueos por $4,1 M']) {
+    await expect(reasons).toContainText(text);
+  }
+  await expect(page.getByTestId('ledger')).toContainText('102 cargas');
+  await shot('alertas-veh129-8-puntos');
+
+  // Solo el coordinador registra el resultado.
+  await page.getByTestId('role-select').selectOption('finance');
+  await expect(page.getByTestId('review-readonly')).toBeVisible();
+  await expect(page.getByTestId('review-save')).toBeDisabled();
+  await page.getByTestId('review').scrollIntoViewIfNeeded();
+  await shot('alertas-veh129-solo-lectura-finanzas');
+  await page.getByTestId('role-select').selectOption('coordinator');
+
+  // Comentario obligatorio en la interfaz y en la API.
+  await page.getByTestId('review-save').click();
+  await expect(page.getByTestId('result-error')).toBeVisible();
+  await expect(page.getByTestId('comment-error')).toBeVisible();
+  const alerts = (await (await page.request.get(BASE_URL + '/api/alerts', { headers: asRole('coordinator') })).json()).items;
+  const alert129 = alerts.find((a) => a.vehicle?.code === 'VEH129' && a.kind === 'vehicle');
+  const noComment = await page.request.patch(BASE_URL + '/api/alerts/' + alert129.id, {
+    headers: asRole('coordinator'),
+    data: { review_result: 'confirmed' },
+  });
+  if (noComment.status() !== 422) problems.push('VEH129: registrar sin comentario respondio ' + noComment.status());
+
+  await page.getByTestId('result-confirmed').click();
+  await page.getByTestId('review-comment').fill('Rinde 61 % menos que su grupo y no tiene servicios en EOM: va a revisión mecánica.');
+  await page.getByTestId('review').scrollIntoViewIfNeeded();
+  await shot('alertas-veh129-registrar-confirmado');
+  await page.getByTestId('review-save').click();
+  const closed = page.getByTestId('review-closed');
+  await expect(page.getByTestId('review-result')).toHaveText('Confirmado');
+  await expect(page.getByTestId('review-author')).toHaveText('Carlos Rivas');
+  await expect(closed).toContainText('revisión mecánica');
+  await expect(closed.getByTestId('next-action').first()).toContainText('Revisión mecánica del vehículo');
+  await expect(closed).toContainText(/\d{2}\/\d{2}\/\d{4}/);
+  await page.getByTestId('review').scrollIntoViewIfNeeded();
+  await shot('alertas-veh129-confirmado-con-accion');
+
+  // VEH215 con V01 y el libro unico del VEH160.
+  await vehicles.locator('[data-vehicle=VEH215]').click();
+  await expect(page.getByTestId('alert-vehicle')).toHaveText('VEH215');
+  for (const text of ['V01', '24,0 km/gal', '31,4']) await expect(page.getByTestId('alert-reasons')).toContainText(text);
+  await shot('alertas-veh215-rendimiento-bajo');
+
+  await vehicles.locator('[data-vehicle=VEH160]').click();
+  const comparison = page.getByTestId('ledger-comparison');
+  await expect(comparison).toContainText('783 km por galón');
+  await expect(comparison).toContainText('34 cargas de gas en Terpel');
+  await expect(page.getByTestId('ledger')).toContainText('Terpel');
+  await expect(page.getByTestId('ledger')).toContainText('GoPass');
+  await page.getByTestId('ledger').scrollIntoViewIfNeeded();
+  await shot('alertas-veh160-libro-unico');
+  await page.getByTestId('ledger-provider-gopass').click();
+  await expect(page.getByTestId('ledger').locator('tbody tr')).toHaveCount(2);
+  await shot('alertas-veh160-libro-unico-gopass');
+
+  // (d) Reglas y umbrales: solo el coordinador cambia un umbral y crea una version nueva.
+  await page.getByTestId('tab-rules').click();
+  await expect(page.getByTestId('rules-table').locator('tbody tr.is-clickable')).toHaveCount(24);
+  await expect(page.getByTestId('rules-version')).toHaveText('v1');
+  await page.getByTestId('rule-row-R08').click();
+  await page.getByTestId('role-select').selectOption('technician');
+  await expect(page.getByTestId('rules-readonly')).toContainText('Solo el Coordinador');
+  await expect(page.getByTestId('rule-save')).toBeDisabled();
+  await shot('reglas-solo-lectura-tecnico');
+  const forbidden = await page.request.put(BASE_URL + '/api/rules/R08', {
+    headers: asRole('technician'),
+    data: { points: 3, reason: 'Prueba de permisos' },
+  });
+  if (forbidden.status() !== 403) problems.push('Reglas: el tecnico cambio un umbral (' + forbidden.status() + ')');
+
+  await page.getByTestId('role-select').selectOption('coordinator');
+  const detail = page.getByTestId('rule-detail');
+  await detail.locator('[data-testid^=param-]').first().fill('12');
+  await page.getByTestId('rule-save').click();
+  await expect(page.getByTestId('rule-error')).toContainText('motivo');
+  await page.getByTestId('rule-reason').fill('Ajuste acordado con operación tras la muestra etiquetada');
+  await shot('reglas-cambiar-umbral');
+  await page.getByTestId('rule-save').click();
+  await expect(page.getByTestId('rule-version')).toHaveText('v2');
+  await expect(page.getByTestId('rules-version')).toHaveText('v2');
+  await expect(page.getByTestId('rule-history').locator('li')).toHaveCount(2);
+  await expect(page.getByTestId('rule-history')).toContainText('Carlos Rivas');
+  await shot('reglas-version-nueva');
+
+  // ---------- 6. Tablero del piloto ----------
+  await page.goto(BASE_URL + '/tablero', { waitUntil: 'networkidle' });
+  const kpis = page.getByTestId('indicators').locator('.kpi');
+  await expect(kpis).toHaveCount(9);
+  for (const name of ['Tiempo de atención', 'Resueltas en un clic', 'Completas al primer intento', 'Conciliación con el proveedor',
+    'Alertas de prioridad alta', 'Integraciones', 'Carga del técnico', 'Uso del asistente', 'Continuidad']) {
+    await expect(page.getByTestId('indicators')).toContainText(name);
+  }
+  for (const kpi of await kpis.all()) {
+    await expect(kpi.locator('.ui-badge')).toHaveText(/Cumple la meta|Cerca de la meta|No cumple|Sin datos todavía/);
+    await expect(kpi.locator('.kpi__source')).toHaveText(/Calculado con la demo|Valor ilustrativo/);
+    await expect(kpi).toContainText('Meta');
+    await expect(kpi).toContainText('Línea base');
+  }
+  await expect(page.getByTestId('kpi-high_priority_alerts')).toContainText('Calculado con la demo');
+  await expect(page.getByTestId('kpi-integrations')).toContainText('Valor ilustrativo');
+  const chart = page.getByTestId('context-chart');
+  for (const text of ['66,7 h', '10 h', '24 h de turnos']) await expect(chart).toContainText(text);
+  await expect(page.getByTestId('open-deviations')).toContainText('Por prioridad');
+  await expect(page.getByTestId('open-deviations')).toContainText('Por regla');
+  await expect(page.getByTestId('open-deviations')).toContainText('Por antigüedad');
+  await expect(page.getByTestId('verdict-label')).toHaveText(/Ampliar|Ajustar|Detener/);
+  await expect(page.getByTestId('option-expand')).toContainText('Mediana de 3 min o menos, 90 % o más de solicitudes completas');
+  await expect(page.getByTestId('option-adjust')).toContainText('se corrige y se extiende 4 semanas');
+  await expect(page.getByTestId('option-stop')).toContainText('una adopción menor al 50 %');
+  console.log('  Decision que aplicaria hoy: ' + (await page.getByTestId('verdict-label').textContent()).trim());
+  await shot('tablero-indicadores');
+  await scrollContent('bottom');
+  await shot('tablero-contexto-desviaciones-y-decision');
+  await page.getByTestId('role-select').selectOption('technician');
+
+  if (!quick) {
+  // ---------- 7. Casos de borde: no necesita tanquear y numero no registrado ----------
   await page.goto(BASE_URL + '/simulador', { waitUntil: 'networkidle' });
   await page.getByTestId('case-NO_FUEL').click();
   await expect(page.getByTestId('case-plate')).toHaveText('ZZA902');
@@ -291,7 +477,7 @@ for (const viewport of VIEWPORTS.filter((v) => !only || v.name === only)) {
   await expect(page.getByTestId('detail-light')).toContainText('Amarillo');
   await shot('extra-numero-no-registrado-detalle');
 
-  // ---------- 5. La cola con los tres semaforos por decidir ----------
+  // ---------- 8. La cola con los tres semaforos por decidir ----------
   await page.goto(BASE_URL + '/consola', { waitUntil: 'networkidle' });
   await reset();
   const cases = (await (await fetch(BASE_URL + '/api/dev/simulator/cases')).json()).items;
@@ -313,6 +499,7 @@ for (const viewport of VIEWPORTS.filter((v) => !only || v.name === only)) {
   );
   if (plates.join() !== 'ZZA199,ZZA015,ZZA901') problems.push('La cola no esta ordenada por espera: ' + plates.join());
   await shot('consola-cola-tres-semaforos');
+  } // fin de los casos de borde
 
   await context.close();
 }
