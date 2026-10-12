@@ -142,9 +142,84 @@ npm test           # pruebas E2E de toda la interfaz, a 1366×768 y a 1920×1080
 
 `npm test` recorre las cuatro pantallas con aserciones sobre cifras, estados, textos y permisos; qué cubre cada archivo y cómo correr una parte está en [`e2e/README.md`](e2e/README.md).
 
+## Pruebas
+
+Hay dos suites y un script que corre las dos:
+
+```bash
+scripts/run-all-tests.sh            # levanta el stack si hace falta y corre ambas suites
+scripts/run-all-tests.sh --build    # reconstruye las imágenes antes (úsalo si cambiaste código)
+```
+
+Devuelve 0 solo si las dos suites pasan (1 si alguna falla, 2 si el stack no levanta) y tarda unos 13 minutos. En Windows se corre desde Git Bash. Las pruebas del backend corren con el código que está **dentro de la imagen**: después de cambiar código hay que reconstruir.
+
+| Suite | Cómo se corre sola | Pruebas | Duración | Contra qué corre |
+|---|---|---|---|---|
+| Funcionales del backend (pytest) | `docker compose exec backend pytest` | 646 (645 pasan y 1 es un fallo esperado) | 2 min 15 s | La API real con una base aparte (`esivans_test`) en el mismo PostgreSQL; no toca los datos de la demo. |
+| E2E de la interfaz (Playwright) | `cd e2e && npm test` | 212 (106 por tamaño: 1366×768 y 1920×1080) | 10 min 30 s | El stack levantado, en Chromium headless. **Reinicia la demo** antes de cada prueba y al terminar. |
+
+Ninguna de las dos usa reintentos ni esperas fijas. `npm run demo` (el guion de capturas, 2 minutos) es aparte y no forma parte de `npm test`.
+
+**Funcionales del backend, por área** (`backend/tests/`):
+
+| Archivo | Pruebas | Qué cubre |
+|---|---|---|
+| `test_rules_boundaries.py` | 96 | R01 a R14 con el caso que dispara y el borde que no, puntos, semáforo, prioridad y clasificación del error de digitación. |
+| `test_ai_adapter.py` | 67 | Intérprete local, lectura de las cuatro fotos, respaldo si falla el proveedor y formatos es-CO. |
+| `test_reconciliation.py` | 53 | Exporte de ejemplo, idempotencia, filas inválidas, VEH023 (5,647 galones, $27.783), C02 y R11 a R14. |
+| `test_alerts.py` | 50 | Orden, plazos y vencidas, los tres resultados de revisión, comentario, autor y permisos. |
+| `test_value.py` | 46 | Fórmula del valor sugerido paso a paso, redondeo, topes, control cruzado y producto. |
+| `test_conversation.py` | 45 | El asistente estado por estado: caso verde, VEH015, VEH199, no registrado, duplicados, foto ilegible, aviso de privacidad y SLA. |
+| `test_demo_routes.py` | 44 | `/api/health`, `/api/dev/reset` (estado inicial exacto), `/api/media`, simulador y mensajes salientes. |
+| `test_decisions.py` | 36 | Un clic solo en verde, motivo obligatorio, tope, 409 con quién decidió, roles y mensajes al conductor. |
+| `test_rule_versions.py` | 31 | Versión nueva que conserva la anterior, 403 con bitácora y evaluación siguiente con el umbral nuevo. |
+| `test_ledger_dashboard.py` | 27 | Libro único de VEH160 (783 km por galón solo con GoPass) y los 9 indicadores del tablero. |
+| `test_seed.py` | 27 | Semilla determinista, 24 vehículos, los casos con sus cifras y la recarga cuando cambia el día. |
+| `test_review_findings.py` | 25 | Huecos que destapó la revisión por mutación: orden de la cola, reloj del caso, hash de transacción, GoPass. |
+| `test_audit.py` | 23 | Bitácora de cada acción sensible y trigger que impide UPDATE y DELETE. |
+| `test_enablement.py` | 21 | Habilitación manual: valores precargados, referencia, vigencia de 2 horas y no dos veces. |
+| `test_webhook.py` | 19 | Firma válida, inválida y ausente, mensaje repetido, foto y verificación GET. |
+| `test_rules.py` | 15 | Motor de reglas y cálculo sobre los casos de la demo. |
+| `test_api.py` | 12 | Los flujos completos por la API (verde, VEH199, importación, permisos, bitácora). |
+| `test_concurrency.py` | 9 | Dos decisiones, dos habilitaciones y el mismo mensaje en el mismo instante. |
+
+**E2E de la interfaz, por área** (`e2e/tests/`, cada prueba corre en los dos tamaños):
+
+| Área | Archivo | Pruebas por tamaño |
+|---|---|---|
+| Rutas, menú, pie, roles y "Reiniciar demo" | `shell.spec.mjs` | 17 |
+| Alertas: orden, plazos, VEH129, VEH215, VEH160 y revisión | `alerts.spec.mjs` | 10 |
+| Permisos por rol, en pantalla y en la API | `roles.spec.mjs` | 9 |
+| Reglas y umbrales | `rules.spec.mjs` | 9 |
+| Tablero del piloto | `dashboard.spec.mjs` | 8 |
+| SLA vencido y bordes de la decisión del tablero | `hard-to-reach-states.spec.mjs` | 8 |
+| Dobles clics, dos pestañas y repetición | `robustness.spec.mjs` | 8 |
+| No registrado, no necesita tanquear, reloj del caso | `simulator-extra-cases.spec.mjs` | 7 |
+| Simulador, caso verde | `simulator-green.spec.mjs` | 5 |
+| Consola, caso verde | `console-green.spec.mjs` | 5 |
+| Conciliación (VEH023) | `reconciliation.spec.mjs` | 5 |
+| Desborde, textos crudos, formatos es-CO y F5 | `cross-cutting.spec.mjs` | 5 |
+| VEH199 a las 11:14 p. m. | `veh199-night.spec.mjs` | 4 |
+| VEH015 (24.086 → 34.086) | `veh015-typo.spec.mjs` | 3 |
+| Rechazo | `rejection.spec.mjs` | 2 |
+| Guion completo de 3 minutos | `demo-script.spec.mjs` | 1 |
+
+El detalle de cada archivo E2E y cómo correr una parte está en [`e2e/README.md`](e2e/README.md).
+
+**Lo que las pruebas no cubren:**
+
+- **Gemini real:** no había clave; solo se prueba el respaldo cuando el proveedor falla.
+- **Foto ilegible en la interfaz:** está probada en el backend, pero no hay una foto de ejemplo ilegible para recorrerla en pantalla.
+- **Otros navegadores:** la suite E2E corre solo en Chromium.
+- **Revisar dos veces una alerta:** es el fallo esperado del backend. La API y el botón "Corregir" lo permiten; falta decidir si se bloquea.
+- **Dos importaciones idénticas en el mismo instante:** pueden responder 500 por el índice único; no tiene prueba porque sería intermitente.
+- **Corridas que cruzan la medianoche de Bogotá:** la semilla es relativa al día, así que las cifras de alertas y las referencias pueden cambiar a mitad de corrida.
+- **Lo que el prototipo no implementa:** está en "Lo que no cubre el prototipo" de `DECISIONES.md`.
+
 ## Estructura
 
 ```
+scripts/             run-all-tests.sh: corre las pruebas funcionales y las E2E
 docker-compose.yml   db (PostgreSQL 17), backend (FastAPI) y frontend (Angular + nginx)
 backend/             app/{requests,ledger,rules,decisions,reconciliation,integrations,dashboard,dev,seed}, alembic/, tests/
 frontend/            Angular 22: core/, shared/, layout/ y features/{simulator,console,alerts,dashboard}

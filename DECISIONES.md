@@ -125,6 +125,7 @@ Cada decisión con su motivo. Es un prototipo para una demo de 3 minutos, no el 
 | 77 | Un conductor registrado sin asignación vigente llega al técnico con la razón "Conductor sin vehículo asignado", no con "Número no registrado". | Son dos casos distintos: en uno hay que identificar el vehículo y en el otro al conductor. Ningún caso de la demo lo usa. |
 | 78 | Si falla el procesamiento del primer mensaje de un número, el aviso de privacidad se envía junto con el mensaje de error. | El aviso se deshacía con la transacción fallida y, como el mensaje de error ya contaba como primer contacto, no volvía a salir. |
 | 79 | Las pruebas se revisaron por mutación: 127 defectos sembrados de uno en uno en copias del código (108 en el backend y 19 en la interfaz); los que ninguna prueba detectó quedaron cubiertos con pruebas nuevas (`backend/tests/test_review_findings.py`, `backend/tests/test_concurrency.py` y `e2e/tests/hard-to-reach-states.spec.mjs`). | Una prueba que no puede fallar no garantiza nada. Las mutaciones se aplican sobre copias temporales, nunca sobre el repositorio. |
+| 80 | `scripts/run-all-tests.sh` corre las dos suites (pytest dentro del contenedor del backend y Playwright en los dos tamaños), levanta el stack solo si no está sano y devuelve 0 únicamente si ambas pasan. No reconstruye las imágenes salvo que se le pase `--build`. | Un solo comando para saber si todo funciona antes de presentar. Reconstruir necesita acceso al registro de imágenes y no debe ser un requisito para correr las pruebas. |
 
 ## Lo que no cubre el prototipo
 
