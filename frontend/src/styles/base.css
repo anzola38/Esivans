@@ -24,12 +24,14 @@ body {
 body {
   margin: 0;
   font-family: var(--font);
-  font-size: 1rem;
+  font-size: var(--fs-md);
   line-height: 1.45;
   color: var(--ink);
   background: var(--soft);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  font-kerning: normal;
   overflow: hidden;
 }
 
@@ -41,31 +43,40 @@ h4 {
   color: var(--navy);
   font-weight: 900;
   line-height: 1.2;
+  letter-spacing: var(--tracking-tight);
 }
 
 h1 {
-  font-size: 1.35rem;
+  font-size: var(--fs-xl);
 }
 
 h2 {
-  font-size: 1.15rem;
+  font-size: var(--fs-lg);
 }
 
 h3 {
-  font-size: 1rem;
+  font-size: var(--fs-md);
 }
 
 h4 {
   font-size: 0.9rem;
+  letter-spacing: 0;
 }
 
 p {
   margin: 0;
 }
 
+strong,
+b {
+  font-weight: 700;
+}
+
 a {
-  color: var(--blue);
+  color: var(--blue-dark);
   text-decoration: none;
+  text-underline-offset: 0.18em;
+  transition: color var(--t-fast) var(--ease);
 }
 
 a:hover {
@@ -78,6 +89,11 @@ select,
 textarea {
   font: inherit;
   color: inherit;
+  letter-spacing: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
 }
 
 img,
@@ -91,6 +107,7 @@ table {
   width: 100%;
 }
 
+/* Foco visible y consistente: anillo azul separado del control. */
 :focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
@@ -98,6 +115,12 @@ table {
 
 ::selection {
   background: var(--ice);
+  color: var(--ink);
+}
+
+::placeholder {
+  color: var(--muted);
+  opacity: 1;
 }
 
 /* Barras de desplazamiento discretas (los paneles internos hacen scroll) */
@@ -111,6 +134,8 @@ table {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

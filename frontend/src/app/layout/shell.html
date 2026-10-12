@@ -1,7 +1,14 @@
 <div class="shell">
   <aside class="sidebar">
     <a class="sidebar__brand" routerLink="/">
-      <span class="sidebar__logo"><app-icon name="fuel" [size]="22" [strokeWidth]="2" /></span>
+      <span class="sidebar__logo" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-linecap="round" focusable="false">
+          <path d="M9.28 25.72a9.500 9.500 0 1 1 13.44 0" stroke-width="2.200" />
+          <path d="M16 6.200v1.800M6.200 19H8M24 19h1.800" stroke-width="1.400" opacity="0.7" />
+          <path class="sidebar__mark-needle" d="M16 19l4.300-5.500" stroke-width="2.400" />
+          <circle cx="16" cy="19" r="1.700" fill="#ffffff" stroke="none" />
+        </svg>
+      </span>
       <span>
         <span class="sidebar__name">Suministro de combustible</span>
         <span class="sidebar__org">Transportes Esivans S.A.S.</span>
@@ -32,45 +39,47 @@
 
   <div class="shell__main">
     <header class="topbar">
-      <div class="topbar__titles">
-        <h1 class="topbar__title">{{ title() }}</h1>
-        @if (subtitle()) {
-          <div class="topbar__subtitle">{{ subtitle() }}</div>
-        }
-      </div>
+      <div class="topbar__inner">
+        <div class="topbar__titles">
+          <h1 class="topbar__title">{{ title() }}</h1>
+          @if (subtitle()) {
+            <div class="topbar__subtitle">{{ subtitle() }}</div>
+          }
+        </div>
 
-      <div class="topbar__actions">
-        <label class="role-picker" title="Ingreso simulado: en producción es con SSO (OIDC) y MFA">
-          <span class="role-picker__avatar" aria-hidden="true">{{ roles.user().initials }}</span>
-          <span class="role-picker__body">
-            <span class="role-picker__label">Rol simulado · {{ roles.user().name }}</span>
-            <select
-              class="role-picker__select"
-              aria-label="Rol"
-              data-testid="role-select"
-              [value]="roles.role()"
-              (change)="onRoleChange($event)"
+        <div class="topbar__actions">
+          <label class="role-picker" title="Ingreso simulado: en producción es con SSO (OIDC) y MFA">
+            <span class="role-picker__avatar" aria-hidden="true">{{ roles.user().initials }}</span>
+            <span class="role-picker__body">
+              <span class="role-picker__label">Rol simulado · {{ roles.user().name }}</span>
+              <select
+                class="role-picker__select"
+                aria-label="Rol"
+                data-testid="role-select"
+                [value]="roles.role()"
+                (change)="onRoleChange($event)"
+              >
+                @for (option of roles.options; track option.role) {
+                  <option [value]="option.role" [selected]="option.role === roles.role()">
+                    {{ option.label }}
+                  </option>
+                }
+              </select>
+            </span>
+          </label>
+
+          @if (config.demoMode) {
+            <button
+              appButton="outline"
+              type="button"
+              data-testid="reset-demo"
+              (click)="confirmOpen.set(true)"
             >
-              @for (option of roles.options; track option.role) {
-                <option [value]="option.role" [selected]="option.role === roles.role()">
-                  {{ option.label }}
-                </option>
-              }
-            </select>
-          </span>
-        </label>
-
-        @if (config.demoMode) {
-          <button
-            appButton="outline"
-            type="button"
-            data-testid="reset-demo"
-            (click)="confirmOpen.set(true)"
-          >
-            <app-icon name="refresh" [size]="16" />
-            Reiniciar demo
-          </button>
-        }
+              <app-icon name="refresh" [size]="16" />
+              Reiniciar demo
+            </button>
+          }
+        </div>
       </div>
     </header>
 

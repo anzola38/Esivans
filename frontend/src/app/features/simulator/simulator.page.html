@@ -8,17 +8,21 @@
       />
     </app-card>
   } @else if (!selected()) {
-    <app-card class="fill"><app-skeleton [lines]="6" /></app-card>
+    <div class="sim__grid fill" aria-hidden="true">
+      <app-card class="sim__case"><app-skeleton [lines]="7" /></app-card>
+      <div class="sim__stage"></div>
+      <app-card class="sim__status"><app-skeleton [lines]="6" /></app-card>
+    </div>
   } @else {
     @let current = selected()!;
     <div class="sim__grid fill">
       <!-- Caso y guion -->
       <app-card title="Caso de la demo" scroll class="sim__case" data-testid="case-card">
-        <div class="sim__cases" role="tablist" aria-label="Casos">
+        <div class="ui-segmented sim__cases" role="tablist" aria-label="Casos">
           @for (item of cases(); track item.code) {
             <button
               type="button"
-              class="sim__case-chip"
+              class="ui-segmented__item sim__case-chip"
               role="tab"
               [class.is-active]="item.code === selected()!.code"
               [attr.aria-selected]="item.code === selected()!.code"
@@ -34,31 +38,45 @@
         <div class="sim__case-title">{{ current.title }}</div>
         <p class="sim__case-desc">{{ current.description }}</p>
 
-        <dl class="ui-kv sim__kv">
-          <dt>Conductor</dt>
-          <dd data-testid="case-driver">{{ current.driver.name }}</dd>
-          <dt>Vehículo</dt>
-          <dd>
-            @if (current.vehicle; as vehicle) {
-              {{ vehicle.code }} · {{ vehicle.fuel_type_label }}
-            } @else {
-              —
-            }
-          </dd>
-          <dt>Placa</dt>
-          <dd data-testid="case-plate">{{ current.plate ?? '—' }}</dd>
-          <dt><label for="sim-clock">Hora simulada</label></dt>
-          <dd>
-            <input
-              id="sim-clock"
-              class="ui-input sim__clock"
-              type="time"
-              data-testid="case-clock"
-              [value]="clockValue()"
-              [disabled]="started()"
-              (change)="onClockChange($event)"
-            />
-          </dd>
+        <dl class="sim__kv">
+          <div class="sim__kv-row">
+            <dt>Conductor</dt>
+            <dd data-testid="case-driver">{{ current.driver.name }}</dd>
+          </div>
+          <div class="sim__kv-row">
+            <dt>Vehículo</dt>
+            <dd>
+              @if (current.vehicle; as vehicle) {
+                {{ vehicle.code }} · {{ vehicle.fuel_type_label }}
+              } @else {
+                —
+              }
+            </dd>
+          </div>
+          <div class="sim__kv-row">
+            <dt>Placa</dt>
+            <dd data-testid="case-plate">
+              @if (current.plate) {
+                <span class="sim__plate">{{ current.plate }}</span>
+              } @else {
+                —
+              }
+            </dd>
+          </div>
+          <div class="sim__kv-row">
+            <dt><label for="sim-clock">Hora simulada</label></dt>
+            <dd>
+              <input
+                id="sim-clock"
+                class="ui-input sim__clock"
+                type="time"
+                data-testid="case-clock"
+                [value]="clockValue()"
+                [disabled]="started()"
+                (change)="onClockChange($event)"
+              />
+            </dd>
+          </div>
         </dl>
         <p class="ui-help sim__clock-help">
           @if (started()) {
@@ -68,7 +86,7 @@
           }
         </p>
 
-        <div class="eyebrow sim__script-title">Guion sugerido</div>
+        <div class="label-caps sim__script-title">Guion sugerido</div>
         <ol class="sim__script">
           @for (step of current.script; track $index) {
             <li
@@ -82,7 +100,7 @@
                   {{ $index + 1 }}
                 }
               </span>
-              <span>{{ stepText(step) }}</span>
+              <span class="sim__script-text">{{ stepText(step) }}</span>
             </li>
           }
         </ol>
@@ -91,16 +109,18 @@
           <button
             appButton
             block
+            size="lg"
             type="button"
+            class="sim__next"
             data-testid="script-next"
             [disabled]="!nextStep() || typing()"
             (click)="runNextStep()"
           >
             @if (nextStep()) {
-              <app-icon name="arrow-right" [size]="16" />
               Siguiente paso del guion
+              <app-icon name="arrow-right" [size]="18" />
             } @else {
-              <app-icon name="check" [size]="16" />
+              <app-icon name="check" [size]="18" />
               Guion completo
             }
           </button>
@@ -115,22 +135,23 @@
       </app-card>
 
       <!-- Teléfono -->
-      <div class="sim__phone">
+      <div class="sim__stage">
         <app-phone-frame
+          class="sim__phone"
           title="Asistente de combustible"
           [subtitle]="typing() ? 'escribiendo…' : 'Transportes Esivans · en línea'"
           [time]="phoneTime()"
         >
           @if (!started()) {
             <div class="sim__chat-empty">
-              <app-icon name="chat" [size]="22" />
+              <span class="sim__chat-empty-icon" aria-hidden="true"><app-icon name="chat" [size]="20" /></span>
               <span>
                 Escribe como {{ current.driver.name }} o usa «Siguiente paso del guion» para
                 iniciar la conversación.
               </span>
             </div>
           } @else {
-            <div class="sim__day">Hoy</div>
+            <div class="sim__day"><span>Hoy</span></div>
           }
           @for (message of messages(); track message.id) {
             <div
@@ -138,13 +159,17 @@
               [class.ui-bubble--out]="message.direction === 'inbound'"
               [class.sim__bubble--photo]="message.type === 'image'"
               [class.sim__bubble--final]="message.kind === 'authorization'"
+              [class.sim__bubble--ai]="isReading(message.kind)"
               [attr.data-kind]="message.kind"
             >
+              @if (isReading(message.kind)) {
+                <span class="sim__ai-mark" aria-hidden="true"><app-icon name="spark" [size]="13" [strokeWidth]="2" /></span>
+              }
               @if (message.type === 'image' && message.media_url) {
                 <img class="sim__photo" [src]="message.media_url" alt="Foto del tablero enviada" />
               }
               @if (message.text) {
-                <span>{{ message.text }}</span>
+                <span class="sim__bubble-text">{{ message.text }}</span>
               }
               <span class="ui-bubble__time">{{ message.timestamp | esTime }}</span>
             </div>
@@ -168,14 +193,14 @@
             <form class="sim__composer" (submit)="$event.preventDefault(); sendDraft()">
               <button
                 type="button"
-                class="ui-icon-btn"
+                class="ui-icon-btn sim__attach"
                 data-testid="attach-photo"
                 title="Adjuntar la foto de ejemplo del tablero"
                 aria-label="Adjuntar la foto de ejemplo del tablero"
                 [disabled]="!current.photo || typing()"
                 (click)="attachPhoto()"
               >
-                <app-icon name="camera" [size]="19" />
+                <app-icon name="camera" [size]="20" />
               </button>
               <input
                 class="ui-input sim__input"
@@ -209,20 +234,20 @@
           </span>
         }
         @if (request(); as req) {
-          <div class="sim__summary">
-            <div>
+          <div class="sim__summary" [attr.data-light]="req.traffic_light">
+            <div class="sim__summary-cell">
               <div class="sim__summary-label">Solicitud</div>
-              <div class="sim__summary-value">N.º {{ req.id }}</div>
+              <div class="sim__summary-value num">N.º {{ req.id }}</div>
             </div>
-            <div>
+            <div class="sim__summary-cell">
               <div class="sim__summary-label">Semáforo</div>
               <app-traffic-light [value]="req.traffic_light" [points]="req.traffic_light ? req.points : null" />
             </div>
-            <div>
+            <div class="sim__summary-cell sim__summary-cell--amount">
               <div class="sim__summary-label">
                 {{ req.authorized_amount !== null ? 'Valor autorizado' : 'Valor sugerido' }}
               </div>
-              <div class="sim__summary-value num">
+              <div class="sim__summary-value sim__summary-value--amount num">
                 {{ req.authorized_amount ?? req.suggested_amount | cop }}
               </div>
             </div>
@@ -241,7 +266,7 @@
               [attr.data-status]="item.key"
               [attr.data-state]="item.state"
             >
-              <span class="sim__tl-dot">
+              <span class="sim__tl-dot" aria-hidden="true">
                 @if (item.state === 'done') {
                   <app-icon [name]="item.tone === 'crit' ? 'close' : 'check'" [size]="12" [strokeWidth]="3" />
                 }
@@ -281,7 +306,7 @@
             </div>
           } @else {
             <div class="sim__pending" data-testid="pending">
-              <div class="eyebrow">Lo que falta</div>
+              <div class="label-caps sim__pending-title">Lo que falta</div>
               <ul>
                 @for (item of pending(); track item) {
                   <li>{{ item }}</li>
@@ -289,13 +314,23 @@
               </ul>
               @let remaining = slaRemaining();
               @if (remaining !== null) {
-                <div class="sim__sla" [class.is-late]="remaining <= 0">
-                  <app-icon name="clock" [size]="14" />
-                  @if (remaining > 0) {
-                    SLA de 10 minutos: quedan {{ remaining | duration }}
-                  } @else {
-                    SLA de 10 minutos vencido
-                  }
+                <div class="sim__sla-block">
+                  <div class="sim__sla" [class.is-late]="remaining <= 0">
+                    <app-icon name="clock" [size]="15" />
+                    @if (remaining > 0) {
+                      SLA de 10 minutos: quedan {{ remaining | duration }}
+                    } @else {
+                      SLA de 10 minutos vencido
+                    }
+                  </div>
+                  <div
+                    class="ui-meter sim__sla-meter"
+                    [class.ui-meter--navy]="remaining > 0"
+                    [class.ui-meter--crit]="remaining <= 0"
+                    aria-hidden="true"
+                  >
+                    <span class="ui-meter__fill" [style.width.%]="slaPercent(remaining)"></span>
+                  </div>
                 </div>
               }
             </div>
@@ -312,6 +347,7 @@
             <a appButton="secondary" block [routerLink]="['/consola', req.id]" data-testid="open-console">
               <app-icon name="console" [size]="16" />
               Ver en la consola
+              <app-icon name="arrow-right" [size]="16" />
             </a>
           } @else {
             <a appButton="outline" block routerLink="/consola">

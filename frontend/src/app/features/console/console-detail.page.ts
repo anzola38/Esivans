@@ -30,6 +30,7 @@ interface BarRow {
 
 const POLL_MS = 3000;
 const MIN_REASON = 5;
+const SLA_SECONDS = 600;
 
 const MODE_TEXT: Record<DecisionMode, { title: string; confirm: string; suggestions: string[] }> = {
   approve: {
@@ -60,7 +61,7 @@ const MODE_TEXT: Record<DecisionMode, { title: string; confirm: string; suggesti
   selector: 'app-console-detail-page',
   imports: [SHARED, RouterLink],
   templateUrl: './console-detail.page.html',
-  styleUrl: './console-detail.page.css',
+  styleUrls: ['./console-detail.page.css', './console-detail.cards.css'],
 })
 export class ConsoleDetailPage {
   private readonly api = inject(ApiService);
@@ -103,6 +104,11 @@ export class ConsoleDetailPage {
     const elapsed = Math.floor((this.clock.now().getTime() - this.fetchedAt()) / 1000);
     return d.sla_remaining_seconds - Math.max(0, elapsed);
   });
+
+  /** Share of the 10-minute SLA still available, for the countdown bar. */
+  protected slaPercent(seconds: number): number {
+    return Math.max(0, Math.min(100, (seconds / SLA_SECONDS) * 100));
+  }
 
   protected readonly modeText = computed(() => {
     const mode = this.mode();

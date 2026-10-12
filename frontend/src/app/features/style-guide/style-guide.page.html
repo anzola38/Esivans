@@ -8,16 +8,31 @@
     <app-traffic-light value="green" />
   </app-section-header>
 
-  <div class="grid grid--2">
+  <div class="sg">
+    <!-- ================= Fundamentos ================= -->
+    <app-section-header class="sg__heading" title="Fundamentos" subtitle="Color, tipografía, espaciado y elevación: los tokens de styles/tokens.css." />
+
     <!-- Colores -->
-    <app-card title="Colores" subtitle="Variables CSS: var(--navy), var(--blue-soft)…">
+    <app-card class="sg__wide" title="Colores" subtitle="Variables CSS: var(--navy), var(--blue-soft)…">
       <div class="swatches">
         @for (color of colors; track color.token) {
           <div class="swatch">
             <div class="swatch__color" [style.background]="'var(--' + color.token + ')'"></div>
             <div class="swatch__text">
-              <strong>{{ color.token }}</strong>&nbsp; <span class="text-muted">{{ color.hex }}</span><br />
-              <span class="text-muted">{{ color.use }}</span>
+              <strong>{{ color.token }}</strong>&nbsp; <span class="mono">{{ color.hex }}</span><br />
+              <span>{{ color.use }}</span>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="label-caps mt-4 mb-2">Derivados (tintes y superficies)</div>
+      <div class="swatches">
+        @for (color of derived; track color.token) {
+          <div class="swatch">
+            <div class="swatch__color" [style.background]="'var(--' + color.token + ')'"></div>
+            <div class="swatch__text">
+              <strong>{{ color.token }}</strong><br />
+              <span>{{ color.use }}</span>
             </div>
           </div>
         }
@@ -38,7 +53,8 @@
         <p>
           Código en línea: <span class="ui-code">POST /api/requests/&#123;id&#125;/decision</span>
         </p>
-        <div class="row gap-5 mt-2">
+        <hr class="ui-divider" />
+        <div class="row row--wrap gap-5">
           <div class="ui-stat">
             <span class="ui-stat__value">66,7 h</span>
             <span class="ui-stat__label">de gestión al día hoy</span>
@@ -50,14 +66,98 @@
           <div class="row gap-2">
             <span class="ui-step">1</span>
             <span class="ui-step ui-step--orange">2</span>
-            <span class="text-sm text-muted">.ui-step</span>
+            <span class="text-sm text-ink-2">.ui-step</span>
           </div>
         </div>
       </div>
     </app-card>
-  </div>
 
-  <div class="grid grid--3">
+    <!-- Escala y espaciado -->
+    <app-card title="Escala tipográfica y espaciado" subtitle="Rejilla de 4 px: --space-N = N × 4 px">
+      <div class="col gap-4">
+        <div class="scale">
+          @for (step of typeScale; track step.token) {
+            <span class="scale__token">{{ step.token }}</span>
+            <span class="scale__sample num" [style.font-size]="'var(' + step.token + ')'">{{ step.sample }}</span>
+          }
+        </div>
+        <hr class="ui-divider" />
+        <div class="spaces">
+          @for (n of spaces; track n) {
+            <div><i [style.height]="'var(--space-' + n + ')'"></i>{{ n }}</div>
+          }
+        </div>
+      </div>
+    </app-card>
+
+    <!-- Elevación y radios -->
+    <app-card title="Elevación, radios y movimiento" subtitle="Sombras teñidas de ink; transiciones de 120 a 200 ms">
+      <div class="col gap-4">
+        <div class="tiles">
+          @for (name of shadows; track name) {
+            <div class="tile" [style.border-radius]="'var(--radius)'" [style.box-shadow]="'var(--shadow-' + name + ')'">
+              --shadow-{{ name }}
+            </div>
+          }
+        </div>
+        <div class="tiles">
+          @for (name of radii; track name) {
+            <div class="tile" [style.border-radius]="'var(--radius-' + name + ')'">--radius-{{ name }}</div>
+          }
+        </div>
+        <p class="text-sm text-ink-2">
+          Tarjetas: <span class="ui-code">--radius</span> (10 px). Controles:
+          <span class="ui-code">--radius-md</span>. Movimiento: <span class="ui-code">--t-fast</span>,
+          <span class="ui-code">--t-base</span>, <span class="ui-code">--t-slow</span> con
+          <span class="ui-code">--ease</span>.
+        </p>
+      </div>
+    </app-card>
+
+    <!-- ================= Controles ================= -->
+    <app-section-header class="sg__heading" title="Controles y estados" subtitle="Botones, insignias, selección y formularios, con sus estados de foco, error y deshabilitado." />
+
+    <!-- Botones -->
+    <app-card title="Botones" subtitle="Primario naranja (uno por vista), secundario azul, contorno, fantasma y peligro">
+      <div class="col gap-3">
+        <div class="row row--wrap gap-2">
+          <button appButton type="button">Aprobar</button>
+          <button appButton="secondary" type="button">Ajustar</button>
+          <button appButton="danger" type="button">Rechazar</button>
+        </div>
+        <div class="row row--wrap gap-2">
+          <button appButton="outline" type="button">
+            <app-icon name="refresh" [size]="16" /> Actualizar
+          </button>
+          <button appButton="ghost" type="button">Ver bitácora</button>
+          <button appButton="danger-solid" type="button">Confirmar rechazo</button>
+        </div>
+        <div class="row row--wrap gap-2">
+          <button appButton size="sm" type="button">Pequeño</button>
+          <button appButton="secondary" size="lg" type="button">Grande</button>
+          <button appButton type="button" disabled>Deshabilitado</button>
+          <button appButton="secondary" type="button" [loading]="loading()" (click)="simulateLoading()">
+            Probar carga
+          </button>
+        </div>
+        <div class="row row--wrap gap-2">
+          <button type="button" class="ui-icon-btn" aria-label="Actualizar"><app-icon name="refresh" [size]="18" /></button>
+          <button type="button" class="ui-icon-btn" aria-label="Copiar"><app-icon name="copy" [size]="18" /></button>
+          <button type="button" class="ui-icon-btn" aria-label="Cerrar" disabled><app-icon name="close" [size]="18" /></button>
+          <span class="text-sm text-ink-2">.ui-icon-btn (siempre con aria-label)</span>
+        </div>
+        <div class="ui-note">
+          <app-icon name="lock" [size]="16" />
+          <span>
+            Rol actual: <strong>{{ roles.label() }}</strong>. Decide solicitudes:
+            {{ roles.can('request.decide') ? 'sí' : 'no' }} · revisa alertas:
+            {{ roles.can('alert.review') ? 'sí' : 'no' }} · cambia umbrales:
+            {{ roles.can('rules.edit') ? 'sí' : 'no' }}.
+          </span>
+        </div>
+      </div>
+    </app-card>
+
     <!-- Semáforo y chips -->
     <app-card title="Semáforo, estado y prioridad" subtitle="Siempre color + texto">
       <div class="col gap-3">
@@ -90,48 +190,125 @@
           <span class="ui-badge ui-badge--blue">Automática</span>
           <span class="ui-badge ui-badge--orange">Lectura de la IA</span>
           <span class="ui-badge">.ui-badge</span>
+          <span class="ui-badge ui-badge--green ui-badge--lg"><span class="ui-badge__dot"></span>7 de 9 cumplen la meta</span>
         </div>
       </div>
     </app-card>
 
-    <!-- Botones -->
-    <app-card title="Botones" subtitle="El naranja es uno por vista: la acción principal">
-      <div class="col gap-3">
-        <div class="row row--wrap gap-2">
-          <button appButton type="button">Aprobar</button>
-          <button appButton="secondary" type="button">Ajustar</button>
-          <button appButton="danger" type="button">Rechazar</button>
+    <!-- Pestañas, segmentos, chips y medidas -->
+    <app-card title="Pestañas, segmentos y chips" subtitle=".ui-tabs, .ui-segmented, .ui-chip, .ui-count, .ui-meter">
+      <div class="col gap-4">
+        <div class="ui-tabs" role="tablist" aria-label="Ejemplo de pestañas">
+          @for (item of demoTabs; track item.key) {
+            <button
+              type="button"
+              role="tab"
+              class="ui-tab"
+              [class.is-active]="demoTab() === item.key"
+              [attr.aria-selected]="demoTab() === item.key"
+              (click)="demoTab.set(item.key)"
+            >
+              <app-icon [name]="item.icon" [size]="17" />
+              {{ item.label }}
+              @if (item.count !== null) {
+                <span class="ui-count">{{ item.count }}</span>
+              }
+            </button>
+          }
         </div>
-        <div class="row row--wrap gap-2">
-          <button appButton="outline" type="button">
-            <app-icon name="refresh" [size]="16" /> Actualizar
-          </button>
-          <button appButton="ghost" type="button">Ver bitácora</button>
-          <button appButton="danger-solid" type="button">Confirmar rechazo</button>
-        </div>
-        <div class="row row--wrap gap-2">
-          <button appButton size="sm" type="button">Pequeño</button>
-          <button appButton="secondary" size="lg" type="button">Grande</button>
-          <button appButton type="button" disabled>Deshabilitado</button>
-          <button appButton="secondary" type="button" [loading]="loading()" (click)="simulateLoading()">
-            Probar carga
-          </button>
-        </div>
-        <div class="ui-note">
-          <app-icon name="lock" [size]="16" />
-          <span>
-            Rol actual: <strong>{{ roles.label() }}</strong>. Decide solicitudes:
-            {{ roles.can('request.decide') ? 'sí' : 'no' }} · revisa alertas:
-            {{ roles.can('alert.review') ? 'sí' : 'no' }} · cambia umbrales:
-            {{ roles.can('rules.edit') ? 'sí' : 'no' }}.
+        <div class="row row--wrap gap-3">
+          <div class="ui-segmented" role="group" aria-label="Ejemplo de filtro">
+            @for (item of demoFilters; track item.key) {
+              <button
+                type="button"
+                class="ui-segmented__item"
+                [class.is-active]="demoFilter() === item.key"
+                [attr.aria-pressed]="demoFilter() === item.key"
+                (click)="demoFilter.set(item.key)"
+              >
+                {{ item.label }} · {{ item.count }}
+              </button>
+            }
+          </div>
+          <span class="row gap-2 text-sm text-ink-2">
+            <span class="ui-count">7</span><span class="ui-count ui-count--navy">9</span>.ui-count
           </span>
         </div>
+        <div class="row row--wrap gap-2">
+          @for (chip of demoChips; track chip) {
+            <button
+              type="button"
+              class="ui-chip"
+              [class.is-active]="demoChip() === chip"
+              [attr.aria-pressed]="demoChip() === chip"
+              (click)="demoChip.set(chip)"
+            >
+              {{ chip }}
+            </button>
+          }
+          <button type="button" class="ui-chip" disabled>Sin registro</button>
+        </div>
+        <hr class="ui-divider" />
+        <div class="col gap-2">
+          <div class="row row--between text-sm">
+            <span class="text-ink-2">Confianza de la lectura</span><strong class="num">{{ 96 | esPercent }}</strong>
+          </div>
+          <div class="ui-meter ui-meter--good"><span class="ui-meter__fill" style="width: 96%"></span></div>
+          <div class="row row--between text-sm">
+            <span class="text-ink-2">Nivel del tanque</span><strong class="num">{{ 25 | esPercent }}</strong>
+          </div>
+          <div class="ui-meter ui-meter--warn"><span class="ui-meter__fill" style="width: 25%"></span></div>
+        </div>
       </div>
     </app-card>
 
-    <!-- Toast y modal -->
-    <app-card title="Avisos, modal y formularios" subtitle="ToastService y app-modal">
+    <!-- Formularios -->
+    <app-card title="Formularios" subtitle=".ui-field con rótulo, ayuda, error y deshabilitado">
       <div class="col gap-3">
+        <div class="ui-field">
+          <label class="ui-label" for="sg-reason">Motivo <span class="req">*</span></label>
+          <textarea id="sg-reason" class="ui-textarea" placeholder="Obligatorio para ajustar o rechazar"></textarea>
+          <span class="ui-help">Queda guardado en la bitácora junto con el cálculo original.</span>
+        </div>
+        <div class="grid grid--2 gap-3">
+          <div class="ui-field">
+            <label class="ui-label" for="sg-amount">Valor</label>
+            <input id="sg-amount" class="ui-input" value="$80.000" />
+          </div>
+          <div class="ui-field">
+            <label class="ui-label" for="sg-result">Resultado</label>
+            <select id="sg-result" class="ui-select">
+              <option>Confirmado</option>
+              <option>Justificado</option>
+              <option>Error de dato</option>
+            </select>
+          </div>
+          <div class="ui-field">
+            <label class="ui-label" for="sg-invalid">Valor ajustado <span class="req">*</span></label>
+            <input id="sg-invalid" class="ui-input is-invalid" value="$0" aria-invalid="true" aria-describedby="sg-invalid-error" />
+            <span class="ui-error" id="sg-invalid-error">El valor debe ser mayor que cero.</span>
+          </div>
+          <div class="ui-field">
+            <label class="ui-label" for="sg-disabled">Valor sugerido</label>
+            <input id="sg-disabled" class="ui-input" value="$90.000" disabled />
+            <span class="ui-help">Lo calcula el backend; no se edita.</span>
+          </div>
+        </div>
+      </div>
+    </app-card>
+
+    <!-- Avisos, toast y modal -->
+    <app-card title="Avisos y modal" subtitle=".ui-note, ToastService y app-modal">
+      <div class="col gap-3">
+        <div class="col gap-2">
+          <div class="ui-note"><app-icon name="info" [size]="16" /> Aviso neutro (.ui-note).</div>
+          <div class="ui-note ui-note--good"><app-icon name="check-circle" [size]="16" /> Se aprueba en un clic (.ui-note--good).</div>
+          <div class="ui-note ui-note--warn"><app-icon name="alert" [size]="16" /> Requiere motivo (.ui-note--warn).</div>
+          <div class="ui-note ui-note--crit"><app-icon name="alert" [size]="16" /> 7 puntos: R05, R08 y R09 (.ui-note--crit).</div>
+          <div class="ui-note ui-note--ai"><app-icon name="spark" [size]="16" /> El asistente propone 34.086 km (.ui-note--ai).</div>
+          <div class="ui-note"><app-icon name="clock" [size]="16" /> Reloj compartido (ClockService): {{ clock.now() | esTime }}</div>
+        </div>
+        <hr class="ui-divider" />
         <div class="row row--wrap gap-2">
           <button appButton="outline" size="sm" type="button" (click)="toasts.success('La decisión quedó en la bitácora.', 'Solicitud autorizada')">
             Éxito
@@ -154,161 +331,111 @@
             Llamar a /api/health
           </button>
         </div>
-        <div class="ui-field">
-          <label class="ui-label" for="sg-reason">Motivo <span class="req">*</span></label>
-          <textarea id="sg-reason" class="ui-textarea" placeholder="Obligatorio para ajustar o rechazar"></textarea>
-          <span class="ui-help">Queda guardado en la bitácora junto con el cálculo original.</span>
-        </div>
-        <div class="grid grid--2 gap-2">
-          <div class="ui-field">
-            <label class="ui-label" for="sg-amount">Valor</label>
-            <input id="sg-amount" class="ui-input" value="$80.000" />
-          </div>
-          <div class="ui-field">
-            <label class="ui-label" for="sg-result">Resultado</label>
-            <select id="sg-result" class="ui-select">
-              <option>Confirmado</option>
-              <option>Justificado</option>
-              <option>Error de dato</option>
-            </select>
-          </div>
-        </div>
       </div>
     </app-card>
-  </div>
 
-  <div class="grid grid--aside-right">
-    <div class="col gap-4">
-      <!-- Tabla -->
-      <app-card title="Tabla base" subtitle="app-table envuelve una tabla nativa" flush>
-        <span card-actions class="row gap-2">
-          <app-traffic-light value="red" [points]="7" />
-          <button appButton="outline" size="sm" type="button">Acción de tarjeta</button>
-        </span>
-        <app-table plain>
-          <table>
-            <thead>
-              <tr>
-                <th>Vehículo</th>
-                <th>Placa</th>
-                <th>Semáforo</th>
-                <th class="num">Valor sugerido</th>
-                <th class="num">En espera</th>
-                <th>Estado</th>
+    <!-- ================= Datos y contenido ================= -->
+    <app-section-header class="sg__heading" title="Datos y contenido" subtitle="Tablas, formatos es-CO, tarjetas y los estados vacío y de carga." />
+
+    <!-- Tabla -->
+    <app-card title="Tabla base" subtitle="app-table envuelve una tabla nativa" flush>
+      <span card-actions class="row gap-2">
+        <button appButton="outline" size="sm" type="button">Acción de tarjeta</button>
+      </span>
+      <app-table plain>
+        <table>
+          <thead>
+            <tr>
+              <th>Vehículo</th>
+              <th>Semáforo</th>
+              <th class="num">Valor sugerido</th>
+              <th class="num">En espera</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of sampleRows; track row.vehicle; let first = $first) {
+              <tr class="is-clickable" [class.is-selected]="first">
+                <td>
+                  <div class="fw-700">{{ row.vehicle }}</div>
+                  <div class="text-xs text-ink-2 mono">{{ row.plate }}</div>
+                </td>
+                <td><app-traffic-light [value]="row.light" [points]="row.points" /></td>
+                <td class="num">{{ row.amount | cop }}</td>
+                <td class="num">{{ row.wait | duration }}</td>
               </tr>
-            </thead>
-            <tbody>
-              @for (row of sampleRows; track row.vehicle; let first = $first) {
-                <tr class="is-clickable" [class.is-selected]="first">
-                  <td class="fw-700">{{ row.vehicle }}</td>
-                  <td class="mono">{{ row.plate }}</td>
-                  <td><app-traffic-light [value]="row.light" [points]="row.points" /></td>
-                  <td class="num">{{ row.amount | cop }}</td>
-                  <td class="num">{{ row.wait | duration }}</td>
-                  <td><app-status-chip status="in_review" /></td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </app-table>
-        <span card-footer class="text-sm text-muted">
-          Pie de tarjeta (slot card-footer). Filas con .is-clickable y .is-selected.
-        </span>
-      </app-card>
+            }
+          </tbody>
+        </table>
+      </app-table>
+      <span card-footer class="text-sm text-ink-2">
+        Pie de tarjeta (slot card-footer). Filas con .is-clickable y .is-selected.
+      </span>
+    </app-card>
 
-      <div class="grid grid--2">
-        <!-- Pipes -->
-        <app-card title="Formato es-CO" subtitle="Pipes propios (shared/pipes)">
-          <app-table dense class="pipes">
-            <table>
-              <thead>
-                <tr>
-                  <th>Pipe</th>
-                  <th class="num">Resultado</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td>1234.5 | esNumber:1</td><td class="num">{{ 1234.5 | esNumber: 1 }}</td></tr>
-                <tr><td>5.647 | esNumber:0:3</td><td class="num">{{ 5.647 | esNumber: 0 : 3 }}</td></tr>
-                <tr><td>27783 | cop</td><td class="num">{{ 27783 | cop }}</td></tr>
-                <tr><td>73 | esPercent</td><td class="num">{{ 73 | esPercent }}</td></tr>
-                <tr><td>0.615 | esPercent:1:true</td><td class="num">{{ 0.615 | esPercent: 1 : true }}</td></tr>
-                <tr><td>iso | esDate</td><td class="num">{{ sampleInstant | esDate }}</td></tr>
-                <tr><td>iso | esTime</td><td class="num">{{ sampleInstant | esTime }}</td></tr>
-                <tr><td>iso | esDateTime</td><td class="num">{{ sampleInstant | esDateTime }}</td></tr>
-                <tr><td>185 | duration</td><td class="num">{{ 185 | duration }}</td></tr>
-                <tr><td>fecha | timeAgo</td><td class="num">{{ threeMinutesAgo | timeAgo }}</td></tr>
-              </tbody>
-            </table>
-          </app-table>
-        </app-card>
+    <!-- Pipes -->
+    <app-card title="Formato es-CO" subtitle="Pipes propios (shared/pipes)">
+      <app-table dense striped class="pipes">
+        <table>
+          <thead>
+            <tr>
+              <th>Pipe</th>
+              <th class="num">Resultado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1234.5 | esNumber:1</td><td class="num">{{ 1234.5 | esNumber: 1 }}</td></tr>
+            <tr><td>5.647 | esNumber:0:3</td><td class="num">{{ 5.647 | esNumber: 0 : 3 }}</td></tr>
+            <tr><td>27783 | cop</td><td class="num">{{ 27783 | cop }}</td></tr>
+            <tr><td>73 | esPercent</td><td class="num">{{ 73 | esPercent }}</td></tr>
+            <tr><td>0.615 | esPercent:1:true</td><td class="num">{{ 0.615 | esPercent: 1 : true }}</td></tr>
+            <tr><td>iso | esDate</td><td class="num">{{ sampleInstant | esDate }}</td></tr>
+            <tr><td>iso | esTime</td><td class="num">{{ sampleInstant | esTime }}</td></tr>
+            <tr><td>iso | esDateTime</td><td class="num">{{ sampleInstant | esDateTime }}</td></tr>
+            <tr><td>185 | duration</td><td class="num">{{ 185 | duration }}</td></tr>
+            <tr><td>fecha | timeAgo</td><td class="num">{{ threeMinutesAgo | timeAgo }}</td></tr>
+          </tbody>
+        </table>
+      </app-table>
+    </app-card>
 
-        <div class="col gap-4">
-          <!-- Estado vacío y esqueleto -->
-          <app-card title="Estado vacío">
-            <app-empty-state
-              compact
-              icon="check-circle"
-              title="No hay solicitudes en espera"
-              message="Cuando un conductor escriba, su solicitud aparece aquí."
-            >
-              <button appButton="outline" size="sm" type="button">Ir al simulador</button>
-            </app-empty-state>
-          </app-card>
-          <app-card title="Esqueleto de carga">
-            <div class="col gap-3">
-              <app-skeleton [lines]="3" />
-              <app-skeleton height="3rem" />
-            </div>
-          </app-card>
-        </div>
+    <!-- Tonos de tarjeta -->
+    <app-card tone="soft" title="Tarjeta suave" subtitle='tone="soft"'>
+      <dl class="ui-kv">
+        <dt>Último tanqueo</dt>
+        <dd>05/10/2026</dd>
+        <dt>Km recorridos</dt>
+        <dd>{{ 312 | esNumber }} km</dd>
+        <dt>Rendimiento</dt>
+        <dd>{{ 41.8 | esNumber: 1 }} km/gal</dd>
+      </dl>
+    </app-card>
+    <app-card tone="accent" title="Tarjeta de acento" subtitle='tone="accent": lo que hace la IA'>
+      <p class="text-sm">Odómetro leído: {{ 34086 | esNumber }} km, con confianza de {{ 96 | esPercent }}.</p>
+    </app-card>
+    <app-card tone="dark" title="Tarjeta oscura" subtitle='tone="dark"'>
+      <div class="ui-stat">
+        <span class="ui-stat__value" style="color: var(--white)">{{ 80000 | cop }}</span>
+        <span class="ui-stat__label" style="color: var(--ice)">Valor sugerido</span>
       </div>
+    </app-card>
 
-      <!-- Tonos de tarjeta y avisos -->
-      <div class="grid grid--3">
-        <app-card tone="soft" title="Tarjeta suave" subtitle='tone="soft"'>
-          <dl class="ui-kv">
-            <dt>Último tanqueo</dt>
-            <dd>05/10/2026</dd>
-            <dt>Km recorridos</dt>
-            <dd>{{ 312 | esNumber }} km</dd>
-            <dt>Rendimiento</dt>
-            <dd>{{ 41.8 | esNumber: 1 }} km/gal</dd>
-          </dl>
-        </app-card>
-        <app-card tone="accent" title="Tarjeta de acento" subtitle='tone="accent": lo que hace la IA'>
-          <p class="text-sm">Odómetro leído: {{ 34086 | esNumber }} km, con confianza de {{ 96 | esPercent }}.</p>
-        </app-card>
-        <app-card tone="dark" title="Tarjeta oscura" subtitle='tone="dark"'>
-          <div class="ui-stat">
-            <span class="ui-stat__value" style="color: var(--white)">{{ 80000 | cop }}</span>
-            <span class="ui-stat__label" style="color: var(--ice)">Valor sugerido</span>
-          </div>
-        </app-card>
+    <!-- Estado vacío y esqueleto -->
+    <app-card title="Estado vacío" subtitle="app-empty-state: qué pasa y qué hacer">
+      <app-empty-state
+        compact
+        icon="check-circle"
+        title="No hay solicitudes en espera"
+        message="Cuando un conductor escriba, su solicitud aparece aquí."
+      >
+        <button appButton="outline" size="sm" type="button">Ir al simulador</button>
+      </app-empty-state>
+    </app-card>
+    <app-card title="Esqueleto de carga" subtitle="app-skeleton con la forma del contenido">
+      <div class="col gap-3">
+        <app-skeleton [lines]="3" />
+        <app-skeleton height="3rem" />
       </div>
-
-      <div class="grid grid--2">
-        <div class="col gap-2">
-          <div class="ui-note"><app-icon name="info" [size]="16" /> Aviso neutro (.ui-note).</div>
-          <div class="ui-note ui-note--good"><app-icon name="check-circle" [size]="16" /> Se aprueba en un clic (.ui-note--good).</div>
-          <div class="ui-note ui-note--ai"><app-icon name="spark" [size]="16" /> El asistente propone 34.086 km (.ui-note--ai).</div>
-        </div>
-        <div class="col gap-2">
-          <div class="ui-note ui-note--warn"><app-icon name="alert" [size]="16" /> Requiere motivo (.ui-note--warn).</div>
-          <div class="ui-note ui-note--crit"><app-icon name="alert" [size]="16" /> 7 puntos: R05, R08 y R09 (.ui-note--crit).</div>
-          <div class="ui-note"><app-icon name="clock" [size]="16" /> Reloj compartido (ClockService): {{ clock.now() | esTime }}</div>
-        </div>
-      </div>
-
-      <!-- Íconos -->
-      <app-card title="Íconos" subtitle='app-icon name="…": trazos genéricos propios, sin marcas'>
-        <div class="icons">
-          @for (name of iconNames; track name) {
-            <div><app-icon [name]="name" [size]="22" /> {{ name }}</div>
-          }
-        </div>
-      </app-card>
-    </div>
+    </app-card>
 
     <!-- Marco de teléfono -->
     <app-card title="Marco de teléfono" subtitle="app-phone-frame, sin logos">
@@ -334,12 +461,21 @@
             <button type="button" class="ui-icon-btn" aria-label="Adjuntar foto">
               <app-icon name="clip" [size]="18" />
             </button>
-            <input class="ui-input grow" placeholder="Escribe un mensaje" />
+            <input class="ui-input grow" placeholder="Escribe un mensaje" aria-label="Mensaje" />
             <button appButton="secondary" size="sm" type="button" aria-label="Enviar">
               <app-icon name="send" [size]="16" />
             </button>
           </div>
         </app-phone-frame>
+      </div>
+    </app-card>
+
+    <!-- Íconos -->
+    <app-card class="sg__wide" title="Íconos" subtitle='app-icon name="…": trazos genéricos propios, sin marcas'>
+      <div class="icons">
+        @for (name of iconNames; track name) {
+          <div><app-icon [name]="name" [size]="22" /> {{ name }}</div>
+        }
       </div>
     </app-card>
   </div>

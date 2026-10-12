@@ -1,4 +1,4 @@
-<div class="page" data-testid="dashboard">
+<div class="page board" data-testid="dashboard">
   @if (data(); as d) {
     <!-- Franja del piloto -->
     <div class="pilot">
@@ -6,9 +6,11 @@
         <span class="eyebrow">Piloto de {{ d.pilot.weeks }} semanas</span>
         <strong>{{ d.pilot.zone }}</strong>
       </div>
-      <span class="pilot__fact" [title]="d.pilot.note"><strong>{{ d.pilot.vehicles }}</strong> vehículos</span>
-      <span class="pilot__fact"><strong>{{ d.pilot.refuels_per_day }}</strong> tanqueos al día</span>
-      <span class="pilot__fact"><strong>{{ d.pilot.services_per_day }}</strong> servicios al día</span>
+      <div class="pilot__facts">
+        <span class="pilot__fact" [title]="d.pilot.note"><strong>{{ d.pilot.vehicles }}</strong> vehículos</span>
+        <span class="pilot__fact"><strong>{{ d.pilot.refuels_per_day }}</strong> tanqueos al día</span>
+        <span class="pilot__fact"><strong>{{ d.pilot.services_per_day }}</strong> servicios al día</span>
+      </div>
       <span class="grow"></span>
       <span class="pilot__fact pilot__fact--demo" data-testid="activity">
         Demo: <strong>{{ d.activity.requests }}</strong> solicitudes · <strong>{{ d.activity.decisions }}</strong> decisiones ·
@@ -21,17 +23,31 @@
 
     <!-- Indicadores -->
     <div class="kpis" data-testid="indicators">
-      @for (kpi of d.indicators; track kpi.key) {
+      @for (kpi of indicators(); track kpi.key) {
         <article [class]="'kpi kpi--' + tone(kpi.status)" [attr.data-testid]="'kpi-' + kpi.key" [title]="kpi.note">
           <header class="kpi__head">
             <h3 class="kpi__name">{{ kpi.name }}</h3>
             <span [class]="'ui-badge ui-badge--' + tone(kpi.status)"><span class="ui-badge__dot"></span>{{ kpi.status_label }}</span>
           </header>
-          <div class="kpi__current">
-            <span class="kpi__value">{{ kpi.current_display }}</span>
-            <span class="kpi__source" [class.kpi__source--demo]="kpi.source === 'demo'">
-              {{ kpi.source === 'demo' ? 'Calculado con la demo' : 'Valor ilustrativo' }}
-            </span>
+          <div class="kpi__measure">
+            <div class="kpi__current">
+              <span class="kpi__value" [class.kpi__value--text]="kpi.current_value === null">{{ kpi.current_display }}</span>
+              <span class="kpi__source" [class.kpi__source--demo]="kpi.source === 'demo'">
+                {{ kpi.source === 'demo' ? 'Calculado con la demo' : 'Valor ilustrativo' }}
+              </span>
+            </div>
+            <!-- Riel hacia la meta: zona que cumple, marca de la meta y posición del valor de hoy -->
+            <div class="goal" [class.goal--lower]="kpi.goal.lower" aria-hidden="true">
+              <span
+                class="goal__zone"
+                [style.left.%]="kpi.goal.lower ? null : kpi.goal.target"
+                [style.right.%]="kpi.goal.lower ? 100 - kpi.goal.target : null"
+              ></span>
+              <span class="goal__target" [style.left.%]="kpi.goal.target"></span>
+              @if (kpi.goal.value !== null) {
+                <span class="goal__value" [style.left.%]="kpi.goal.value"></span>
+              }
+            </div>
           </div>
           <dl class="kpi__ref">
             <dt>Meta</dt>
@@ -45,29 +61,60 @@
 
     <div class="lower">
       <!-- Contexto -->
-      <app-card [title]="d.context.title" subtitle="Horas de gestión de solicitudes al día">
+      <app-card class="context" [title]="d.context.title" subtitle="Horas de gestión de solicitudes al día">
         @if (chart(); as c) {
-          <svg class="chart" viewBox="0 0 360 128" role="img" [attr.aria-label]="d.context.text" data-testid="context-chart">
-            <!-- Turnos disponibles: línea de referencia -->
-            <text [attr.x]="c.shiftX" y="124" text-anchor="middle" class="chart__ref-label">{{ c.shiftLabel }}</text>
-            @for (bar of c.bars; track bar.label) {
-              <text [attr.x]="c.left" [attr.y]="bar.y - 7" class="chart__label">{{ bar.label }}</text>
-              <rect [attr.x]="c.left" [attr.y]="bar.y" [attr.width]="bar.width" height="24" rx="3" [attr.class]="'chart__bar chart__bar--' + bar.tone" />
-              <text [attr.x]="c.left + bar.width + 6" [attr.y]="bar.y + 17" class="chart__value">{{ bar.value }}</text>
-            }
-            <!-- Drawn over the bars and only beside them, so it never crosses a label -->
-            @for (bar of c.bars; track bar.label; let last = $last) {
-              <line [attr.x1]="c.shiftX" [attr.x2]="c.shiftX" [attr.y1]="bar.y - 3" [attr.y2]="last ? 110 : bar.y + 27" class="chart__ref" />
-            }
-          </svg>
-          <p class="context__text">
-            {{ d.context.text }} Hoy son <strong>{{ c.overload }} veces</strong> las horas de turno disponibles.
-          </p>
+          <div class="context__body">
+            <div class="context__chart" #chartBox>
+              <svg
+                class="chart"
+                [attr.viewBox]="c.viewBox"
+                [attr.height]="c.height"
+                role="img"
+                [attr.aria-label]="d.context.text"
+                data-testid="context-chart"
+              >
+                <!-- Turnos disponibles: línea de referencia -->
+                <text [attr.x]="c.shiftX" [attr.y]="c.refLabelY" text-anchor="middle" class="chart__ref-label">{{ c.shiftLabel }}</text>
+                @for (bar of c.bars; track bar.label) {
+                  <text x="0" [attr.y]="bar.y - 8" class="chart__label">{{ bar.label }}</text>
+                  <rect
+                    x="0"
+                    [attr.y]="bar.y"
+                    [attr.width]="bar.width"
+                    [attr.height]="c.barHeight"
+                    [attr.rx]="c.radius"
+                    [attr.class]="'chart__bar chart__bar--' + bar.tone"
+                  />
+                  <text [attr.x]="bar.width + 8" [attr.y]="bar.y + 18" class="chart__value">{{ bar.value }}</text>
+                }
+                @if (c.over) {
+                  <path [attr.d]="c.over" class="chart__over" />
+                }
+                <!-- Drawn over the bars and only beside them, so it never crosses a label -->
+                @for (bar of c.bars; track bar.label; let last = $last) {
+                  <line
+                    [attr.x1]="c.shiftX"
+                    [attr.x2]="c.shiftX"
+                    [attr.y1]="bar.y - 4"
+                    [attr.y2]="last ? c.refEnd : bar.y + c.barHeight + 4"
+                    class="chart__ref"
+                  />
+                }
+              </svg>
+            </div>
+            <p class="context__text">
+              {{ d.context.text }} Hoy son <strong>{{ c.overload }} veces</strong> las horas de turno disponibles.
+            </p>
+          </div>
         }
       </app-card>
 
       <!-- Desviaciones abiertas -->
-      <app-card title="Desviaciones abiertas" [subtitle]="deviations().total + ' alertas sin revisar · ' + deviations().overdue + ' vencidas'">
+      <app-card
+        class="deviations"
+        title="Desviaciones abiertas"
+        [subtitle]="deviations().total + ' alertas sin revisar · ' + deviations().overdue + ' vencidas'"
+      >
         <div class="dev" data-testid="open-deviations">
           <div class="dev__group">
             <span class="dev__title">Por prioridad</span>
@@ -90,7 +137,7 @@
                   <span class="rule__total">{{ rule.total }}</span>
                 </div>
               } @empty {
-                <span class="text-muted text-sm">Sin alertas abiertas.</span>
+                <span class="dev__none">Sin alertas abiertas.</span>
               }
             </div>
             @if (deviations().moreRules > 0) {
@@ -99,7 +146,12 @@
           </div>
           <div class="dev__group">
             <span class="dev__title">Por antigüedad</span>
-            <div class="dev__tiles">
+            <div class="dev__share" aria-hidden="true">
+              @for (a of deviations().age; track a.label) {
+                <span [style.width.%]="a.share"></span>
+              }
+            </div>
+            <div class="dev__tiles dev__tiles--age">
               @for (a of deviations().age; track a.label) {
                 <div class="tile">
                   <span class="tile__value">{{ a.total }}</span>
@@ -113,39 +165,56 @@
 
       <!-- Decisión al cierre -->
       <app-card [title]="d.decision.title" subtitle="Los indicadores se leen juntos" class="decision">
-        <div class="verdict" [class]="'verdict verdict--' + verdict().key" data-testid="verdict">
-          <span class="verdict__eyebrow">Con los valores de hoy aplicaría</span>
-          <span class="verdict__label" data-testid="verdict-label">
-            @for (option of d.decision.options; track option.key) {
-              @if (option.key === verdict().key) {
-                {{ option.label }}
+        <div class="decision__body">
+          <div class="verdict" [class]="'verdict verdict--' + verdict().key" data-testid="verdict">
+            <span class="verdict__icon" aria-hidden="true"><app-icon [name]="verdictIcon[verdict().key]" [size]="22" /></span>
+            <span class="verdict__eyebrow">Con los valores de hoy aplicaría</span>
+            <span class="verdict__label" data-testid="verdict-label">
+              @for (option of d.decision.options; track option.key) {
+                @if (option.key === verdict().key) {
+                  {{ option.label }}
+                }
               }
+            </span>
+            <span class="verdict__why">{{ verdict().why }} ({{ verdict().met }} de {{ verdict().criteria.length }})</span>
+            <span class="verdict__pips" aria-hidden="true">
+              @for (c of verdict().criteria; track c.label) {
+                <i [class.is-ok]="c.ok"></i>
+              }
+            </span>
+          </div>
+          <ul class="criteria">
+            @for (c of verdict().criteria; track c.label) {
+              <li [class.is-ok]="c.ok" [title]="c.display">
+                <app-icon [name]="c.ok ? 'check' : 'close'" [size]="13" />
+                {{ c.label }}
+              </li>
             }
-          </span>
-          <span class="verdict__why">{{ verdict().why }} ({{ verdict().met }} de {{ verdict().criteria.length }})</span>
-        </div>
-        <ul class="criteria">
-          @for (c of verdict().criteria; track c.label) {
-            <li [class.is-ok]="c.ok" [title]="c.display">
-              <app-icon [name]="c.ok ? 'check' : 'close'" [size]="13" />
-              {{ c.label }}
-            </li>
-          }
-        </ul>
-        <div class="options">
-          @for (option of d.decision.options; track option.key) {
-            <div [class]="'option option--' + option.key" [class.is-active]="option.key === verdict().key" [attr.data-testid]="'option-' + option.key">
-              <span class="option__label">{{ option.label }}</span>
-              <span class="option__text">{{ option.text }}</span>
-            </div>
-          }
+          </ul>
+          <div class="options">
+            @for (option of d.decision.options; track option.key) {
+              <div
+                [class]="'option option--' + option.key"
+                [class.is-active]="option.key === verdict().key"
+                [attr.data-testid]="'option-' + option.key"
+              >
+                <span class="option__label">{{ option.label }}</span>
+                <span class="option__text">{{ option.text }}</span>
+              </div>
+            }
+          </div>
         </div>
       </app-card>
     </div>
   } @else if (loading()) {
-    <app-card><app-skeleton [lines]="8" /></app-card>
+    <div class="board__wide"><app-skeleton height="2.6rem" /></div>
+    <div class="kpis">
+      @for (n of skeletonCards; track n) {
+        <div class="kpi kpi--loading"><app-skeleton [lines]="4" /></div>
+      }
+    </div>
   } @else {
-    <app-card>
+    <app-card class="board__wide">
       <app-empty-state icon="alert" title="No se pudo cargar el tablero" message="Verifica que el backend esté arriba. La pantalla vuelve a intentar sola." />
     </app-card>
   }

@@ -18,29 +18,29 @@ const TAB_KEY = 'esivans.demo.alertsTab';
   template: `
     <div class="page page--fill">
       <div class="tabs">
-        <div class="tabs__list" role="tablist" aria-label="Secciones de alertas">
+        <div class="tabs__list ui-tabs" role="tablist" aria-label="Secciones de alertas">
           @for (item of tabs(); track item.key) {
             <button
               type="button"
               role="tab"
-              class="tabs__tab"
+              class="tabs__tab ui-tab"
               [class.is-active]="tab() === item.key"
               [attr.aria-selected]="tab() === item.key"
               [attr.data-testid]="'tab-' + item.key"
               (click)="setTab(item.key)"
             >
-              <app-icon [name]="$any(item.icon)" [size]="16" />
+              <app-icon [name]="$any(item.icon)" [size]="17" />
               {{ item.label }}
               @if (item.count !== null) {
-                <span class="tabs__count">{{ item.count }}</span>
+                <span class="tabs__count ui-count">{{ item.count }}</span>
               }
             </button>
           }
         </div>
         <div class="tabs__summary" data-testid="alerts-summary">
-          <span class="ui-badge ui-badge--navy">Abiertas: {{ summary().open }}</span>
-          <span class="ui-badge ui-badge--red">Prioridad alta: {{ summary().high }}</span>
-          <span class="ui-badge ui-badge--yellow">Vencidas: {{ summary().overdue }}</span>
+          <span class="summary summary--open">Abiertas: <strong>{{ summary().open }}</strong></span>
+          <span class="summary summary--high">Prioridad alta: <strong>{{ summary().high }}</strong></span>
+          <span class="summary summary--late">Vencidas: <strong>{{ summary().overdue }}</strong></span>
         </div>
       </div>
 
@@ -67,58 +67,62 @@ const TAB_KEY = 'esivans.demo.alertsTab';
     }
     .tabs {
       display: flex;
-      align-items: flex-end;
-      gap: 1rem;
-      border-bottom: 1px solid var(--line-strong);
+      align-items: center;
+      gap: var(--space-4);
+      box-shadow: inset 0 -1px 0 var(--line);
     }
     .tabs__list {
-      display: flex;
-      gap: 0.15rem;
       flex: 1;
-      min-width: 0;
     }
-    .tabs__tab {
+    /* Resumen de la bandeja: tres cifras en una sola pieza, con el color como apoyo del rótulo */
+    .tabs__summary {
+      display: flex;
+      flex: none;
+      margin-bottom: var(--space-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      box-shadow: var(--shadow-xs);
+    }
+    .summary {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      padding: 0.5rem 0.8rem;
-      margin-bottom: -1px;
-      border: 0;
-      border-bottom: 3px solid transparent;
-      background: transparent;
-      color: var(--ink-2);
+      padding: 0.3rem 0.75rem;
+      font-size: var(--fs-xs);
       font-weight: 700;
-      font-size: 0.92rem;
-      white-space: nowrap;
-      cursor: pointer;
-    }
-    .tabs__tab:hover {
-      color: var(--navy);
-      background: var(--blue-soft);
-    }
-    .tabs__tab.is-active {
-      color: var(--navy);
-      border-bottom-color: var(--orange);
-    }
-    .tabs__count {
-      min-width: 1.4rem;
-      padding: 0 0.35rem;
-      border-radius: 999px;
-      background: var(--line);
+      line-height: 1.4;
       color: var(--ink-2);
-      font-size: 0.74rem;
-      line-height: 1.4rem;
-      text-align: center;
+      white-space: nowrap;
     }
-    .tabs__tab.is-active .tabs__count {
-      background: var(--navy);
-      color: var(--white);
+    .summary + .summary {
+      border-left: 1px solid var(--line);
     }
-    .tabs__summary {
-      display: flex;
-      gap: 0.4rem;
-      padding-bottom: 0.45rem;
+    .summary::before {
+      content: '';
       flex: none;
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background: var(--navy);
+    }
+    .summary--high::before {
+      background: var(--crit);
+    }
+    .summary--late::before {
+      background: var(--warn);
+    }
+    .summary strong {
+      font-size: var(--fs-sm);
+      font-weight: 900;
+      color: var(--navy);
+      font-variant-numeric: tabular-nums;
+    }
+    .summary--high strong {
+      color: var(--crit-ink);
+    }
+    .summary--late strong {
+      color: var(--warn-ink);
     }
   `,
 })

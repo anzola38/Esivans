@@ -1,15 +1,15 @@
-<div class="split">
+<div class="split split--review">
   <!-- Lista por prioridad -->
   <app-card class="split__list" flush scroll>
     <div class="list__bar">
-      <div class="seg" role="group" aria-label="Filtrar por estado">
-        <button type="button" class="seg__btn" [class.is-active]="filter() === 'open'" (click)="setFilter('open')" data-testid="filter-open">
+      <div class="seg ui-segmented" role="group" aria-label="Filtrar por estado">
+        <button type="button" class="seg__btn ui-segmented__item" [class.is-active]="filter() === 'open'" [attr.aria-pressed]="filter() === 'open'" (click)="setFilter('open')" data-testid="filter-open">
           Abiertas · {{ counts().open }}
         </button>
-        <button type="button" class="seg__btn" [class.is-active]="filter() === 'reviewed'" (click)="setFilter('reviewed')" data-testid="filter-reviewed">
+        <button type="button" class="seg__btn ui-segmented__item" [class.is-active]="filter() === 'reviewed'" [attr.aria-pressed]="filter() === 'reviewed'" (click)="setFilter('reviewed')" data-testid="filter-reviewed">
           Revisadas · {{ counts().reviewed }}
         </button>
-        <button type="button" class="seg__btn" [class.is-active]="filter() === 'all'" (click)="setFilter('all')" data-testid="filter-all">
+        <button type="button" class="seg__btn ui-segmented__item" [class.is-active]="filter() === 'all'" [attr.aria-pressed]="filter() === 'all'" (click)="setFilter('all')" data-testid="filter-all">
           Todas · {{ counts().all }}
         </button>
       </div>
@@ -43,16 +43,15 @@
             >
               <span class="item__top">
                 <app-priority-chip [priority]="alert.priority" compact />
-                <span class="item__points">{{ alert.points }} {{ alert.points === 1 ? 'punto' : 'puntos' }}</span>
                 <span class="item__vehicle">{{ alert.vehicle?.code ?? 'Sin vehículo' }}</span>
                 <span class="item__plate">{{ alert.vehicle?.plate }}</span>
                 <span class="grow"></span>
                 @if (alert.status === 'reviewed') {
                   <span class="ui-badge ui-badge--blue">{{ alert.review_result_label }}</span>
                 } @else if (alert.overdue) {
-                  <span class="ui-badge ui-badge--red">Vencida</span>
+                  <span class="ui-badge ui-badge--red"><app-icon name="alert" [size]="13" />Vencida</span>
                 } @else {
-                  <span class="item__deadline"><app-icon name="clock" [size]="13" />{{ alert.deadline_label }}</span>
+                  <span class="item__deadline"><app-icon name="clock" [size]="14" />{{ alert.deadline_label }}</span>
                 }
               </span>
               <span class="item__rules">
@@ -60,6 +59,7 @@
                   <span class="ui-code">{{ code }}</span>
                 }
                 <span class="item__names">{{ alert.reasons[0]?.name }}{{ alert.reasons.length > 1 ? ' y ' + (alert.reasons.length - 1) + ' más' : '' }}</span>
+                <span class="item__points">{{ alert.points }} {{ alert.points === 1 ? 'punto' : 'puntos' }}</span>
               </span>
               <span class="item__reason">{{ alert.reasons[0]?.explanation }}</span>
             </button>
@@ -74,6 +74,7 @@
     @if (selected(); as alert) {
       <div class="detail" data-testid="alert-detail">
         <header class="detail__head">
+          <span class="detail__icon" aria-hidden="true"><app-icon [name]="alert.kind === 'vehicle' ? 'truck' : 'fuel'" [size]="20" /></span>
           <div class="detail__title">
             <span class="detail__code" data-testid="alert-vehicle">{{ alert.vehicle?.code ?? 'Sin vehículo' }}</span>
             <span class="detail__plate">{{ alert.vehicle?.plate }} · {{ alert.vehicle?.fuel_type_label }}</span>
@@ -96,7 +97,7 @@
             }
           </span>
           <span class="grow"></span>
-          <span class="text-muted nowrap">Generada el {{ alert.created_at | esDate }}</span>
+          <span class="detail__created">Generada el {{ alert.created_at | esDate }}</span>
         </div>
 
         <!-- Razones -->
@@ -105,7 +106,7 @@
           <ul class="reasons" data-testid="alert-reasons">
             @for (reason of alert.reasons; track reason.code) {
               <li class="reason">
-                <span class="reason__code">{{ reason.code }}</span>
+                <span class="reason__code code">{{ reason.code }}</span>
                 <span class="reason__body">
                   <span class="reason__name">{{ reason.name }}</span>
                   <span class="reason__text">{{ reason.explanation }}</span>
@@ -142,7 +143,7 @@
           @if (alert.evidence.transaction; as tx) {
             <div class="tx-grid">
               <div class="tx">
-                <div class="tx__title">Tanqueo con alerta</div>
+                <div class="tx__title"><app-icon name="alert" [size]="14" />Tanqueo con alerta</div>
                 <dl class="ui-kv">
                   <dt>Fecha</dt>
                   <dd>{{ tx.timestamp | esDateTime }}</dd>
@@ -160,7 +161,7 @@
               </div>
               @if (alert.evidence.previous_transaction; as prev) {
                 <div class="tx tx--muted">
-                  <div class="tx__title">Carga anterior</div>
+                  <div class="tx__title"><app-icon name="clock" [size]="14" />Carga anterior</div>
                   <dl class="ui-kv">
                     <dt>Fecha</dt>
                     <dd>{{ prev.timestamp | esDateTime }}</dd>
@@ -273,13 +274,14 @@
                 <span class="prov prov--eom"><strong>EOM</strong> {{ book.stats.services_90d | esNumber }} servicios en 90 días</span>
               </div>
               @if (book.summary.providers.length > 1) {
-                <div class="seg seg--sm" role="group" aria-label="Filtrar por proveedor">
-                  <button type="button" class="seg__btn" [class.is-active]="ledgerProvider() === 'all'" (click)="ledgerProvider.set('all')">Todos</button>
+                <div class="seg seg--sm ui-segmented" role="group" aria-label="Filtrar por proveedor">
+                  <button type="button" class="seg__btn ui-segmented__item" [class.is-active]="ledgerProvider() === 'all'" [attr.aria-pressed]="ledgerProvider() === 'all'" (click)="ledgerProvider.set('all')">Todos</button>
                   @for (p of book.summary.providers; track p.provider) {
                     <button
                       type="button"
-                      class="seg__btn"
+                      class="seg__btn ui-segmented__item"
                       [class.is-active]="ledgerProvider() === p.provider"
+                      [attr.aria-pressed]="ledgerProvider() === p.provider"
                       [attr.data-testid]="'ledger-provider-' + p.provider"
                       (click)="ledgerProvider.set(p.provider)"
                     >
@@ -290,7 +292,7 @@
               }
             </div>
 
-            <app-table dense>
+            <app-table dense class="ledger__table">
               <table>
                 <thead>
                   <tr>
@@ -310,7 +312,7 @@
                       <td>
                         <span [class]="'prov-dot prov-dot--' + entry.provider"></span>{{ entry.provider_label }}
                         @if (entry.source === 'import') {
-                          <span class="ui-badge ui-badge--orange ledger__new">Archivo</span>
+                          <span class="ui-badge ui-badge--navy ledger__new">Archivo</span>
                         }
                       </td>
                       <td>{{ entry.product }}</td>
@@ -326,12 +328,13 @@
             @if (ledgerRows().total > ledgerRows().items.length || ledgerExpanded()) {
               <button type="button" appButton="ghost" size="sm" class="ledger__more" (click)="ledgerExpanded.set(!ledgerExpanded())">
                 {{ ledgerExpanded() ? 'Ver solo los últimos' : 'Ver los ' + ledgerRows().total + ' movimientos' }}
+                <app-icon name="chevron-down" [size]="14" [class.is-flipped]="ledgerExpanded()" />
               </button>
             }
           } @else if (ledgerLoading()) {
             <app-skeleton [lines]="4" />
           } @else {
-            <p class="text-muted text-sm">No hay libro único para esta alerta.</p>
+            <p class="text-ink-2 text-sm">No hay libro único para esta alerta.</p>
           }
         </section>
 
@@ -358,7 +361,7 @@
               <p class="closed__comment">“{{ alert.review_comment }}”</p>
               @for (step of actions(); track step.title) {
                 <div class="next" data-testid="next-action">
-                  <app-icon name="arrow-right" [size]="16" />
+                  <span class="next__icon" aria-hidden="true"><app-icon name="arrow-right" [size]="16" /></span>
                   <div>
                     <div class="next__eyebrow">Acción que sigue · {{ step.title }}</div>
                     <div class="next__action">{{ step.action }}</div>
@@ -371,7 +374,7 @@
           } @else {
             <h3 class="block__title">Registrar el resultado</h3>
             @if (!canReview()) {
-              <div class="ui-note ui-note--warn mb-2" data-testid="review-readonly">
+              <div class="ui-note ui-note--warn review__note" data-testid="review-readonly">
                 <app-icon name="lock" [size]="16" />
                 <span>Con el rol {{ roles.label() }} solo puedes consultar. El resultado lo registra el {{ roles.rolesFor('alert.review') }}.</span>
               </div>
@@ -388,20 +391,23 @@
                   [disabled]="!canReview()"
                   (click)="pickResult(option.value)"
                 >
-                  <span class="result__label">{{ option.label }}</span>
-                  <span class="result__hint">{{ option.hint }}</span>
+                  <span class="result__radio" aria-hidden="true"></span>
+                  <span class="result__text">
+                    <span class="result__label">{{ option.label }}</span>
+                    <span class="result__hint">{{ option.hint }}</span>
+                  </span>
                 </button>
               }
             </div>
             @if (submitted() && !result()) {
-              <div class="ui-error mt-1" data-testid="result-error">Elige el resultado de la revisión.</div>
+              <div class="ui-error review__error" data-testid="result-error">Elige el resultado de la revisión.</div>
             }
-            <div class="ui-field mt-2">
+            <div class="ui-field review__field">
               <label class="ui-label" for="review-comment">Comentario <span class="req">*</span></label>
               <textarea
                 id="review-comment"
                 class="ui-textarea"
-                rows="2"
+                rows="3"
                 maxlength="500"
                 placeholder="Qué se encontró y con quién se revisó"
                 data-testid="review-comment"

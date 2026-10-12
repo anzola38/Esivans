@@ -5,7 +5,7 @@
     } @else if (failed() && !rules().length) {
       <app-empty-state icon="alert" title="No se pudo cargar el catálogo de reglas" />
     } @else {
-      <app-table plain dense data-testid="rules-table">
+      <app-table plain dense class="rules__table" data-testid="rules-table">
         <table>
           <thead>
             <tr>
@@ -29,23 +29,23 @@
                   [attr.data-testid]="'rule-row-' + rule.code"
                   (click)="select(rule.code)"
                 >
-                  <td><span class="rules__code">{{ rule.code }}</span></td>
+                  <td><span class="rules__code code">{{ rule.code }}</span></td>
                   <td>
-                    <div class="fw-700">{{ rule.name }}</div>
+                    <div class="rules__name">{{ rule.name }}</div>
                     <div class="rules__sub">{{ rule.version > 1 ? thresholdText(rule, rule.threshold) : rule.threshold_text }}</div>
                   </td>
                   <td>
                     <span [class]="'ui-badge ui-badge--' + (rule.treatment === 'automatic' ? 'orange' : 'blue')">{{ rule.treatment_label }}</span>
                   </td>
-                  <td class="num fw-700">{{ rule.points }}</td>
+                  <td class="num rules__points">{{ rule.points }}</td>
                   <td class="num">
-                    <span [class.rules__bumped]="rule.version > 1">v{{ rule.version }}</span>
+                    <span class="rules__version" [class.rules__bumped]="rule.version > 1">v{{ rule.version }}</span>
                   </td>
                   <td class="num">
                     @if (rule.precision === null) {
-                      <span class="text-muted">Sin revisar</span>
+                      <span class="text-ink-2">Sin revisar</span>
                     } @else {
-                      {{ rule.precision | esPercent: 0 : true }}
+                      <span class="fw-700">{{ rule.precision | esPercent: 0 : true }}</span>
                       <span class="rules__sub">{{ rule.confirmed }} de {{ rule.reviewed }}</span>
                     }
                   </td>
@@ -66,7 +66,7 @@
     @if (selected(); as rule) {
       <div data-testid="rule-detail">
         <header class="rule__head">
-          <span class="rules__code rules__code--lg">{{ rule.code }}</span>
+          <span class="rules__code rules__code--lg code code--lg">{{ rule.code }}</span>
           <div class="rule__titles">
             <div class="rule__name">{{ rule.name }}</div>
             <div class="rule__text">{{ rule.threshold_text }}</div>
@@ -95,10 +95,10 @@
           }}
         </p>
 
-        <section class="block">
+        <section class="block rule__edit" [class.is-readonly]="!canEdit()">
           <h3 class="block__title">Cambiar el umbral <span class="block__meta">crea la versión {{ rule.version + 1 }} y conserva la anterior</span></h3>
           @if (!canEdit()) {
-            <div class="ui-note ui-note--warn mb-2" data-testid="rules-readonly">
+            <div class="ui-note ui-note--warn rule__note" data-testid="rules-readonly">
               <app-icon name="lock" [size]="16" />
               <span>Solo el {{ roles.rolesFor('rules.edit') }} puede cambiar un umbral. Con el rol {{ roles.label() }} el catálogo es de consulta.</span>
             </div>
@@ -133,7 +133,7 @@
               <span class="ui-help">Vigente: {{ rule.points }}</span>
             </div>
           </div>
-          <div class="ui-field mt-2">
+          <div class="ui-field rule__reason">
             <label class="ui-label" for="rule-reason">Motivo del cambio <span class="req">*</span></label>
             <input
               id="rule-reason"
@@ -149,11 +149,11 @@
           </div>
           @if (submitted() && canEdit()) {
             @if (changes() === null) {
-              <div class="ui-error mt-1" data-testid="rule-error">Revisa los valores: números de 0 en adelante y puntos enteros de 0 a 5.</div>
+              <div class="ui-error rule__error" data-testid="rule-error"><app-icon name="alert" [size]="14" />Revisa los valores: números de 0 en adelante y puntos enteros de 0 a 5.</div>
             } @else if (!hasChanges()) {
-              <div class="ui-error mt-1" data-testid="rule-error">Cambia al menos un valor frente a la versión vigente.</div>
+              <div class="ui-error rule__error" data-testid="rule-error"><app-icon name="alert" [size]="14" />Cambia al menos un valor frente a la versión vigente.</div>
             } @else if (reasonInvalid()) {
-              <div class="ui-error mt-1" data-testid="rule-error">El motivo del cambio es obligatorio.</div>
+              <div class="ui-error rule__error" data-testid="rule-error"><app-icon name="alert" [size]="14" />El motivo del cambio es obligatorio.</div>
             }
           }
           <div class="rule__actions">
@@ -170,6 +170,7 @@
           <ul class="history" data-testid="rule-history">
             @for (version of rule.history; track version.version) {
               <li class="history__item" [class.is-current]="version.version === rule.version">
+                <span class="history__dot" aria-hidden="true"></span>
                 <span class="history__version">v{{ version.version }}</span>
                 <div class="history__body">
                   <div class="history__values">

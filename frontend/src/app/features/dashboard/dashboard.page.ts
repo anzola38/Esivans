@@ -1,10 +1,10 @@
-import { Component, DestroyRef, computed, effect, inject, signal, untracked } from '@angular/core';
+import { Component, DestroyRef, ElementRef, computed, effect, inject, signal, untracked, viewChild } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { ApiService } from '../../core/api.service';
 import { DemoService } from '../../core/demo.service';
 import { formatNumber } from '../../core/format';
 import { Priority } from '../../core/models';
-import { SHARED } from '../../shared';
+import { IconName, SHARED } from '../../shared';
 
 interface Indicator {
   key: string;
@@ -56,8 +56,26 @@ const STATUS_TONE: Record<Indicator['status'], string> = {
 };
 
 const POLL_MS = 5000;
-// Geometry of the context chart (SVG user units).
-const CHART = { left: 4, width: 300, max: 70 };
+// Geometry of the context chart, in CSS pixels: the viewBox follows the rendered width so text never scales.
+const CHART = { valueGutter: 64, barHeight: 26, rows: [20, 72], refLabelY: 122, height: 128, radius: 4 };
+
+const VERDICT_ICON: Record<'expand' | 'adjust' | 'stop', IconName> = {
+  expand: 'check-circle',
+  adjust: 'sliders',
+  stop: 'alert',
+};
+
+/** Where the value and its target sit on a 0–100 rail, and on which side of the target the goal is met. */
+function goalRail(indicator: Indicator): { lower: boolean; target: number; value: number | null } {
+  const lower = !indicator.higher_is_better;
+  const max = lower ? Math.max(indicator.target_value * 2, 3) : indicator.unit === '%' ? 1 : Math.max(indicator.target_value * 2, 1);
+  const position = (value: number) => Math.min(100, Math.max(0, (value / max) * 100));
+  return {
+    lower,
+    target: position(indicator.target_value),
+    value: indicator.current_value === null ? null : position(indicator.current_value),
+  };
+}
 
 /** Pilot dashboard: 9 indicators against baseline and target, open deviations and the closing decision. */
 @Component({
@@ -75,7 +93,17 @@ export class DashboardPage {
   protected readonly data = signal<DashboardResponse | null>(null);
   private readonly openAlerts = signal<OpenAlert[]>([]);
 
+  private readonly chartBox = viewChild<ElementRef<HTMLElement>>('chartBox');
+  private readonly chartWidth = signal(320);
+
+  protected readonly skeletonCards = Array.from({ length: 9 }, (_, i) => i);
+  protected readonly verdictIcon = VERDICT_ICON;
+
   protected readonly tone = (status: Indicator['status']) => STATUS_TONE[status] ?? 'neutral';
+
+  protected readonly indicators = computed(() =>
+    (this.data()?.indicators ?? []).map((indicator) => ({ ...indicator, goal: goalRail(indicator) })),
+  );
 
   protected readonly metCount = computed(
     () => (this.data()?.indicators ?? []).filter((i) => i.status === 'met').length,
@@ -85,26 +113,45 @@ export class DashboardPage {
   protected readonly chart = computed(() => {
     const ctx = this.data()?.context;
     if (!ctx) return null;
-    const x = (hours: number) => (hours / CHART.max) * CHART.width;
+    const width = this.chartWidth();
+    const plot = Math.max(120, width - CHART.valueGutter);
+    const max = Math.max(ctx.hours_today, ctx.hours_target, ctx.shift_hours);
+    const x = (hours: number) => (hours / max) * plot;
     const hours = (value: number) => formatNumber(value, 0, 1) + ' h';
+    const [todayY, targetY] = CHART.rows;
+    const shiftX = x(ctx.shift_hours);
+    const todayEnd = x(ctx.hours_today);
+    const r = CHART.radius;
+    // Part of today's bar beyond the available shifts: square on the left, rounded on the right.
+    const over =
+      todayEnd - shiftX > r
+        ? 'M' + shiftX + ' ' + todayY + 'H' + (todayEnd - r) + 'a' + r + ' ' + r + ' 0 0 1 ' + r + ' ' + r +
+          'V' + (todayY + CHART.barHeight - r) + 'a' + r + ' ' + r + ' 0 0 1 ' + -r + ' ' + r + 'H' + shiftX + 'Z'
+        : null;
     return {
-      left: CHART.left,
-      shiftX: CHART.left + x(ctx.shift_hours),
+      viewBox: '0 0 ' + width + ' ' + CHART.height,
+      height: CHART.height,
+      barHeight: CHART.barHeight,
+      radius: r,
+      shiftX,
       shiftLabel: hours(ctx.shift_hours) + ' de turnos',
+      refLabelY: CHART.refLabelY,
+      refEnd: CHART.refLabelY - 14,
+      over,
       bars: [
         {
           label: 'Hoy: ' + ctx.requests_per_day + ' solicitudes de ' + ctx.minutes_per_request_today + ' min',
           value: hours(ctx.hours_today),
-          width: x(ctx.hours_today),
-          tone: 'crit',
-          y: 24,
+          width: todayEnd,
+          tone: 'today',
+          y: todayY,
         },
         {
           label: 'Con el MVP: ' + ctx.minutes_per_request_target + ' min por solicitud',
           value: hours(ctx.hours_target),
           width: x(ctx.hours_target),
-          tone: 'good',
-          y: 76,
+          tone: 'target',
+          y: targetY,
         },
       ],
       overload: formatNumber(ctx.hours_today / ctx.shift_hours, 1, 1),
@@ -123,6 +170,7 @@ export class DashboardPage {
       .sort((a, b) => b.total - a.total || a.code.localeCompare(b.code));
     const top = rules.slice(0, 8);
     const max = Math.max(1, ...top.map((r) => r.total));
+    const share = (total: number) => (alerts.length ? (total / alerts.length) * 100 : 0);
     return {
       total: alerts.length,
       overdue: count((a) => a.overdue),
@@ -137,7 +185,7 @@ export class DashboardPage {
         { label: 'Menos de 48 h', total: count((a) => ageDays(a) < 2) },
         { label: '2 a 7 días', total: count((a) => ageDays(a) >= 2 && ageDays(a) <= 7) },
         { label: 'Más de 7 días', total: count((a) => ageDays(a) > 7) },
-      ],
+      ].map((bucket) => ({ ...bucket, share: share(bucket.total) })),
     };
   });
 
@@ -178,6 +226,14 @@ export class DashboardPage {
     effect(() => {
       this.demo.dataVersion();
       untracked(() => this.load());
+    });
+    // The chart is drawn at its real width, so its labels keep their size at any resolution.
+    effect((onCleanup) => {
+      const box = this.chartBox()?.nativeElement;
+      if (!box) return;
+      const observer = new ResizeObserver(([entry]) => this.chartWidth.set(Math.round(entry.contentRect.width)));
+      observer.observe(box);
+      onCleanup(() => observer.disconnect());
     });
     const timer = setInterval(() => this.load(), POLL_MS);
     inject(DestroyRef).onDestroy(() => clearInterval(timer));

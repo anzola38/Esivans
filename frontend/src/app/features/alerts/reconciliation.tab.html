@@ -1,8 +1,8 @@
 <div class="split split--even">
   <!-- Carga del archivo -->
   <app-card title="Archivo del proveedor" subtitle="Lo autorizado frente a lo que el proveedor registró" scroll>
-    <div class="upload">
-      <div class="upload__icon"><app-icon name="file" [size]="22" /></div>
+    <div class="upload" [class.is-loaded]="!!result()">
+      <div class="upload__icon" aria-hidden="true"><app-icon name="file" [size]="22" /></div>
       <div class="upload__text">
         <strong>Exporte diario de Terpel (CSV)</strong>
         <span>Entra al libro único de tanqueos. Si se carga dos veces no duplica.</span>
@@ -10,6 +10,7 @@
       <button
         type="button"
         appButton
+        class="upload__action"
         data-testid="import-sample"
         [loading]="importing()"
         [disabled]="!canImport()"
@@ -20,7 +21,7 @@
       </button>
     </div>
     @if (!canImport()) {
-      <div class="ui-note ui-note--warn mt-2" data-testid="import-readonly">
+      <div class="ui-note ui-note--warn mt-3" data-testid="import-readonly">
         <app-icon name="lock" [size]="16" />
         <span>Con el rol {{ roles.label() }} solo puedes consultar. El archivo lo carga {{ roles.rolesFor('provider.import') }}.</span>
       </div>
@@ -67,10 +68,10 @@
             <tbody>
               @for (m of r.matched_authorizations; track m.authorization_id) {
                 <tr>
-                  <td class="fw-700">{{ m.vehicle }}</td>
+                  <td class="fw-700 text-navy">{{ m.vehicle }}</td>
                   <td class="mono">{{ m.reference }}</td>
                   <td class="num">{{ m.authorized_amount | cop }}</td>
-                  <td class="num">{{ m.recorded_amount | cop }}</td>
+                  <td class="num fw-700">{{ m.recorded_amount | cop }}</td>
                   <td>
                     <span [class]="'ui-badge ui-badge--' + (m.within_tolerance ? 'green' : 'yellow')">
                       {{ m.within_tolerance ? 'Cuadra' : 'Diferencia de ' + (m.difference_share | esPercent: 0 : true) }}
@@ -98,21 +99,23 @@
           <tbody>
             @for (line of r.lines; track line.line) {
               <tr>
-                <td class="num">{{ line.line }}</td>
+                <td class="num text-ink-2">{{ line.line }}</td>
                 <td class="mono nowrap">{{ line.external_id }}</td>
-                <td>{{ line.vehicle ?? '—' }}</td>
+                <td class="fw-700 text-navy">{{ line.vehicle ?? '—' }}</td>
                 <td>
                   <span [class]="'ui-badge ui-badge--' + lineStatus(line.status).tone">{{ lineStatus(line.status).label }}</span>
                 </td>
                 <td>
                   @if (line.rule_codes?.length) {
-                    @for (code of line.rule_codes; track code) {
-                      <span class="ui-code">{{ code }}</span>
-                    }
+                    <span class="import__codes">
+                      @for (code of line.rule_codes; track code) {
+                        <span class="ui-code">{{ code }}</span>
+                      }
+                    </span>
                   } @else if (line.message) {
-                    <span class="text-muted text-sm">{{ line.message }}</span>
+                    <span class="text-ink-2 text-sm">{{ line.message }}</span>
                   } @else {
-                    <span class="text-muted">Sin alerta</span>
+                    <span class="text-ink-2">Sin alerta</span>
                   }
                 </td>
               </tr>
@@ -122,6 +125,7 @@
       </app-table>
     } @else {
       <app-empty-state
+        class="import__empty"
         compact
         icon="scale"
         title="Aún no se ha cargado el archivo de hoy"
@@ -145,10 +149,6 @@
             <app-priority-chip [priority]="alert.priority" />
           </div>
           <div class="hero__body">
-            <div class="hero__amount">
-              <span class="hero__value" data-testid="overpaid-amount">{{ diff.overpaid | cop }}</span>
-              <span class="hero__label">pagados de más</span>
-            </div>
             <div class="hero__prices">
               <div class="price price--bad">
                 <span class="price__label">Cargó</span>
@@ -161,21 +161,30 @@
                 <span class="price__value">{{ diff.corriente_price | cop }} por galón</span>
               </div>
             </div>
+            <div class="hero__result">
+              <div class="hero__amount">
+                <span class="hero__value" data-testid="overpaid-amount">{{ diff.overpaid | cop }}</span>
+                <span class="hero__label">pagados de más</span>
+              </div>
+              <p class="hero__math" data-testid="overpaid-math">
+                {{ diff.gallons | esNumber: 3 }} galones × {{ diff.difference_per_gallon | cop }} de diferencia =
+                <strong>{{ diff.overpaid | cop }}</strong>. Precio de la Corriente: {{ diff.corriente_price_source }}.
+                @if (alert.evidence.transaction; as tx) {
+                  <span class="nowrap">{{ tx.station }},</span> {{ tx.timestamp | esDateTime }}
+                }
+              </p>
+            </div>
           </div>
-          <p class="hero__math" data-testid="overpaid-math">
-            {{ diff.gallons | esNumber: 3 }} galones × {{ diff.difference_per_gallon | cop }} de diferencia =
-            <strong>{{ diff.overpaid | cop }}</strong>. Precio de la Corriente: {{ diff.corriente_price_source }}.
-            @if (alert.evidence.transaction; as tx) {
-              <span class="nowrap">{{ tx.station }},</span> {{ tx.timestamp | esDateTime }}
-            }
-          </p>
           <div class="hero__foot">
-            <span class="text-muted text-sm">
-              @if (alert.status === 'reviewed') {
-                Revisada: {{ alert.review_result_label }} · {{ alert.reviewed_by }}
-              } @else {
-                Plazo: en la semana · sin revisar
-              }
+            <span class="hero__status">
+              <app-icon [name]="alert.status === 'reviewed' ? 'check-circle' : 'clock'" [size]="15" />
+              <span>
+                @if (alert.status === 'reviewed') {
+                  Revisada: {{ alert.review_result_label }} · {{ alert.reviewed_by }}
+                } @else {
+                  Plazo: en la semana · sin revisar
+                }
+              </span>
             </span>
             <button type="button" appButton="outline" size="sm" data-testid="overpaid-review" (click)="review.emit(alert.id)">
               Revisar la alerta
@@ -193,7 +202,7 @@
           <li class="dev">
             <span class="dev__head">
               <app-priority-chip [priority]="alert.priority" compact />
-              <strong class="text-navy">{{ alert.vehicle?.code }}</strong>
+              <strong class="dev__vehicle">{{ alert.vehicle?.code }}</strong>
               @for (code of alert.rule_codes; track code) {
                 <span class="ui-code">{{ code }}</span>
               }

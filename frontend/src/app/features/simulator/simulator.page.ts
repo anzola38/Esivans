@@ -99,6 +99,9 @@ const STEP_PENDING: Record<string, string> = {
   manual_km: 'Escribir el kilometraje a mano',
   not_needed: 'Confirmar que no necesita tanquear ahora',
 };
+/** Assistant messages that report what the AI read on the dashboard photo. */
+const READING_KINDS = ['confirm_reading', 'confirm_correction'];
+const SLA_SECONDS = 600;
 const STORAGE_KEY = 'esivans.simulator.case';
 const POLL_MS = 1200;
 
@@ -315,6 +318,15 @@ export class SimulatorPage {
 
   protected stepText(step: ScriptStep): string {
     return step.type === 'image' ? 'Adjuntar la foto del tablero' : '«' + (step.text ?? '') + '»';
+  }
+
+  protected isReading(kind: string): boolean {
+    return READING_KINDS.includes(kind);
+  }
+
+  /** Share of the 10-minute SLA still available, for the progress meter. */
+  protected slaPercent(remaining: number): number {
+    return Math.max(0, Math.min(100, (remaining / SLA_SECONDS) * 100));
   }
 
   private send(step: ScriptStep): void {

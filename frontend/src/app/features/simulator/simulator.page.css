@@ -3,11 +3,14 @@
   height: 100%;
 }
 
+/* Tres paneles: ficha y guion · teléfono · lo que el sistema entiende. */
 .sim__grid {
   display: grid;
-  grid-template-columns: minmax(17rem, 21rem) minmax(20rem, 1fr) minmax(18rem, 24rem);
-  gap: 1rem;
-  justify-content: center;
+  grid-template-columns:
+    clamp(21rem, 22vw, 23rem)
+    minmax(0, 1fr)
+    clamp(24rem, 26vw, 27rem);
+  gap: var(--space-4);
 }
 
 .sim__case,
@@ -16,119 +19,207 @@
 }
 
 /* ---------- Caso ---------- */
+/* Selector de casos: rejilla de 3 columnas; el último ocupa el resto de su fila. */
 .sim__cases {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
 }
 
 .sim__case-chip {
-  padding: 0.3rem 0.65rem;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-pill);
-  background: var(--white);
-  color: var(--navy);
-  font-size: 0.82rem;
-  font-weight: 700;
-  cursor: pointer;
+  justify-content: center;
+  min-height: 1.8rem;
+  padding-inline: var(--space-2);
+  font-variant-numeric: tabular-nums;
 }
 
-.sim__case-chip:hover {
-  background: var(--blue-soft);
-  border-color: var(--blue);
+.sim__case-chip:last-child:nth-child(3n + 2) {
+  grid-column: span 2;
+}
+
+.sim__case-chip:hover:not(.is-active) {
+  background: var(--white);
 }
 
 .sim__case-chip.is-active {
+  background: var(--navy);
+  color: var(--white);
+  box-shadow: var(--shadow-sm), var(--shadow-inset);
+}
+
+.sim__case-title {
+  margin-top: var(--space-4);
+  font-size: var(--fs-md);
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.25;
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+
+.sim__case-desc {
+  margin: var(--space-1) 0 0;
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+
+/* Ficha: filas rótulo / valor separadas por un divisor fino. */
+.sim__kv {
+  margin: var(--space-3) 0 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+
+.sim__kv-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 2rem;
+  padding: 0.2rem var(--space-3);
+  font-size: var(--fs-sm);
+  line-height: 1.3;
+}
+
+.sim__kv-row + .sim__kv-row {
+  border-top: 1px solid var(--line-soft);
+}
+
+.sim__kv dt {
+  flex: none;
+  color: var(--ink-2);
+}
+
+.sim__kv dd {
+  margin: 0;
+  min-width: 0;
+  font-weight: 700;
+  color: var(--ink);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* La placa se lee como una placa: caja con borde y letras espaciadas. */
+.sim__plate {
+  display: inline-block;
+  padding: 0.05rem 0.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-xs);
+  background: var(--white);
+  box-shadow: var(--shadow-xs);
+  color: var(--navy);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.sim__clock {
+  width: auto;
+  min-height: 0;
+  height: 1.7rem;
+  padding: 0 0.4rem;
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Con la conversación iniciada la hora ya no se edita: se lee como un valor más. */
+.sim__clock:disabled {
+  height: auto;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  color: var(--ink);
+  opacity: 1;
+  -webkit-text-fill-color: var(--ink);
+  text-align: right;
+  cursor: default;
+}
+
+.sim__clock:disabled::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+.sim__clock-help {
+  margin: var(--space-2) 0 0;
+  line-height: 1.35;
+  color: var(--ink-2);
+}
+
+.sim__script-title {
+  margin-top: var(--space-4);
+}
+
+/* Guion: pasos unidos por una línea; hecho, siguiente (naranja) y por venir. */
+.sim__script {
+  list-style: none;
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+
+.sim__script li {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: 0.22rem var(--space-2) 0.22rem 0.25rem;
+  margin-inline: -0.25rem;
+  border-radius: var(--radius-sm);
+  line-height: 1.35;
+  transition:
+    background-color var(--t-base) var(--ease),
+    color var(--t-base) var(--ease);
+}
+
+.sim__script li:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: calc(0.25rem + 0.65rem - 0.5px);
+  top: 1.6rem;
+  bottom: -0.3rem;
+  width: 1px;
+  background: var(--line-strong);
+}
+
+.sim__script li.is-done:not(:last-child)::before {
+  background: var(--navy);
+}
+
+.sim__script-mark {
+  position: relative;
+  z-index: 1;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+  background: var(--white);
+  border: 1px solid var(--line-strong);
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.sim__script-text {
+  min-width: 0;
+  padding-top: 0.05rem;
+}
+
+.sim__script li.is-done .sim__script-mark {
   background: var(--navy);
   border-color: var(--navy);
   color: var(--white);
 }
 
-.sim__case-title {
-  margin-top: 0.75rem;
-  font-weight: 700;
-  color: var(--navy);
-  line-height: 1.25;
-}
-
-.sim__case-desc {
-  margin: 0.2rem 0 0.7rem;
-  font-size: 0.82rem;
-  line-height: 1.35;
-  color: var(--ink-2);
-}
-
-.sim__kv {
-  align-items: center;
-  font-size: 0.86rem;
-  gap: 0.3rem 0.75rem;
-}
-
-.sim__clock {
-  width: auto;
-  padding: 0.2rem 0.45rem;
-  font-weight: 700;
-  font-size: 0.86rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.sim__clock:disabled {
-  background: var(--soft);
-  color: var(--ink-2);
-}
-
-.sim__clock-help {
-  margin: 0.35rem 0 0;
-  line-height: 1.3;
-}
-
-.sim__script-title {
-  margin-top: 0.8rem;
-}
-
-.sim__script {
-  list-style: none;
-  margin: 0.35rem 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  font-size: 0.84rem;
-  color: var(--ink-2);
-}
-
-.sim__script li {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  line-height: 1.3;
-}
-
-.sim__script-mark {
-  display: inline-grid;
-  place-items: center;
-  flex: none;
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 50%;
-  background: var(--soft);
-  border: 1px solid var(--line-strong);
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--muted);
-}
-
-.sim__script li.is-done {
-  color: var(--muted);
-}
-
-.sim__script li.is-done .sim__script-mark {
-  background: var(--good);
-  border-color: var(--good);
-  color: var(--white);
-}
-
 .sim__script li.is-next {
+  background: var(--orange-soft);
   color: var(--ink);
   font-weight: 700;
 }
@@ -139,21 +230,45 @@
   color: var(--white);
 }
 
+.sim__next {
+  box-shadow:
+    var(--shadow-inset),
+    0 1px 2px rgba(16, 24, 40, 0.1),
+    0 6px 14px -6px rgba(235, 104, 52, 0.55);
+}
+
+.sim__next:disabled {
+  box-shadow: none;
+}
+
 .sim__next-hint {
-  margin-top: 0.4rem;
-  font-size: 0.78rem;
-  color: var(--muted);
+  margin-top: var(--space-2);
+  font-size: var(--fs-xs);
+  color: var(--ink-2);
   text-align: center;
   line-height: 1.3;
 }
 
 /* ---------- Teléfono ---------- */
-.sim__phone {
+/* Escenario: superficie hundida que centra el teléfono y da sentido al aire a 1080p. */
+.sim__stage {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 0;
   min-width: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(ellipse 60% 55% at 50% 45%, var(--white) 0%, rgba(255, 255, 255, 0) 100%),
+    var(--soft-2);
+}
+
+/* El teléfono crece con el alto disponible para que no flote a 1080p. */
+.sim__phone.ui-phone {
+  width: clamp(21.5rem, 43vh, 25.5rem);
+  max-height: 52rem;
 }
 
 .sim__chat-empty {
@@ -161,55 +276,130 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  max-width: 15rem;
+  gap: var(--space-3);
+  max-width: 16rem;
   text-align: center;
-  font-size: 0.84rem;
-  line-height: 1.35;
-  color: var(--muted);
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.sim__chat-empty-icon {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--navy);
+  box-shadow:
+    0 0 0 1px var(--blue-line),
+    0 0 0 0.45rem rgba(255, 255, 255, 0.55);
 }
 
 .sim__day {
   align-self: center;
-  padding: 0.1rem 0.6rem;
+  margin-bottom: var(--space-1);
+}
+
+.sim__day span {
+  display: inline-block;
+  padding: 0.12rem 0.7rem;
   border-radius: var(--radius-pill);
-  background: rgba(31, 58, 95, 0.1);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 0 1px rgba(31, 58, 95, 0.1);
   color: var(--ink-2);
-  font-size: 0.7rem;
+  font-size: var(--fs-2xs);
   font-weight: 700;
+}
+
+.ui-bubble {
+  position: relative;
+}
+
+/* El aviso de privacidad es una nota del sistema, no parte de la charla. */
+.ui-bubble[data-kind='privacy_notice'] {
+  max-width: 92%;
+  align-self: center;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 0 0 1px rgba(31, 58, 95, 0.1);
+  color: var(--ink-2);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
 }
 
 .sim__bubble--photo {
   padding: 0.25rem 0.25rem 0.35rem;
-  width: 78%;
+  width: 80%;
 }
 
 .sim__bubble--photo .ui-bubble__time {
-  padding-right: 0.35rem;
+  padding-right: 0.4rem;
 }
 
 .sim__photo {
   display: block;
   width: 100%;
-  border-radius: 9px;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: 11px 2px 11px 11px;
+  background: var(--navy-deep);
+  box-shadow: inset 0 0 0 1px rgba(16, 24, 40, 0.2);
 }
 
-.sim__bubble--final {
-  border: 1px solid #bfe5bf;
-  background: var(--good-soft);
+/* Lo que leyó la IA en la foto: filete naranja y marca de destello. */
+.sim__bubble--ai {
+  box-shadow:
+    inset 3px 0 0 var(--orange),
+    0 1px 1.5px rgba(16, 24, 40, 0.12);
+  padding-left: 0.85rem;
+}
+
+.sim__ai-mark {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  display: grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: var(--orange-soft);
+  color: var(--orange-ink);
+  box-shadow:
+    0 0 0 1px var(--orange-line),
+    0 1px 2px rgba(16, 24, 40, 0.12);
+}
+
+/* Cierre de la conversación: autorizada (verde) o rechazada (rojo), siempre con su texto. */
+.sim__bubble--final,
+.ui-bubble[data-kind='rejection'] {
+  --tone-soft: var(--good-soft);
+  --tone-line: var(--good-line);
+  background: var(--tone-soft);
+  box-shadow:
+    inset 0 0 0 1px var(--tone-line),
+    0 1px 1.5px rgba(16, 24, 40, 0.1);
+}
+
+.ui-bubble[data-kind='rejection'] {
+  --tone-soft: var(--crit-soft);
+  --tone-line: var(--crit-line);
 }
 
 .sim__typing {
   display: inline-flex;
-  gap: 0.25rem;
-  padding: 0.6rem 0.7rem;
+  align-items: center;
+  gap: 0.28rem;
+  padding: 0.7rem 0.8rem;
 }
 
 .sim__typing span {
-  width: 0.4rem;
-  height: 0.4rem;
+  width: 0.42rem;
+  height: 0.42rem;
   border-radius: 50%;
-  background: var(--muted);
+  background: var(--navy);
   animation: sim-typing 1s infinite ease-in-out;
 }
 
@@ -225,11 +415,11 @@
   0%,
   60%,
   100% {
-    opacity: 0.3;
+    opacity: 0.25;
     transform: translateY(0);
   }
   30% {
-    opacity: 1;
+    opacity: 0.9;
     transform: translateY(-2px);
   }
 }
@@ -237,90 +427,148 @@
 .sim__replies {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
-  margin-bottom: 0.45rem;
+  gap: 0.4rem;
+  margin-bottom: var(--space-2);
 }
 
 .sim__reply {
-  padding: 0.3rem 0.65rem;
-  border: 1px solid var(--blue);
+  min-height: 1.9rem;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid var(--blue-line);
   border-radius: var(--radius-pill);
-  background: var(--white);
+  background: var(--blue-soft);
   color: var(--blue-dark);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 700;
   line-height: 1.25;
   cursor: pointer;
   text-align: left;
+  transition:
+    background-color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease);
 }
 
 .sim__reply:hover {
-  background: var(--blue-soft);
+  background: var(--blue);
+  border-color: var(--blue);
+  color: var(--white);
 }
 
 .sim__composer {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
-.sim__composer .ui-icon-btn:disabled {
-  opacity: 0.4;
-  cursor: default;
+.sim__attach {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  color: var(--navy);
+}
+
+.sim__attach:disabled {
+  color: var(--line-strong);
 }
 
 .sim__input {
   flex: 1;
   min-width: 0;
+  min-height: 2.2rem;
   border-radius: var(--radius-pill);
-  padding: 0.4rem 0.8rem;
-  font-size: 0.86rem;
+  border-color: var(--line);
+  background: var(--soft);
+  padding: 0.35rem 0.9rem;
+  font-size: var(--fs-sm);
+}
+
+.sim__input:focus {
+  background: var(--white);
 }
 
 .sim__send {
   display: inline-grid;
   place-items: center;
   flex: none;
-  width: 2.1rem;
-  height: 2.1rem;
+  width: 2.2rem;
+  height: 2.2rem;
   border: 0;
   border-radius: 50%;
   background: var(--blue);
   color: var(--white);
   cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease);
+}
+
+.sim__send:hover:not(:disabled) {
+  background: var(--blue-dark);
 }
 
 .sim__send:disabled {
-  background: var(--line-strong);
-  cursor: default;
+  background: var(--soft-2);
+  color: var(--muted);
+  cursor: not-allowed;
 }
 
 /* ---------- Estado ---------- */
+/* Resumen: número, semáforo y valor. El filete repite el color del semáforo, que ya va con texto. */
 .sim__summary {
   display: grid;
-  grid-template-columns: auto auto 1fr;
-  gap: 0.75rem;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  gap: var(--space-4);
   align-items: start;
-  padding-bottom: 0.7rem;
-  margin-bottom: 0.7rem;
-  border-bottom: 1px solid var(--line);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  box-shadow: inset 3px 0 0 var(--light, var(--line-strong));
 }
 
-.sim__summary > :last-child {
+.sim__summary[data-light='green'] {
+  --light: var(--good);
+}
+
+.sim__summary[data-light='yellow'] {
+  --light: var(--warn);
+}
+
+.sim__summary[data-light='red'] {
+  --light: var(--crit);
+}
+
+.sim__summary-cell {
+  min-width: 0;
+}
+
+.sim__summary-cell--amount {
   text-align: right;
 }
 
 .sim__summary-label {
-  font-size: 0.72rem;
-  color: var(--muted);
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.3rem;
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ink-2);
+  white-space: nowrap;
 }
 
 .sim__summary-value {
+  font-size: var(--fs-md);
   font-weight: 900;
+  line-height: 1.5rem;
   color: var(--navy);
+  white-space: nowrap;
 }
 
+.sim__summary-value--amount {
+  font-size: var(--fs-xl);
+  letter-spacing: -0.02em;
+}
+
+/* Línea de estados */
 .sim__timeline {
   list-style: none;
   margin: 0;
@@ -330,32 +578,38 @@
 .sim__tl {
   position: relative;
   display: flex;
-  gap: 0.65rem;
-  padding-bottom: 0.6rem;
-  color: var(--muted);
+  gap: var(--space-3);
+  padding-bottom: 0.7rem;
+  color: var(--ink-2);
+}
+
+.sim__tl:last-child {
+  padding-bottom: 0;
 }
 
 .sim__tl:not(:last-child)::before {
   content: '';
   position: absolute;
-  left: 0.59rem;
-  top: 1.3rem;
-  bottom: 0;
+  left: calc(0.65rem - 1px);
+  top: 1.45rem;
+  bottom: -0.05rem;
   width: 2px;
+  border-radius: 1px;
   background: var(--line);
 }
 
 .sim__tl.is-done:not(:last-child)::before {
-  background: var(--good);
+  background: var(--navy);
 }
 
 .sim__tl-dot {
+  position: relative;
   display: inline-grid;
   place-items: center;
   flex: none;
-  width: 1.25rem;
-  height: 1.25rem;
-  margin-top: 0.05rem;
+  width: 1.3rem;
+  height: 1.3rem;
+  margin-top: 0.02rem;
   border-radius: 50%;
   border: 2px solid var(--line-strong);
   background: var(--white);
@@ -363,6 +617,11 @@
 }
 
 .sim__tl.is-done .sim__tl-dot {
+  background: var(--navy);
+  border-color: var(--navy);
+}
+
+.sim__tl.is-good .sim__tl-dot {
   background: var(--good);
   border-color: var(--good);
 }
@@ -372,10 +631,34 @@
   border-color: var(--crit);
 }
 
+.sim__tl.is-skipped .sim__tl-dot {
+  border-style: dashed;
+  background: transparent;
+}
+
 .sim__tl.is-current .sim__tl-dot {
   border-color: var(--orange);
-  box-shadow: 0 0 0 4px var(--orange-soft);
   background: var(--orange);
+  box-shadow: inset 0 0 0 3px var(--white);
+}
+
+.sim__tl.is-current .sim__tl-dot::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(235, 104, 52, 0.45);
+  animation: sim-pulse 1.8s var(--ease) infinite;
+}
+
+@keyframes sim-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(235, 104, 52, 0.45);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 7px rgba(235, 104, 52, 0);
+  }
 }
 
 .sim__tl-body {
@@ -387,21 +670,21 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .sim__tl-label {
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
+  line-height: 1.4;
 }
 
-.sim__tl.is-done .sim__tl-label,
-.sim__tl.is-current .sim__tl-label {
+.sim__tl.is-done .sim__tl-label {
   color: var(--ink);
 }
 
 .sim__tl.is-current .sim__tl-label {
-  color: var(--orange-dark);
+  color: var(--orange-ink);
 }
 
 .sim__tl.is-good .sim__tl-label {
@@ -414,41 +697,71 @@
 
 .sim__tl-time {
   flex: none;
-  font-size: 0.76rem;
-  color: var(--muted);
+  font-size: var(--fs-xs);
+  color: var(--ink-2);
 }
 
 .sim__tl-note {
-  font-size: 0.76rem;
-  line-height: 1.3;
-  color: var(--muted);
+  margin-top: 0.05rem;
+  font-size: var(--fs-xs);
+  line-height: 1.35;
+  color: var(--ink-2);
 }
 
 .sim__result {
-  margin-top: 0.2rem;
+  margin-top: var(--space-4);
 }
 
+/* Lo que falta: tareas pendientes y el reloj del SLA. */
 .sim__pending {
-  margin-top: 0.2rem;
-  padding: 0.6rem 0.75rem;
-  border-radius: 8px;
-  background: var(--orange-soft);
-  font-size: 0.84rem;
+  margin-top: var(--space-4);
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  font-size: var(--fs-sm);
   color: var(--ink);
 }
 
 .sim__pending ul {
-  margin: 0.25rem 0 0;
-  padding-left: 1.1rem;
+  list-style: none;
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
   line-height: 1.35;
+  font-weight: 700;
+}
+
+.sim__pending li {
+  position: relative;
+  padding-left: 1.35rem;
+}
+
+.sim__pending li::before {
+  content: '';
+  position: absolute;
+  left: 0.1rem;
+  top: 0.22rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border: 1.5px solid var(--orange);
+  border-radius: 3px;
+  background: var(--white);
+}
+
+.sim__sla-block {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line-soft);
 }
 
 .sim__sla {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  margin-top: 0.45rem;
-  font-size: 0.78rem;
+  gap: 0.4rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--ink-2);
   font-variant-numeric: tabular-nums;
@@ -456,4 +769,46 @@
 
 .sim__sla.is-late {
   color: var(--crit-ink);
+}
+
+.sim__sla-meter {
+  margin-top: var(--space-2);
+  height: 0.3rem;
+}
+
+.sim__sla-meter .ui-meter__fill {
+  transition: width 1s linear;
+}
+
+/* A 768 px de alto la ficha se compacta para que el guion completo quepa sin desplazarse. */
+@media (max-height: 820px) {
+  .sim__case-title,
+  .sim__script-title {
+    margin-top: var(--space-3);
+  }
+
+  .sim__kv {
+    margin-top: var(--space-2);
+  }
+
+  .sim__kv-row {
+    min-height: 1.7rem;
+    padding-block: 0.08rem;
+  }
+
+  .sim__clock-help {
+    margin-top: 0.35rem;
+  }
+
+  .sim__script {
+    margin-top: var(--space-1);
+  }
+
+  .sim__script li {
+    padding-block: 0.12rem;
+  }
+
+  .sim__script li:not(:last-child)::before {
+    top: 1.5rem;
+  }
 }
