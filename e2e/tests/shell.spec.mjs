@@ -44,7 +44,7 @@ test('las llamadas a /api llevan el rol y el usuario de la demo', async ({ page 
     page.getByRole('button', { name: 'Llamar a /api/health' }).click(),
   ]);
   expect(request.headers()['x-demo-role']).toBe('technician');
-  expect(request.headers()['x-demo-user']).toBe('tecnico.demo');
+  expect(decodeURIComponent(request.headers()['x-demo-user'])).toBe('Laura Mendoza');
 });
 
 test('reiniciar demo pide confirmacion y llama a POST /api/dev/reset', async ({ page }) => {

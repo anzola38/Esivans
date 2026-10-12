@@ -1,0 +1,620 @@
+@if (notFound()) {
+  <div class="page">
+    <app-card>
+      <app-empty-state
+        icon="search"
+        title="No existe esa solicitud"
+        message="Puede que la demo se haya reiniciado. Vuelve a la cola para ver las solicitudes de hoy."
+      >
+        <a appButton="outline" routerLink="/consola">
+          <app-icon name="arrow-left" [size]="16" />
+          Volver a la cola
+        </a>
+      </app-empty-state>
+    </app-card>
+  </div>
+} @else if (!detail()) {
+  <div class="page">
+    <app-card><app-skeleton [lines]="8" /></app-card>
+  </div>
+} @else {
+  @let d = detail()!;
+  @let canAct = canDecide() && isPendingDecision();
+  <div class="page det">
+    <!-- Resumen y acciones -->
+    <section class="det__head" data-testid="detail-head">
+      <a class="ui-icon-btn det__back" routerLink="/consola" aria-label="Volver a la cola" title="Volver a la cola">
+        <app-icon name="arrow-left" [size]="18" />
+      </a>
+      <div class="det__id">
+        <div class="det__title">
+          <span class="det__plate" data-testid="detail-plate">{{ d.vehicle?.plate ?? 'Sin placa' }}</span>
+          <app-traffic-light
+            size="lg"
+            [value]="d.traffic_light"
+            [points]="d.traffic_light ? d.points : null"
+            data-testid="detail-light"
+          />
+          <span [class]="'ui-badge ui-badge--' + stageTone(d.stage)" data-testid="detail-stage">{{ d.stage_label }}</span>
+          @let sla = slaRemaining();
+          @if (sla !== null) {
+            <span class="det__sla" [class.is-late]="sla <= 0" data-testid="detail-sla">
+              <app-icon name="clock" [size]="14" />
+              @if (sla > 0) {
+                SLA: quedan {{ sla | duration }}
+              } @else {
+                SLA vencido hace {{ -sla | duration }}
+              }
+            </span>
+          }
+        </div>
+        <div class="det__meta">
+          <span>Solicitud n.º {{ d.id }}</span>
+          <span>{{ d.driver?.name ?? 'Número no registrado (' + d.wa_id + ')' }}</span>
+          @if (d.vehicle; as v) {
+            <span>{{ v.code }} · {{ v.fuel_type_label }}</span>
+          }
+          <span>Pedida a las {{ d.occurred_at | esTime }}</span>
+        </div>
+      </div>
+
+      <div class="det__value">
+        <div class="det__value-label">
+          {{ d.decision && d.decision.action !== 'reject' ? 'Valor autorizado' : 'Valor sugerido' }}
+        </div>
+        <div class="det__value-amount num" data-testid="detail-amount">
+          {{ (d.decision && d.decision.action !== 'reject' ? d.decision.amount : d.suggested_amount) | cop }}
+        </div>
+      </div>
+
+      @if (isPendingDecision()) {
+        <div class="det__actions">
+          <button
+            appButton
+            type="button"
+            data-testid="approve"
+            [disabled]="!canAct"
+            [loading]="busy() && !mode()"
+            (click)="approve()"
+          >
+            <app-icon name="check" [size]="16" />
+            {{ d.one_click_allowed ? 'Aprobar en un clic' : 'Aprobar con motivo' }}
+          </button>
+          <button appButton="outline" type="button" data-testid="adjust" [disabled]="!canAct" (click)="openMode('adjust')">
+            <app-icon name="edit" [size]="16" />
+            Ajustar
+          </button>
+          <button appButton="danger" type="button" data-testid="reject" [disabled]="!canAct" (click)="openMode('reject')">
+            <app-icon name="close" [size]="16" />
+            Rechazar
+          </button>
+        </div>
+      }
+    </section>
+
+    @if (!canDecide()) {
+      <div class="ui-note ui-note--warn" data-testid="read-only">
+        <app-icon name="lock" [size]="16" />
+        <span>
+          Solo lectura: con el rol {{ roles.label() }} puedes consultar la solicitud, pero la decisión y la
+          habilitación son del técnico de Control y Monitoreo o del coordinador.
+        </span>
+      </div>
+    }
+
+    @if (d.missing.length) {
+      <div class="ui-note ui-note--warn">
+        <app-icon name="alert" [size]="16" />
+        <span>
+          Pasó al técnico incompleta. Faltó:
+          @for (m of d.missing; track m.key) {
+            {{ m.label.toLowerCase() }}{{ $last ? '.' : ', ' }}
+          }
+        </span>
+      </div>
+    }
+
+    <!-- Habilitación (HU-15) -->
+    @if (d.enablement; as e) {
+      <section class="det__enable" data-testid="enablement">
+        <div class="det__enable-head">
+          <div>
+            <div class="det__enable-title">Habilitar en el portal del proveedor</div>
+            <div class="det__enable-sub">
+              {{ d.decision?.action_label }} por {{ d.decision?.decided_by }}@if (d.decision?.action === 'adjust') {<span> (sugerido {{ d.decision?.original_amount | cop }})</span>}. Copia estos valores en el portal de
+              {{ e.provider_label }} para habilitar el {{ paymentMethodLabel(e.payment_method) }} y confirma la referencia.
+            </div>
+          </div>
+          <button appButton="ghost" size="sm" type="button" (click)="copyAll()">
+            <app-icon name="file" [size]="14" />
+            Copiar todo
+          </button>
+        </div>
+        <div class="det__enable-grid">
+          <div class="det__field">
+            <span class="det__field-label">Proveedor</span>
+            <span class="det__field-value">
+              {{ e.provider_label }}
+              <button type="button" class="det__copy" aria-label="Copiar proveedor" (click)="copy(e.provider_label, 'Proveedor')">
+                <app-icon name="file" [size]="13" />
+              </button>
+            </span>
+          </div>
+          <div class="det__field">
+            <span class="det__field-label">Vehículo</span>
+            <span class="det__field-value">
+              {{ e.plate }}
+              <button type="button" class="det__copy" aria-label="Copiar placa" data-testid="copy-plate" (click)="copy(e.plate, 'Placa')">
+                <app-icon name="file" [size]="13" />
+              </button>
+            </span>
+          </div>
+          <div class="det__field">
+            <span class="det__field-label">Valor</span>
+            <span class="det__field-value num">
+              {{ e.amount | cop }}
+              <button type="button" class="det__copy" aria-label="Copiar valor" (click)="copy('' + e.amount, 'Valor')">
+                <app-icon name="file" [size]="13" />
+              </button>
+            </span>
+          </div>
+          <div class="det__field">
+            <span class="det__field-label">Producto</span>
+            <span class="det__field-value">
+              {{ e.product }}
+              <button type="button" class="det__copy" aria-label="Copiar producto" (click)="copy(e.product, 'Producto')">
+                <app-icon name="file" [size]="13" />
+              </button>
+            </span>
+          </div>
+          <div class="det__field">
+            <span class="det__field-label">Vigencia</span>
+            <span class="det__field-value">
+              {{ validityLabel(e.valid_minutes) }}
+              <button type="button" class="det__copy" aria-label="Copiar vigencia" (click)="copy(validityLabel(e.valid_minutes), 'Vigencia')">
+                <app-icon name="file" [size]="13" />
+              </button>
+            </span>
+          </div>
+          <div class="det__field det__field--ref">
+            <label class="det__field-label" for="enable-reference">Referencia del portal <span class="req">*</span></label>
+            <div class="det__ref-row">
+              <input
+                id="enable-reference"
+                class="ui-input"
+                type="text"
+                maxlength="60"
+                data-testid="reference-input"
+                [class.is-invalid]="referenceTouched() && referenceError()"
+                [value]="reference()"
+                [disabled]="!canDecide() || busy()"
+                (input)="onReferenceInput($event)"
+              />
+              <button
+                appButton
+                type="button"
+                data-testid="confirm-enablement"
+                [disabled]="!canDecide()"
+                [loading]="busy()"
+                (click)="confirmEnablement()"
+              >
+                Confirmar
+              </button>
+            </div>
+            @if (referenceTouched() && referenceError()) {
+              <span class="ui-error">{{ referenceError() }}</span>
+            }
+          </div>
+        </div>
+      </section>
+    } @else if (d.authorization; as a) {
+      <div class="ui-note ui-note--good det__outcome" data-testid="authorization">
+        <app-icon name="check-circle" [size]="18" />
+        <span>
+          <strong>Autorizada: {{ a.amount | cop }} de {{ a.product }}.</strong>
+          Referencia {{ a.reference }} en {{ a.provider_label }} ({{ paymentMethodLabel(a.payment_method) }}), habilitada por
+          {{ a.enabled_by }}. Vigencia: {{ validityLabel(a.valid_minutes) }} (hasta las {{ a.expires_at | esTime }})
+          @if (d.decision?.action === 'adjust') {
+            · Valor sugerido original: {{ d.decision?.original_amount | cop }}
+          }
+          @if (d.decision?.reason) {
+            · Motivo: {{ d.decision?.reason }}
+          }
+        </span>
+        <a class="det__outcome-link" routerLink="/simulador" [queryParams]="{ wa: d.wa_id }" data-testid="to-simulator">
+          Ver el mensaje al conductor
+          <app-icon name="arrow-right" [size]="14" />
+        </a>
+      </div>
+    } @else if (d.status === 'rejected') {
+      <div class="ui-note ui-note--crit det__outcome" data-testid="rejection">
+        <app-icon name="close" [size]="18" />
+        <span>
+          <strong>Rechazada por {{ d.decision?.decided_by }}.</strong>
+          Motivo: {{ d.decision?.reason }}. El conductor ya recibió el motivo.
+        </span>
+        <a class="det__outcome-link" routerLink="/simulador" [queryParams]="{ wa: d.wa_id }">
+          Ver el mensaje al conductor
+          <app-icon name="arrow-right" [size]="14" />
+        </a>
+      </div>
+    } @else if (d.status === 'cancelled') {
+      <div class="ui-note det__outcome">
+        <app-icon name="info" [size]="18" />
+        <span>Cerrada sin tanqueo: el vehículo no necesita cargar ahora y el conductor lo aceptó.</span>
+      </div>
+    }
+
+    <div class="det__cols">
+      <!-- Columna izquierda: evidencia y libro único -->
+      <div class="det__col">
+        <app-card title="Foto del tablero y lectura" data-testid="evidence-card">
+          @if (d.evidence; as ev) {
+            <span card-actions class="ui-badge ui-badge--orange">
+              <app-icon name="spark" [size]="12" />
+              Leído por la IA
+            </span>
+          }
+          @if (d.evidence; as ev) {
+            <div class="det__evidence">
+              <button type="button" class="det__photo" title="Ampliar la foto" (click)="photoOpen.set(true)">
+                <img [src]="ev.photo_url" alt="Foto del tablero enviada por el conductor" />
+                <span class="det__photo-zoom"><app-icon name="search" [size]="13" /> Ampliar</span>
+              </button>
+              <div class="det__reading">
+                <div class="det__read">
+                  <div class="det__read-label">Kilometraje</div>
+                  <div class="det__read-value num" data-testid="odometer">{{ ev.odometer_km | esNumber }} km</div>
+                  <div class="det__conf">
+                    <span class="det__conf-track">
+                      <span [class]="'det__conf-fill is-' + confidenceTone(ev.confidence?.odometer_km)" [style.width.%]="(ev.confidence?.odometer_km ?? 0) * 100"></span>
+                    </span>
+                    <span>Confianza {{ ev.confidence?.odometer_km | esPercent: 0 : true }}</span>
+                  </div>
+                </div>
+                <div class="det__read">
+                  <div class="det__read-label">Nivel ({{ ev.fuel_level | esPercent: 0 : true }})</div>
+                  <div class="det__read-value">{{ fuelFractionLabel(ev.fuel_level) }}</div>
+                  <div class="det__conf">
+                    <span class="det__conf-track">
+                      <span [class]="'det__conf-fill is-' + confidenceTone(ev.confidence?.fuel_level)" [style.width.%]="(ev.confidence?.fuel_level ?? 0) * 100"></span>
+                    </span>
+                    <span>Confianza {{ ev.confidence?.fuel_level | esPercent: 0 : true }}</span>
+                  </div>
+                </div>
+                <div class="det__read-foot">
+                  @if (ev.proposed_odometer && ev.odometer_read !== ev.odometer_km) {
+                    <span class="text-warn fw-700" data-testid="odometer-correction">
+                      La foto se leyó como {{ ev.odometer_read | esNumber }} km ({{ ev.error_label }}); corregido a
+                      {{ ev.odometer_km | esNumber }} km.
+                    </span>
+                  }
+                  <span>
+                    Fuente: {{ (ev.odometer_source_label ?? 'Foto del tablero').toLowerCase() }}.
+                    {{ ev.confirmed_by_driver ? 'Confirmado por el conductor.' : 'Sin confirmar por el conductor.' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          } @else {
+            <app-empty-state compact icon="camera" title="Sin foto del tablero" message="La solicitud llegó sin evidencia." />
+          }
+        </app-card>
+
+        <app-card title="Libro único de tanqueos" data-testid="ledger-card">
+          <span card-actions class="det__version">Todos los proveedores y EOM</span>
+          @if (d.context; as c) {
+            <div class="det__ledger">
+              <div class="det__fact">
+                <div class="det__fact-label">Último tanqueo</div>
+                @if (c.last_refuel; as r) {
+                  <div class="det__fact-value">{{ r.amount | cop }} · {{ r.quantity | esNumber: 0 : 2 }} {{ unitLabel(r.unit) }}</div>
+                  <div class="det__fact-sub">{{ r.provider_label }} · {{ r.station }}</div>
+                  <div class="det__fact-sub">{{ r.timestamp | esDateTime }} · {{ r.product }}</div>
+                } @else {
+                  <div class="det__fact-value">Sin tanqueos</div>
+                }
+              </div>
+              <div class="det__fact">
+                <div class="det__fact-label">Km recorridos</div>
+                <div class="det__fact-value">
+                  @if (c.km_since_last_refuel !== null) {
+                    {{ c.km_since_last_refuel | esNumber }} km
+                  } @else {
+                    —
+                  }
+                </div>
+                <div class="det__fact-sub">desde el último tanqueo</div>
+                <div class="det__fact-sub">{{ c.loads_24h ?? 0 }} {{ c.loads_24h === 1 ? 'carga' : 'cargas' }} en 24 h</div>
+              </div>
+              <div class="det__fact">
+                <div class="det__fact-label">Servicios de hoy en EOM</div>
+                @if (c.services; as s) {
+                  @if (s.today_count) {
+                    <div class="det__fact-value">{{ s.pending_count }} pendientes de {{ s.today_count }}</div>
+                    @if (s.next_service; as n) {
+                      <div class="det__fact-sub">Próximo: {{ n.start | esTime }}</div>
+                      <div class="det__fact-sub">{{ n.origin }} → {{ n.destination }}</div>
+                    }
+                  } @else {
+                    <div class="det__fact-value text-crit">Sin servicios hoy</div>
+                    <div class="det__fact-sub">{{ s.vehicle_in_eom ? 'Tampoco en las últimas 24 h' : 'El vehículo no aparece en EOM' }}</div>
+                    @if (d.service?.note) {
+                      <div class="det__fact-sub">Motivo dado: «{{ d.service?.note }}»</div>
+                    }
+                  }
+                } @else {
+                  <div class="det__fact-value">—</div>
+                  <div class="det__fact-sub">Sin vehículo identificado</div>
+                }
+              </div>
+            </div>
+
+            @if (c.efficiency; as eff) {
+              <div class="det__eff" data-testid="efficiency">
+                <div class="det__eff-head">
+                  <span class="det__fact-label">Rendimiento frente a su grupo ({{ eff.group_label }})</span>
+                  <span [class]="'ui-badge ui-badge--' + (eff.status === 'low' ? 'red' : eff.status === 'high' ? 'yellow' : 'green')">
+                    {{ efficiencyLabel() }}
+                  </span>
+                </div>
+                @if (efficiencyBars(); as bars) {
+                  <div class="det__bars">
+                    @for (bar of bars.rows; track bar.label) {
+                      <div class="det__bar">
+                        <span class="det__bar-label">{{ bar.label }}</span>
+                        <span class="det__bar-track">
+                          <span [class]="'det__bar-fill is-' + bar.tone" [style.width.%]="bar.percent"></span>
+                          <span class="det__bar-limit" [style.left.%]="bars.limit"></span>
+                        </span>
+                        <span class="det__bar-value num">{{ bar.value | esNumber: 1 }}</span>
+                      </div>
+                    }
+                  </div>
+                  <div class="det__eff-foot">
+                    <span class="det__limit-key"></span>
+                    Límite de rendimiento bajo: {{ eff.low_limit | esNumber: 1 }} {{ eff.unit }} (75&nbsp;% de la mediana del grupo)
+                  </div>
+                } @else {
+                  <div class="det__fact-sub">Sin rendimiento calculado para este vehículo.</div>
+                }
+              </div>
+            }
+
+            <div class="det__flags" data-testid="vehicle-flags">
+              <span class="det__fact-label">Reglas por vehículo (V01 a V08)</span>
+              @for (flag of c.vehicle_flags; track flag.code) {
+                <div class="det__flag">
+                  <span class="ui-badge ui-badge--navy">{{ flag.code }}</span>
+                  <span><strong>{{ flag.name }}.</strong> {{ flag.explanation }}</span>
+                </div>
+              } @empty {
+                <div class="det__flag det__flag--none">
+                  <app-icon name="check-circle" [size]="15" />
+                  Sin banderas activas para este vehículo.
+                </div>
+              }
+            </div>
+          } @else {
+            <app-empty-state compact icon="book" title="Sin contexto todavía" message="El contexto aparece cuando la solicitud se evalúa." />
+          }
+        </app-card>
+      </div>
+
+      <!-- Columna derecha: razones y cálculo -->
+      <div class="det__col">
+        <app-card title="Razones del semáforo" data-testid="reasons-card">
+          @if (d.evaluation; as ev) {
+            <span card-actions class="det__version">
+              {{ ev.points }} {{ ev.points === 1 ? 'punto' : 'puntos' }} · reglas {{ ev.rules_version }}
+            </span>
+          }
+          @if (d.evaluation; as ev) {
+            @for (r of ev.reasons; track r.code + $index) {
+              <div class="det__reason" [attr.data-rule]="r.code">
+                <span [class]="'det__reason-code ' + (r.kind === 'rule' ? 'is-' + d.traffic_light : 'is-inc')">{{ r.kind === 'rule' ? r.code : 'Dato' }}</span>
+                <div class="det__reason-body">
+                  <div class="det__reason-head">
+                    <span class="det__reason-name">{{ r.name }}</span>
+                    <span class="det__reason-points">
+                      @if (r.kind === 'rule') {
+                        +{{ r.points }} {{ r.points === 1 ? 'punto' : 'puntos' }}
+                      } @else {
+                        Inconsistencia
+                      }
+                    </span>
+                  </div>
+                  <div class="det__reason-text">{{ r.explanation }}</div>
+                </div>
+              </div>
+            } @empty {
+              <div class="det__no-alerts" data-testid="no-alerts">
+                <app-icon name="check-circle" [size]="20" />
+                <div>
+                  <strong>Sin alertas</strong>
+                  <div>Ninguna regla se cumple y las fuentes cuadran: se puede aprobar en un clic.</div>
+                </div>
+              </div>
+            }
+          } @else {
+            <app-empty-state compact icon="shield" title="Aún sin evaluar" message="El motor de reglas corre cuando la solicitud queda lista." />
+          }
+        </app-card>
+
+        <app-card title="Cálculo del valor sugerido" data-testid="calc-card">
+          @if (d.calculation; as calc) {
+            <span card-actions class="det__version">
+              Tope: {{ calc.cap_amount | cop }}
+            </span>
+          }
+          @if (d.calculation; as calc) {
+            @if (calc.steps.length) {
+              <ol class="det__calc">
+                @for (step of calc.steps; track step.key) {
+                  <li [class.is-total]="step.key === 'amount'" [class.is-key]="step.key === 'to_load'">
+                    <span class="det__calc-n">{{ $index + 1 }}</span>
+                    <span class="det__calc-label">{{ step.label }}</span>
+                    <span class="det__calc-formula">{{ step.formula }}</span>
+                    <span class="det__calc-result num">{{ step.display }}</span>
+                  </li>
+                }
+              </ol>
+            }
+            @if (calc.note) {
+              <div class="ui-note ui-note--warn det__calc-note">
+                <app-icon name="info" [size]="15" />
+                <span>{{ calc.note }}</span>
+              </div>
+            }
+            @if (calc.cross_check; as cc) {
+              <div [class]="'ui-note det__calc-note ' + (cc.consistent ? 'ui-note--good' : 'ui-note--warn')">
+                <app-icon [name]="cc.consistent ? 'check-circle' : 'alert'" [size]="15" />
+                <span><strong>Control cruzado.</strong> {{ cc.explanation }}</span>
+              </div>
+            }
+            @if (d.requested_quantity) {
+              <div class="det__calc-foot">
+                El conductor pidió {{ d.requested_quantity | esNumber: 0 : 2 }} {{ unitLabel(calc.unit) }}; el cálculo da
+                {{ calc.quantity | esNumber: 0 : 2 }} {{ unitLabel(calc.unit) }}.
+              </div>
+            }
+          } @else {
+            <app-empty-state compact icon="scale" title="Sin cálculo todavía" message="Hace falta la lectura del tablero para calcular el valor." />
+          }
+        </app-card>
+      </div>
+    </div>
+
+    <!-- Bitácora -->
+    <app-card title="Bitácora de la solicitud" subtitle="Solo inserción: quién, qué, cuándo, antes y después" flush data-testid="audit-card">
+      <app-table plain dense>
+        <table>
+          <thead>
+            <tr>
+              <th>Cuándo</th>
+              <th>Quién</th>
+              <th>Qué</th>
+              <th>Antes</th>
+              <th>Después</th>
+              <th>Reglas</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of auditRows(); track row.id) {
+              <tr [attr.data-action]="row.action">
+                <td class="nowrap">{{ row.created_at | esDateTime }}</td>
+                <td>
+                  <div class="fw-700 det__actor">{{ row.actor }}</div>
+                  @if (row.role_label) {
+                    <div class="det__audit-sub">{{ row.role_label }}</div>
+                  }
+                </td>
+                <td>{{ row.summary }}</td>
+                <td class="det__audit-data">
+                  @for (line of row.beforeLines; track line) {
+                    <div>{{ line }}</div>
+                  } @empty {
+                    —
+                  }
+                </td>
+                <td class="det__audit-data">
+                  @for (line of row.afterLines; track line) {
+                    <div>{{ line }}</div>
+                  } @empty {
+                    —
+                  }
+                </td>
+                <td class="nowrap">{{ row.rulesVersion }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="6" class="center text-muted">Todavía no hay registros.</td></tr>
+            }
+          </tbody>
+        </table>
+      </app-table>
+    </app-card>
+  </div>
+
+  <!-- Decisión con motivo -->
+  <app-modal [open]="mode() !== null" [title]="modeText()?.title ?? ''" [dismissible]="!busy()" (closed)="closeMode()">
+    @if (mode(); as m) {
+      <div class="det__form" data-testid="decision-form">
+        <div class="det__form-context">
+          <app-traffic-light [value]="d.traffic_light" [points]="d.points" />
+          <span>{{ d.vehicle?.plate }} · valor sugerido {{ d.suggested_amount | cop }}</span>
+        </div>
+        @if (m === 'adjust') {
+          <div class="ui-field">
+            <label class="ui-label" for="decision-amount">Valor a autorizar (pesos) <span class="req">*</span></label>
+            <input
+              id="decision-amount"
+              class="ui-input"
+              type="number"
+              min="0"
+              step="10000"
+              inputmode="numeric"
+              data-testid="amount-input"
+              [class.is-invalid]="submitted() && amountError()"
+              [value]="amount()"
+              (input)="onAmountInput($event)"
+            />
+            @if (submitted() && amountError()) {
+              <span class="ui-error" data-testid="amount-error">{{ amountError() }}</span>
+            } @else {
+              <span class="ui-help">
+                Se autoriza {{ amount() | cop }}. Sugerido: {{ d.suggested_amount | cop }}. Tope del vehículo:
+                {{ d.calculation?.cap_amount | cop }}.
+              </span>
+            }
+          </div>
+        }
+        <div class="ui-field">
+          <label class="ui-label" for="decision-reason">Motivo <span class="req">*</span></label>
+          <textarea
+            id="decision-reason"
+            class="ui-textarea"
+            rows="3"
+            maxlength="300"
+            placeholder="Queda en la bitácora junto con el cálculo original."
+            data-testid="reason-input"
+            [class.is-invalid]="submitted() && reasonError()"
+            [value]="reason()"
+            (input)="onReasonInput($event)"
+          ></textarea>
+          @if (submitted() && reasonError()) {
+            <span class="ui-error" data-testid="reason-error">{{ reasonError() }}</span>
+          }
+          <div class="det__suggestions">
+            @for (s of modeText()?.suggestions ?? []; track s) {
+              <button type="button" class="det__suggestion" (click)="reason.set(s)">{{ s }}</button>
+            }
+          </div>
+        </div>
+        @if (serverError()) {
+          <div class="ui-note ui-note--crit" data-testid="server-error">
+            <app-icon name="alert" [size]="15" />
+            <span>{{ serverError() }}</span>
+          </div>
+        }
+      </div>
+    }
+    <ng-container ngProjectAs="[modal-actions]">
+      <button appButton="ghost" type="button" [disabled]="busy()" (click)="closeMode()">Cancelar</button>
+      <button
+        [appButton]="mode() === 'reject' ? 'danger-solid' : 'primary'"
+        type="button"
+        data-testid="decision-confirm"
+        [loading]="busy()"
+        (click)="confirmMode()"
+      >
+        {{ modeText()?.confirm }}
+      </button>
+    </ng-container>
+  </app-modal>
+
+  <app-modal [open]="photoOpen()" title="Foto del tablero" size="lg" (closed)="photoOpen.set(false)">
+    @if (d.evidence; as ev) {
+      <img class="det__photo-full" [src]="ev.photo_url" alt="Foto del tablero enviada por el conductor" />
+    }
+  </app-modal>
+}

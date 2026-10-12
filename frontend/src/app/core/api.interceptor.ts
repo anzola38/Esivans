@@ -46,7 +46,8 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
     ? req.clone({
         setHeaders: {
           'X-Demo-Role': roles.role(),
-          'X-Demo-User': roles.user().id,
+          // Encoded display name (HTTP headers are ASCII only); the backend decodes it for the audit log.
+          'X-Demo-User': encodeURIComponent(roles.user().name),
         },
       })
     : req;
