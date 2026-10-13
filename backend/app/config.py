@@ -44,6 +44,7 @@ def _database_url() -> str:
 def get_settings() -> Settings:
     return Settings(
         database_url=_database_url(),
+        # mock | groq | groq_text (Groq for the text, sample reading for the photo) | gemini
         ai_provider=(os.getenv("AI_PROVIDER") or "mock").strip().lower(),
         gemini_api_key=os.getenv("GEMINI_API_KEY", "").strip(),
         gemini_model=os.getenv("GEMINI_MODEL", "").strip(),

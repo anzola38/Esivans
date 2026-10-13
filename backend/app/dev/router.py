@@ -107,7 +107,7 @@ def reset_demo(db: Session = Depends(get_db), actor: Actor = Depends(get_actor))
 
 
 class AiProviderIn(BaseModel):
-    provider: Literal["mock", "groq"]
+    provider: Literal["mock", "groq", "groq_text"]
     pinned: bool = Field(default=False, description="Se mantiene tras «Reiniciar demo» (lo usan las pruebas automáticas)")
 
 
@@ -116,7 +116,7 @@ def ai_provider_state() -> dict:
     return ai.ai_state()
 
 
-@router.put("/ai", summary="Cambiar el proveedor de IA sin reiniciar (mock o groq)")
+@router.put("/ai", summary="Cambiar el proveedor de IA sin reiniciar (mock, groq o groq_text)")
 def switch_ai_provider(body: AiProviderIn, db: Session = Depends(get_db), actor: Actor = Depends(get_actor)) -> dict:
     before = ai.active_provider()
     try:

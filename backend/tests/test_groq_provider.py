@@ -13,7 +13,7 @@ import pytest
 
 from app import config
 from app.integrations import ai, media
-from app.integrations.ai import SafeProvider, source_label
+from app.integrations.ai import SafeProvider, TextOnlyProvider, source_label
 from app.integrations.ai.base import MIN_CONFIDENCE
 from app.integrations.ai.groq import (DASHBOARD_PROMPT, FUEL_LEVEL_CONFIDENCE_CAP, GroqError, GroqProvider,
                                       STEP_QUESTIONS, normalize_extraction, normalize_reading)
@@ -472,10 +472,13 @@ def switch(fresh, monkeypatch):
 def test_switch_reports_the_configured_provider_and_groq_disabled_without_key(switch):
     state = ai.ai_state()
     assert state["active"] == state["configured"] == "mock" and state["active_label"] == "Simulada"
-    assert state["pinned"] is False and [o["key"] for o in state["options"]] == ["groq", "mock"]
-    groq, mock = state["options"]
+    assert state["pinned"] is False and [o["key"] for o in state["options"]] == ["groq", "groq_text", "mock"]
+    groq, groq_text, mock = state["options"]
     assert groq["available"] is False and "GROQ_API_KEY" in groq["unavailable_reason"]
     assert (groq["text_model"], groq["vision_model"]) == (TEXT_MODEL, VISION_MODEL)
+    assert groq_text == {"key": "groq_text", "label": "Groq (texto)", "available": False,
+                         "unavailable_reason": groq["unavailable_reason"], "text_model": TEXT_MODEL,
+                         "vision_model": None}
     assert mock == {"key": "mock", "label": "Simulada", "available": True, "unavailable_reason": None,
                     "text_model": None, "vision_model": None}
 
@@ -595,6 +598,234 @@ def test_switch_is_a_demo_route(fresh, switch, monkeypatch):
 
 def test_suite_never_holds_a_real_key():
     assert config.get_settings().groq_api_key == "" and os.environ["GROQ_API_KEY"] == ""
+    assert ai.active_provider() == "mock"
+
+
+# ----------------------------------------------------------------------------- mixed mode (groq_text)
+
+MIXED_PHOTO_LABEL = "simulada (lectura de ejemplo; la foto no se envió a Groq)"
+
+
+def _text_only(*responses) -> tuple[TextOnlyProvider, Recorder]:
+    """Mixed mode over a fake transport that refuses anything that is not a text request."""
+    recorder = Recorder(*responses)
+
+    def guarded(request: httpx.Request) -> httpx.Response:
+        body = json.loads(request.content)
+        assert body["model"] == TEXT_MODEL, "el modo mixto llamó al modelo de visión"
+        assert all(isinstance(message["content"], str) for message in body["messages"]), "se envió una imagen"
+        return recorder(request)
+
+    groq = GroqProvider(KEY, TEXT_MODEL, VISION_MODEL, transport=httpx.MockTransport(guarded), sleep=lambda _: None)
+    return TextOnlyProvider(SafeProvider(groq, MockProvider()), MockProvider()), recorder
+
+
+def test_mixed_mode_sends_the_text_to_groq_and_records_it():
+    provider, recorder = _text_only(_completion({"intent": "refuel", "quantity": 6.7, "quantity_unit": "m3"}))
+    result, source = ai.interpret(provider, "Necesito tanquear 6,7 m3 de gas", {"last_question": None})
+    assert provider.name == "groq_text"
+    assert (result.intent, result.quantity, result.quantity_unit) == ("refuel", 6.7, "m3")
+    assert (source["kind"], source["provider"], source["model"], source["status"]) == ("text", "groq", TEXT_MODEL, "ok")
+    assert source_label(source) == "Groq · gpt-oss-120b" and "mode" not in source
+    assert len(recorder.requests) == 1 and recorder.bodies[0]["model"] == TEXT_MODEL
+    assert provider.extract_request("Necesito tanquear 6,7 m3 de gas", {}).intent == "refuel"
+
+
+@pytest.mark.parametrize("photo, expected", [("veh901", (48352, 0.25)), ("veh015", (24086, 0.25))])
+def test_mixed_mode_reads_the_photo_locally_and_never_calls_groq(photo, expected):
+    provider, recorder = _text_only(AssertionError("la foto llegó al transporte de Groq"))
+    reading, source = ai.read_photo(provider, SVG[photo], "image/svg+xml")
+    local = MockProvider().read_dashboard(SVG[photo], "image/svg+xml")
+    assert reading == local and (reading.odometer_km, reading.fuel_level) == expected
+    assert provider.read_dashboard(SVG[photo]) == local
+    assert recorder.requests == []
+    # Recorded as the sample reading of the local reader, never as a model of Groq.
+    assert (source["kind"], source["provider"], source["model"], source["status"]) == ("vision", "mock", None, "ok")
+    assert source["mode"] == "groq_text" and source["reason"] is None and "intended" not in source
+    assert source_label(source) == MIXED_PHOTO_LABEL and "Groq ·" not in source_label(source)
+
+
+def test_mixed_mode_with_an_unknown_photo_gives_no_reading_and_sends_nothing():
+    provider, recorder = _text_only(AssertionError("la foto llegó al transporte de Groq"))
+    reading, source = ai.read_photo(provider, b"\x89PNG una foto que no es de ejemplo", "image/png")
+    assert reading.odometer_km is None and reading.confidence.odometer_km == 0.0
+    assert (source["provider"], source["status"], source["mode"]) == ("mock", "ok", "groq_text")
+    assert recorder.requests == []
+
+
+@pytest.mark.parametrize("failure, reason, label", [
+    (httpx.ReadTimeout("lento"), "timeout", "intérprete local (respaldo: Groq, tiempo de espera agotado)"),
+    (httpx.ConnectError("sin red"), "network", "intérprete local (respaldo: Groq, sin conexión)"),
+    (_rate_limited("tokens per day (TPD). Please try again in 2m20s."), "daily_limit",
+     "intérprete local (respaldo: Groq, límite diario de la cuenta)"),
+    (_completion("no es JSON"), "invalid_response", "intérprete local (respaldo: Groq, respuesta no válida)"),
+])
+def test_mixed_mode_text_falls_back_to_the_local_interpreter_and_says_so(failure, reason, label):
+    provider, _ = _text_only(failure)
+    result, source = ai.interpret(provider, "Necesito tanquear 6,7 m3 de gas", {})
+    assert result.intent == "refuel" and result.quantity == 6.7            # the local interpreter answered
+    assert (source["provider"], source["model"], source["status"], source["reason"]) == ("mock", None, "fallback", reason)
+    assert source["intended"] == {"provider": "groq", "model": TEXT_MODEL} and source_label(source) == label
+
+
+def test_green_case_in_mixed_mode_gives_the_script_figures_and_records_each_provider(fresh, monkeypatch):
+    provider, recorder = _text_only(_answer_like_the_model)
+    monkeypatch.setattr("app.requests.conversation.get_ai_provider", lambda: provider)
+    send(fresh, case="GREEN", text="Hola, necesito tanquear")
+    send(fresh, case="GREEN", text="Sí, es para esa ruta")
+    send(fresh, case="GREEN", media_id="media-veh901")
+    send(fresh, case="GREEN", text="Sí, es correcto")
+    chat = conversation(fresh, WA["GREEN"])
+    assert chat["request"]["status"] == "in_review" and chat["request"]["suggested_amount"] == 90000
+
+    inbound = [m for m in chat["messages"] if m["direction"] == "inbound"]
+    assert [m["ai"]["label"] for m in inbound] == ["Groq · gpt-oss-120b", "Groq · gpt-oss-120b", MIXED_PHOTO_LABEL,
+                                                   "Groq · gpt-oss-120b"]
+    assert [(m["ai"]["kind"], m["ai"]["provider"]) for m in inbound] == [("text", "groq"), ("text", "groq"),
+                                                                         ("vision", "mock"), ("text", "groq")]
+    assert inbound[2]["ai"]["model"] is None
+
+    body = detail(fresh, chat["request"]["id"])
+    evidence = body["evidence"]
+    assert evidence["ai_source_label"] == MIXED_PHOTO_LABEL
+    assert (evidence["ai_source"]["provider"], evidence["ai_source"]["model"], evidence["ai_source"]["mode"]) == (
+        "mock", None, "groq_text")
+    assert (evidence["odometer_km"], evidence["fuel_level"]) == (48352, 0.25)
+    read = next(a for a in body["audit"] if a["action"] == "evidence.read")
+    assert read["after"]["ai"]["label"] == MIXED_PHOTO_LABEL
+    assert (read["after"]["ai"]["provider"], read["after"]["ai"]["mode"]) == ("mock", "groq_text")
+
+    # Three text requests and not one for the photo (the transport would have refused it).
+    assert len(recorder.requests) == 3 and {sent["model"] for sent in recorder.bodies} == {TEXT_MODEL}
+    assert "image_url" not in "".join(request.content.decode() for request in recorder.requests)
+
+
+def test_typo_case_in_mixed_mode_still_shows_the_sample_reading(fresh, monkeypatch):
+    provider, _ = _text_only(_answer_like_the_model)
+    monkeypatch.setattr("app.requests.conversation.get_ai_provider", lambda: provider)
+    send(fresh, case="VEH015", text="Hola, necesito tanquear")
+    send(fresh, case="VEH015", text="Sí, es para esa ruta")
+    send(fresh, case="VEH015", media_id="media-veh015")
+    chat = conversation(fresh, WA["VEH015"])
+    evidence = detail(fresh, chat["request"]["id"])["evidence"]
+    assert evidence["odometer_read"] == 24086 and evidence["proposed_odometer"] == 34086
+    assert evidence["ai_source_label"] == MIXED_PHOTO_LABEL
+
+
+def test_mixed_mode_is_switchable_without_restarting_and_is_recorded(fresh, switch):
+    switch()
+    response = fresh.put("/api/dev/ai", json={"provider": "groq_text"}, headers=COORD)
+    assert response.status_code == 200
+    state = response.json()
+    assert (state["active"], state["active_label"], state["configured"], state["pinned"]) == (
+        "groq_text", "Groq (texto)", "mock", False)
+    assert [(o["key"], o["available"]) for o in state["options"]] == [("groq", True), ("groq_text", True), ("mock", True)]
+    health = fresh.get("/api/health").json()
+    assert health["ai_provider"] == "groq_text"
+    assert health["ai"] == {"active": "groq_text", "configured": "mock", "text_model": TEXT_MODEL, "vision_model": None}
+    assert fresh.get("/api/dev/simulator/cases").json()["ai_provider"] == "groq_text"
+    for payload in (response.text, fresh.get("/api/dev/ai").text, fresh.get("/api/health").text):
+        assert KEY not in payload
+
+    provider = ai.get_ai_provider()
+    assert isinstance(provider, TextOnlyProvider) and provider.name == "groq_text"
+    assert isinstance(provider.text, SafeProvider) and isinstance(provider.text.primary, GroqProvider)
+    assert provider.text.primary.text_model == TEXT_MODEL and isinstance(provider.vision, MockProvider)
+    # The provider the application builds reads the photo without the network client of Groq.
+    provider.text.primary._client = None
+    reading, source = ai.read_photo(provider, SVG["veh901"], "image/svg+xml")
+    assert reading.odometer_km == 48352 and source_label(source) == MIXED_PHOTO_LABEL
+    ai._build.cache_clear()
+
+    entry = fresh.get("/api/audit?action=demo.ai_provider").json()["items"][0]
+    assert entry["actor"] == "Andres Molina" and entry["role"] == "coordinator"
+    assert entry["summary"] == "Andres Molina cambió la IA de la demo a Groq (texto)"
+    assert (entry["before"], entry["after"]) == ({"provider": "mock"}, {"provider": "groq_text"})
+
+
+def test_switch_goes_through_the_three_modes_and_records_each_change(fresh, switch):
+    switch()
+    for provider, label in (("groq_text", "Groq (texto)"), ("groq", "Groq"), ("groq_text", "Groq (texto)"),
+                            ("mock", "Simulada")):
+        state = fresh.put("/api/dev/ai", json={"provider": provider}).json()
+        assert (state["active"], state["active_label"]) == (provider, label)
+        assert fresh.get("/api/health").json()["ai_provider"] == provider
+    fresh.put("/api/dev/ai", json={"provider": "mock"})                    # already active: not recorded again
+    entries = fresh.get("/api/audit?action=demo.ai_provider").json()["items"]
+    changes = sorted((entry["before"]["provider"], entry["after"]["provider"]) for entry in entries)
+    assert changes == sorted([("mock", "groq_text"), ("groq_text", "groq"), ("groq", "groq_text"), ("groq_text", "mock")])
+    assert isinstance(ai.get_ai_provider(), MockProvider)
+
+
+def test_switching_to_the_mixed_mode_without_key_is_rejected(fresh, switch):
+    response = fresh.put("/api/dev/ai", json={"provider": "groq_text"})
+    assert response.status_code == 409 and response.json()["code"] == "ai_provider_unavailable"
+    assert "GROQ_API_KEY" in response.json()["detail"]
+    assert fresh.get("/api/dev/ai").json()["active"] == "mock"
+    assert fresh.get("/api/audit?action=demo.ai_provider").json()["items"] == []
+    with pytest.raises(LookupError):
+        ai.set_active_provider("groq_text")
+
+
+def test_reset_from_the_mixed_mode_goes_back_to_the_configured_provider(fresh, switch):
+    switch()                                         # AI_PROVIDER=mock with the key set, as in the presentation
+    assert fresh.put("/api/dev/ai", json={"provider": "groq_text"}).json()["active"] == "groq_text"
+    assert fresh.post("/api/dev/reset").status_code == 200
+    state = fresh.get("/api/dev/ai").json()
+    assert state["active"] == state["configured"] == "mock" and state["pinned"] is False
+
+
+def test_mixed_mode_as_the_configured_provider_survives_the_reset(fresh, switch):
+    switch("groq_text")                              # AI_PROVIDER=groq_text with its key
+    state = fresh.get("/api/dev/ai").json()
+    assert state["active"] == state["configured"] == "groq_text"
+    assert fresh.put("/api/dev/ai", json={"provider": "mock"}).json()["active"] == "mock"
+    assert fresh.post("/api/dev/reset").status_code == 200
+    assert fresh.get("/api/dev/ai").json()["active"] == "groq_text"
+    assert fresh.post("/api/dev/ai/restore").json()["active"] == "groq_text"
+
+
+def test_ai_provider_groq_text_without_key_uses_the_local_interpreter(fresh, switch, monkeypatch):
+    settings = dataclasses.replace(config.get_settings(), groq_api_key="", ai_provider="groq_text")
+    monkeypatch.setattr(ai, "get_settings", lambda: settings)
+    state = fresh.get("/api/dev/ai").json()
+    assert state["active"] == state["configured"] == "mock"
+    assert [o["available"] for o in state["options"]] == [False, False, True]
+    assert isinstance(ai.get_ai_provider(), MockProvider) and fresh.get("/api/health").json()["ai_provider"] == "mock"
+
+
+@pytest.fixture()
+def environment(monkeypatch):
+    """Settings rebuilt from the environment variables of the test, and the real ones back afterwards."""
+    def load(**variables: str):
+        for name, value in variables.items():
+            monkeypatch.setenv(name, value)
+        config.get_settings.cache_clear()
+        return config.get_settings()
+
+    ai.restore_configured_provider(force=True)
+    yield load
+    monkeypatch.undo()
+    config.get_settings.cache_clear()
+    ai._build.cache_clear()
+    ai._state.update(override=None, pinned=False)
+
+
+@pytest.mark.parametrize("value, key, expected", [
+    ("groq_text", KEY, "groq_text"), (" GROQ_TEXT ", KEY, "groq_text"), ("groq", KEY, "groq"),
+    ("groq_text", "", "mock"), ("mock", KEY, "mock"), ("otro", KEY, "mock"),
+])
+def test_ai_provider_variable_selects_the_mode(environment, value, key, expected):
+    settings = environment(AI_PROVIDER=value, GROQ_API_KEY=key)
+    assert settings.ai_provider == value.strip().lower()
+    assert ai.configured_provider() == ai.active_provider() == expected
+    provider = ai.get_ai_provider()
+    assert provider.name == expected
+    assert isinstance(provider, {"groq_text": TextOnlyProvider, "groq": SafeProvider, "mock": MockProvider}[expected])
+
+
+def test_environment_of_the_suite_is_back_after_changing_the_variable():
+    assert config.get_settings().ai_provider == "mock" and config.get_settings().groq_api_key == ""
     assert ai.active_provider() == "mock"
 
 

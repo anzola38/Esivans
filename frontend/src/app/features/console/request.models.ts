@@ -169,6 +169,8 @@ export interface Evidence {
   error_label: string | null;
   proposed_odometer: number | null;
   confirmed_by_driver: boolean;
+  /** Who read the photo. `mode: 'groq_text'` means it was not sent to Groq: the sample reading was used. */
+  ai_source: { provider: string; model: string | null; status: string; mode?: string } | null;
   ai_source_label: string | null;
 }
 

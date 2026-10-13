@@ -1,7 +1,8 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { ApiService } from './api.service';
 
-export type AiProviderKey = 'groq' | 'mock';
+/** `groq_text`: Groq interprets the messages and the photo is not sent, the sample reading is used. */
+export type AiProviderKey = 'groq' | 'groq_text' | 'mock';
 
 export interface AiOption {
   key: AiProviderKey;
@@ -34,7 +35,7 @@ export function shortModel(model: string | null | undefined): string {
   return (model ?? '').split('/').pop() ?? '';
 }
 
-/** Demo switch of the AI provider (Groq or the simulated one). The state always comes from the backend. */
+/** Demo switch of the AI provider (Groq, Groq only for the text, or the simulated one). The state always comes from the backend. */
 @Injectable({ providedIn: 'root' })
 export class AiService {
   private readonly api = inject(ApiService);

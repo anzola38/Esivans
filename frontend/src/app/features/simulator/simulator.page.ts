@@ -10,7 +10,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AiService, AiSource, shortModel } from '../../core/ai.service';
+import { AiOption, AiProviderKey, AiService, AiSource, shortModel } from '../../core/ai.service';
 import { ApiService } from '../../core/api.service';
 import { ClockService } from '../../core/clock.service';
 import { DemoService } from '../../core/demo.service';
@@ -101,6 +101,12 @@ const STEP_PENDING: Record<string, string> = {
   manual_km: 'Escribir el kilometraje a mano',
   not_needed: 'Confirmar que no necesita tanquear ahora',
 };
+const AI_HELP: Record<AiProviderKey, string> = {
+  groq: 'Groq interpreta los mensajes y lee la foto del tablero.',
+  groq_text: 'Groq interpreta los mensajes. La foto no se envía a Groq: usa la lectura de ejemplo.',
+  mock: 'Intérprete local y lecturas de ejemplo, sin internet.',
+};
+
 /** Assistant messages that report what the AI read on the dashboard photo. */
 const READING_KINDS = ['confirm_reading', 'confirm_correction'];
 const SLA_SECONDS = 600;
@@ -165,9 +171,17 @@ export class SimulatorPage {
         'Groq: ' + shortModel(groq.text_model) + ' (mensajes) y ' + shortModel(groq.vision_model) + ' (foto).'
       );
     }
+    if (state.active === 'groq_text' && groq) {
+      return 'Groq: ' + shortModel(groq.text_model) + ' (mensajes). La foto no se envía: lectura de ejemplo.';
+    }
     if (groq && !groq.available) return 'Groq deshabilitado. ' + (groq.unavailable_reason ?? '');
-    return 'Intérprete local y lecturas de ejemplo, sin internet.';
+    return AI_HELP.mock;
   });
+
+  /** Tooltip of each option of the switch: what it does, or why it cannot be chosen. */
+  protected aiHelp(option: AiOption): string {
+    return option.unavailable_reason ?? AI_HELP[option.key];
+  }
 
   protected readonly scriptIndex = computed(() => {
     const total = this.selected()?.script.length ?? 0;

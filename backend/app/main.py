@@ -18,7 +18,7 @@ from app.decisions.audit import ROLE_LABELS, ROLES
 from app.decisions.router import router as decisions_router
 from app.dev.router import router as dev_router
 from app.errors import install_error_handlers
-from app.integrations.ai import active_provider, configured_provider
+from app.integrations.ai import GROQ_MODES, active_provider, configured_provider
 from app.integrations.router import router as integrations_router
 from app.ledger.router import router as ledger_router
 from app.reconciliation.router import router as alerts_router
@@ -54,7 +54,7 @@ def health(db: Session = Depends(get_db)) -> dict:
         "timezone": settings.timezone,
         "ai_provider": active_provider(),
         "ai": {"active": active_provider(), "configured": configured_provider(),
-               "text_model": settings.groq_text_model if active_provider() == "groq" else None,
+               "text_model": settings.groq_text_model if active_provider() in GROQ_MODES else None,
                "vision_model": settings.groq_vision_model if active_provider() == "groq" else None},
         "demo_mode": settings.demo_mode,
         "seed_date": loader.seed_date(db),

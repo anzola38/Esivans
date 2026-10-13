@@ -312,9 +312,20 @@
       <!-- Evidencia -->
       <app-card class="det__evidence-card" title="Foto del tablero y lectura" data-testid="evidence-card">
         @if (d.evidence; as ev) {
-          <span card-actions class="ui-badge ui-badge--orange">
-            <app-icon name="spark" [size]="12" />
-            Leído por la IA
+          <!-- Modo "Groq (texto)": la foto no se envió a Groq, así que no se rotula como leída por la IA. -->
+          <span
+            card-actions
+            class="ui-badge"
+            [class.ui-badge--orange]="ev.ai_source?.mode !== 'groq_text'"
+            [class.ui-badge--neutral]="ev.ai_source?.mode === 'groq_text'"
+            data-testid="evidence-origin"
+          >
+            @if (ev.ai_source?.mode === 'groq_text') {
+              Lectura de ejemplo
+            } @else {
+              <app-icon name="spark" [size]="12" />
+              Leído por la IA
+            }
           </span>
         }
         @if (d.evidence; as ev) {

@@ -1,7 +1,9 @@
 """AI adapter: provider selection, hot switch for the demo, fallback and provenance.
 
-The provider comes from AI_PROVIDER (mock | groq | gemini). In demo mode the presenter can switch
-between `mock` and `groq` without restarting; "Reiniciar demo" goes back to the configured one.
+The provider comes from AI_PROVIDER (mock | groq | groq_text | gemini). In demo mode the presenter
+can switch between `mock`, `groq_text` and `groq` without restarting; "Reiniciar demo" goes back to
+the configured one. `groq_text` is the mixed mode: Groq interprets what the driver writes and the
+photo is never sent to it, the local sample reader answers and is recorded as such.
 Any failure of a remote provider falls back locally, and every interpretation and reading carries
 a `source`: which provider and model really answered, so nothing is shown as read by a model that
 did not answer.
@@ -19,8 +21,10 @@ from app.integrations.ai.mock import MockProvider
 
 log = logging.getLogger(__name__)
 
-PROVIDER_LABELS = {"mock": "Simulada", "groq": "Groq", "gemini": "Gemini"}
-SWITCHABLE = ("groq", "mock")
+PROVIDER_LABELS = {"mock": "Simulada", "groq": "Groq", "groq_text": "Groq (texto)", "gemini": "Gemini"}
+SWITCHABLE = ("groq", "groq_text", "mock")
+GROQ_MODES = ("groq", "groq_text")          # both need GROQ_API_KEY
+MISSING_KEY_REASON = "Falta GROQ_API_KEY en el archivo .env: sin la clave solo funciona la IA simulada."
 REASON_LABELS = {
     "rate_limited": "límite por minuto",
     "daily_limit": "límite diario de la cuenta",
@@ -65,7 +69,11 @@ def source_label(source: dict | None) -> str | None:
     status = source.get("status", "ok")
     if status == "ok":
         if source.get("provider") == "mock":
-            return "simulada (lectura de ejemplo)" if source.get("kind") == "vision" else "simulada (intérprete local)"
+            if source.get("kind") != "vision":
+                return "simulada (intérprete local)"
+            if source.get("mode") == "groq_text":
+                return "simulada (lectura de ejemplo; la foto no se envió a Groq)"
+            return "simulada (lectura de ejemplo)"
         name = PROVIDER_LABELS.get(source.get("provider"), source.get("provider"))
         return f"{name} · {short_model(source.get('model'))}" if source.get("model") else str(name)
     intended = PROVIDER_LABELS.get((source.get("intended") or {}).get("provider"), "el proveedor")
@@ -123,6 +131,34 @@ class SafeProvider:
         return self.read_dashboard_traced(image, mime_type)[0]
 
 
+class TextOnlyProvider:
+    """Mixed mode of the demo (`groq_text`): a remote provider interprets what the driver writes and
+    the photo never leaves the backend.
+
+    The local sample reader answers for the photo and the source says so (provider `mock`, plus the
+    mode), so the interface never shows that reading as made by the remote model.
+    """
+
+    name = "groq_text"
+
+    def __init__(self, text: SafeProvider, vision: AIProvider) -> None:
+        self.text, self.vision = text, vision
+
+    def extract_request_traced(self, text: str, context: dict) -> tuple[ExtractedRequest, dict]:
+        return self.text.extract_request_traced(text, context)
+
+    def read_dashboard_traced(self, image: bytes, mime_type: str = "image/svg+xml") -> tuple[DashboardReading, dict]:
+        started = time.monotonic()
+        result = self.vision.read_dashboard(image, mime_type)
+        return result, {**make_source(self.vision, "vision", elapsed_ms=_ms(started)), "mode": self.name}
+
+    def extract_request(self, text: str, context: dict) -> ExtractedRequest:
+        return self.extract_request_traced(text, context)[0]
+
+    def read_dashboard(self, image: bytes, mime_type: str = "image/svg+xml") -> DashboardReading:
+        return self.read_dashboard_traced(image, mime_type)[0]
+
+
 def interpret(provider: AIProvider, text: str, context: dict) -> tuple[ExtractedRequest, dict]:
     """Interpretation of a message plus who produced it."""
     traced = getattr(provider, "extract_request_traced", None)
@@ -156,8 +192,8 @@ def groq_available() -> bool:
 def configured_provider() -> str:
     """Provider asked for by AI_PROVIDER, or `mock` when it cannot work (no key or model)."""
     settings = get_settings()
-    if settings.ai_provider == "groq" and settings.groq_api_key:
-        return "groq"
+    if settings.ai_provider in GROQ_MODES and settings.groq_api_key:
+        return settings.ai_provider
     if settings.ai_provider == "gemini" and settings.gemini_api_key and settings.gemini_model:
         return "gemini"
     return "mock"
@@ -165,7 +201,7 @@ def configured_provider() -> str:
 
 def active_provider() -> str:
     override = _state["override"]
-    if override == "groq" and not groq_available():
+    if override in GROQ_MODES and not groq_available():
         return "mock"
     return override or configured_provider()
 
@@ -175,7 +211,7 @@ def set_active_provider(name: str, *, pinned: bool = False) -> bool:
     automated tests pin `mock`). Returns whether the active provider changed."""
     if name not in SWITCHABLE:
         raise ValueError(f"proveedor no conmutable: {name}")
-    if name == "groq" and not groq_available():
+    if name in GROQ_MODES and not groq_available():
         raise LookupError("GROQ_API_KEY no está configurada")
     with _lock:
         before = active_provider()
@@ -205,9 +241,12 @@ def ai_state() -> dict:
         "pinned": bool(_state["pinned"]),
         "options": [
             {"key": "groq", "label": PROVIDER_LABELS["groq"], "available": available,
-             "unavailable_reason": None if available else
-             "Falta GROQ_API_KEY en el archivo .env: sin la clave solo funciona la IA simulada.",
+             "unavailable_reason": None if available else MISSING_KEY_REASON,
              "text_model": settings.groq_text_model, "vision_model": settings.groq_vision_model},
+            # Mixed mode: no vision model, the photo is not sent anywhere.
+            {"key": "groq_text", "label": PROVIDER_LABELS["groq_text"], "available": available,
+             "unavailable_reason": None if available else MISSING_KEY_REASON,
+             "text_model": settings.groq_text_model, "vision_model": None},
             {"key": "mock", "label": PROVIDER_LABELS["mock"], "available": True, "unavailable_reason": None,
              "text_model": None, "vision_model": None},
         ],
@@ -218,10 +257,11 @@ def ai_state() -> dict:
 def _build(name: str, api_key: str, text_model: str, vision_model: str) -> AIProvider:
     mock = MockProvider()
     try:
-        if name == "groq":
+        if name in GROQ_MODES:
             from app.integrations.ai.groq import GroqProvider
 
-            return SafeProvider(GroqProvider(api_key, text_model, vision_model), mock)
+            safe = SafeProvider(GroqProvider(api_key, text_model, vision_model), mock)
+            return TextOnlyProvider(safe, mock) if name == "groq_text" else safe
         if name == "gemini":
             from app.integrations.ai.gemini import GeminiProvider
 
@@ -234,13 +274,14 @@ def _build(name: str, api_key: str, text_model: str, vision_model: str) -> AIPro
 def get_ai_provider() -> AIProvider:
     settings = get_settings()
     name = active_provider()
-    if name == "groq":
-        return _build("groq", settings.groq_api_key, settings.groq_text_model, settings.groq_vision_model)
+    if name in GROQ_MODES:
+        return _build(name, settings.groq_api_key, settings.groq_text_model, settings.groq_vision_model)
     if name == "gemini":
         return _build("gemini", settings.gemini_api_key, settings.gemini_model, settings.gemini_model)
     return _build("mock", "", "", "")
 
 
-__all__ = ["AIProvider", "DashboardReading", "ExtractedRequest", "MockProvider", "SafeProvider", "active_provider",
-           "ai_state", "configured_provider", "get_ai_provider", "groq_available", "interpret", "make_source",
-           "read_photo", "restore_configured_provider", "set_active_provider", "source_label"]
+__all__ = ["AIProvider", "DashboardReading", "ExtractedRequest", "GROQ_MODES", "MockProvider", "SafeProvider",
+           "TextOnlyProvider", "active_provider", "ai_state", "configured_provider", "get_ai_provider",
+           "groq_available", "interpret", "make_source", "read_photo", "restore_configured_provider",
+           "set_active_provider", "source_label"]

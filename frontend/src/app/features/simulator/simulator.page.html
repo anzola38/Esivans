@@ -89,7 +89,7 @@
                       [attr.aria-pressed]="option.key === aiState.active"
                       [attr.data-testid]="'ai-option-' + option.key"
                       [disabled]="!option.available || ai.switching()"
-                      [title]="option.unavailable_reason ?? 'Usar la IA ' + option.label"
+                      [title]="aiHelp(option)"
                       (click)="ai.select(option.key)"
                     >
                       {{ option.label }}

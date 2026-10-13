@@ -36,7 +36,7 @@ El resultado sale en la consola (reporte `list`) y en `e2e/playwright-report/` (
 
 | Archivo | Qué comprueba |
 |---|---|
-| `ai-switch.spec.mjs` | Conmutador "IA: Groq / Simulada" del simulador: estado real, Groq deshabilitado sin clave con su explicación, cambio en caliente, "Reiniciar demo" vuelve al proveedor configurado, y quién interpretó cada mensaje y leyó la foto (simulador y consola). No llama a Groq. |
+| `ai-switch.spec.mjs` | Conmutador "IA: Groq / Groq (texto) / Simulada" del simulador: estado real, las tres opciones con su ayuda y en una sola línea, Groq y Groq (texto) deshabilitados sin clave con su explicación, cambio en caliente entre los tres modos, "Reiniciar demo" vuelve al proveedor configurado, y quién interpretó cada mensaje y leyó la foto (simulador y consola), incluido el rótulo "Lectura de ejemplo" del modo Groq (texto). No llama a Groq. |
 | `shell.spec.mjs` | Las 4 rutas, el menú, el título, el pie exacto, la ruta desconocida, el selector de rol (4 roles y persistencia) y "Reiniciar demo" (aviso, cancelar y efecto real). |
 | `simulator-green.spec.mjs` | Caso verde VEH901 con el botón del guion, escribiendo a mano y con respuestas rápidas: saludo, placa, servicio de EOM, foto, lectura, línea de estados y "Lo que falta". |
 | `console-green.spec.mjs` | Cola (Verde, $90.000, SLA en cuenta regresiva), detalle (foto, confianza, libro único, "Sin alertas", cálculo en 10 pasos), aprobar en un clic, habilitación con copiar, bitácora y mensaje al conductor. |
