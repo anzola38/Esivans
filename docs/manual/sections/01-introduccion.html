@@ -1,0 +1,391 @@
+<h1 id="introduccion">Introducción</h1>
+
+<p class="lead">En este capítulo: qué es el sistema de suministro de combustible y qué problema resuelve, a quién le sirve
+este manual y cómo leerlo, el recorrido de una solicitud de principio a fin y, uno por uno, los conceptos que va a
+encontrar en todas las pantallas.</p>
+
+<h2 id="introduccion-que-es">Qué es el sistema</h2>
+
+<p>Es un prototipo de Transportes Esivans S.A.S. para pedir, autorizar y controlar el combustible de los vehículos.
+Reemplaza el ir y venir de mensajes sueltos por un recorrido ordenado en el que cada paso queda registrado.</p>
+
+<p>En palabras sencillas, funciona así:</p>
+
+<ol class="steps">
+  <li>El <strong>conductor</strong> pide combustible por chat, como lo haría por mensajería.</li>
+  <li>Un <strong>asistente</strong> le responde, le pide lo que falta (para qué recorrido es y una foto del tablero) y arma la solicitud.</li>
+  <li>El <strong>sistema</strong> calcula un <strong>valor sugerido</strong> en pesos y le pone un <strong>semáforo</strong> a la solicitud: verde, amarillo o rojo.</li>
+  <li>El <strong>técnico de Control y Monitoreo</strong> revisa y decide: aprueba, ajusta el valor o rechaza.</li>
+  <li>El <strong>coordinador</strong> revisa después las alertas y compara lo autorizado con lo que cobró el proveedor.</li>
+  <li>El <strong>tablero</strong> mide cómo va el piloto frente a sus metas.</li>
+</ol>
+
+<p class="why">la inteligencia artificial (IA) solo lee y propone; la decisión siempre la toma una persona. La misma
+frase aparece en la barra lateral del sistema: «La IA lee y propone; la decisión la toma una persona.»</p>
+
+<figure class="fig w-75">
+  <img src="img/general-01-pantalla-completa.png" alt="Pantalla inicial del sistema: barra lateral, cabecera y Simulador del conductor">
+  <figcaption>Así se ve el sistema al entrar. A la izquierda está el menú con las cuatro pantallas; al centro, la pantalla «Simulador del conductor».</figcaption>
+</figure>
+
+<h3>Las cuatro pantallas</h3>
+
+<table>
+  <thead>
+    <tr><th>Pantalla</th><th>Para qué sirve</th><th>Quién la usa sobre todo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="ui">Simulador del conductor</span></td><td>Hace las veces del chat del conductor. Desde aquí se envía una solicitud de combustible.</td><td>Quien presenta o prueba el sistema</td></tr>
+    <tr><td><span class="ui">Consola del técnico</span></td><td>Muestra la cola de solicitudes con su semáforo y su valor sugerido. Aquí se aprueba, se ajusta o se rechaza.</td><td><span class="role">Técnico de Control y Monitoreo</span></td></tr>
+    <tr><td><span class="ui">Alertas del coordinador</span></td><td>Reúne los tanqueos y los vehículos que merecen revisión, la conciliación con el proveedor y las reglas con sus umbrales.</td><td><span class="role">Coordinador</span> <span class="role">Finanzas</span></td></tr>
+    <tr><td><span class="ui">Tablero del piloto</span></td><td>Presenta los indicadores del piloto frente a su meta y la decisión que aplicaría al cierre.</td><td><span class="role role--all">Todos los roles</span></td></tr>
+  </tbody>
+</table>
+
+<h2 id="introduccion-a-quien">A quién va dirigido este manual</h2>
+
+<p>A cualquier persona que vaya a usar o a evaluar el sistema sin conocerlo: personal de operaciones (técnicos,
+coordinadores, finanzas, soporte) y evaluadores. No hace falta saber de sistemas.</p>
+
+<table>
+  <thead>
+    <tr><th>Si usted es…</th><th>Lea primero</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Una persona que ve el sistema por primera vez</td><td>Este capítulo y el <a class="xref" href="#primeros-pasos" data-title></a>; después el <a class="xref" href="#simulador" data-title></a>, que es donde empieza todo. Para un ejercicio guiado completo, el <a class="xref" href="#recorrido" data-title></a>.</td></tr>
+    <tr><td>Técnico de Control y Monitoreo</td><td>El <a class="xref" href="#primeros-pasos"></a> y los tres de la consola: <a class="xref" href="#cola"></a> (la cola), <a class="xref" href="#detalle"></a> (el detalle) y <a class="xref" href="#decidir"></a> (las decisiones).</td></tr>
+    <tr><td>Coordinador o Finanzas</td><td>El <a class="xref" href="#primeros-pasos"></a> y los de la pantalla de alertas: <a class="xref" href="#alertas"></a> (alertas), <a class="xref" href="#conciliacion"></a> (conciliación) y <a class="xref" href="#reglas"></a> (reglas y umbrales).</td></tr>
+    <tr><td>Evaluador</td><td>La <a class="xref" href="#introduccion-recorrido"></a> de este capítulo y, para probarlo usted mismo en unos 10 minutos, el <a class="xref" href="#recorrido" data-title></a>. Lo que el prototipo no hace está en la <a class="xref" href="#faq-limites"></a>.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="introduccion-como-leer">Cómo leer este manual</h2>
+
+<p>Cada procedimiento va en pasos numerados y termina con un recuadro «Qué debe ver», para que usted confirme que
+todo salió bien. Estas son las marcas que se repiten:</p>
+
+<table>
+  <thead>
+    <tr><th>Así se ve</th><th>Qué significa</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="nowrap"><span class="ui">Reiniciar demo</span></td><td>Un botón, una pestaña o un campo, con el nombre exacto que tiene en pantalla.</td></tr>
+    <tr><td class="nowrap"><span class="kbd">Necesito tanquear</span></td><td>Algo que usted escribe, o una tecla.</td></tr>
+    <tr><td class="nowrap"><span class="role">Coordinador</span></td><td>El rol que puede hacer la acción.</td></tr>
+    <tr><td class="nowrap"><span class="light light-green">Verde</span> <span class="light light-yellow">Amarillo</span> <span class="light light-red">Rojo</span></td><td>El semáforo de una solicitud.</td></tr>
+    <tr><td class="nowrap"><span class="code">R05</span></td><td>El código de una regla.</td></tr>
+    <tr><td class="nowrap">«Hola, Carlos…»</td><td>Un texto copiado tal cual de la pantalla. El sistema trata de «tú» al usuario; este manual lo trata de «usted».</td></tr>
+  </tbody>
+</table>
+
+<div class="note"><p>Los recuadros azules como este dan contexto. Los verdes son consejos, los amarillos advierten de algo
+que puede salir mal y los grises señalan un límite del prototipo.</p></div>
+
+<div class="note"><p>Las imágenes se tomaron con los datos de ejemplo del sistema. Las horas reales, las cuentas regresivas
+y las referencias (por ejemplo, TER-261013-0001) cambian cada día: en su pantalla verá otras.</p></div>
+
+<h2 id="introduccion-recorrido">El recorrido de una solicitud</h2>
+
+<p>Toda solicitud sigue el mismo camino. El diagrama lo muestra con el caso de ejemplo más sencillo: el vehículo VEH901,
+de placa ZZA901.</p>
+
+<style>
+  .intro-flow { margin: 3mm 0 4mm; }
+  .intro-flow__row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3mm 7mm; margin-bottom: 3mm; }
+  .intro-flow__step { position: relative; break-inside: avoid; border: 0.3mm solid #E4E7EC; border-top: 1.2mm solid #1F3A5F; border-radius: 1.6mm; background: #F5F7FA; padding: 2.4mm 2.8mm 2.6mm; font-size: 8.8pt; line-height: 1.32; color: #101828; }
+  .intro-flow__step--decide { border-top-color: #EB6834; background: #fff; }
+  .intro-flow__step--after { border-top-color: #2A78D6; background: #EEF4FC; }
+  .intro-flow__num { display: inline-block; min-width: 4.6mm; height: 4.6mm; margin-right: 1.4mm; border-radius: 50%; background: #1F3A5F; color: #fff; font-size: 7.6pt; font-weight: 700; line-height: 4.6mm; text-align: center; }
+  .intro-flow__step--decide .intro-flow__num { background: #EB6834; }
+  .intro-flow__step--after .intro-flow__num { background: #2A78D6; }
+  .intro-flow__who { display: block; margin-bottom: 1mm; font-weight: 700; color: #1F3A5F; }
+  .intro-flow__where { display: block; margin-top: 1.4mm; font-size: 7.8pt; color: #475467; }
+  .intro-flow__step:not(.intro-flow__step--last)::after { content: '\2192'; position: absolute; right: -5.6mm; top: 50%; transform: translateY(-50%); font-size: 12pt; font-weight: 700; color: #475467; }
+  .intro-flow__label { margin: 0 0 1.6mm; font-size: 7.8pt; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #475467; }
+</style>
+
+<div class="intro-flow keep">
+  <p class="intro-flow__label">Antes de autorizar: pocos minutos</p>
+  <div class="intro-flow__row">
+    <div class="intro-flow__step">
+      <span class="intro-flow__who"><span class="intro-flow__num">1</span>El conductor escribe</span>
+      «Hola, necesito tanquear». El sistema lo reconoce por su número y ubica su vehículo.
+      <span class="intro-flow__where">Pantalla: Simulador del conductor</span>
+    </div>
+    <div class="intro-flow__step">
+      <span class="intro-flow__who"><span class="intro-flow__num">2</span>El asistente arma la solicitud</span>
+      Pregunta para qué recorrido es, pide la foto del tablero y lee el kilometraje y el nivel. El conductor confirma.
+      <span class="intro-flow__where">Estados: Recibida, Identificada, Esperando evidencia, Lista</span>
+    </div>
+    <div class="intro-flow__step intro-flow__step--last">
+      <span class="intro-flow__who"><span class="intro-flow__num">3</span>El sistema evalúa</span>
+      Aplica las reglas, suma los puntos, pone el semáforo y calcula el valor sugerido: Verde, 0 puntos, $90.000.
+      <span class="intro-flow__where">Estado: En revisión</span>
+    </div>
+  </div>
+  <div class="intro-flow__row">
+    <div class="intro-flow__step intro-flow__step--decide">
+      <span class="intro-flow__who"><span class="intro-flow__num">4</span>El técnico decide</span>
+      Aprueba, ajusta el valor o rechaza. En amarillo o rojo debe escribir el motivo.
+      <span class="intro-flow__where">Pantalla: Consola del técnico</span>
+    </div>
+    <div class="intro-flow__step intro-flow__step--decide">
+      <span class="intro-flow__who"><span class="intro-flow__num">5</span>El técnico habilita</span>
+      Copia los valores en el portal del proveedor y confirma la referencia.
+      <span class="intro-flow__where">Estado: Por habilitar</span>
+    </div>
+    <div class="intro-flow__step intro-flow__step--decide intro-flow__step--last">
+      <span class="intro-flow__who"><span class="intro-flow__num">6</span>El conductor recibe la respuesta</span>
+      Valor, producto, referencia y vigencia de 2 horas. Si se rechaza, recibe el motivo.
+      <span class="intro-flow__where">Estado: Autorizada o Rechazada</span>
+    </div>
+  </div>
+  <p class="intro-flow__label">Después de autorizar: control posterior</p>
+  <div class="intro-flow__row">
+    <div class="intro-flow__step intro-flow__step--after">
+      <span class="intro-flow__who"><span class="intro-flow__num">7</span>El coordinador concilia</span>
+      Carga el archivo del proveedor. Lo que coincide con lo autorizado queda como «Cuadra»; lo que no, se vuelve alerta.
+      <span class="intro-flow__where">Pantalla: Alertas del coordinador, pestaña Conciliación</span>
+    </div>
+    <div class="intro-flow__step intro-flow__step--after">
+      <span class="intro-flow__who"><span class="intro-flow__num">8</span>El coordinador revisa las alertas</span>
+      Registra el resultado de cada una: Confirmado, Justificado o Error de dato.
+      <span class="intro-flow__where">Pantalla: Alertas del coordinador</span>
+    </div>
+    <div class="intro-flow__step intro-flow__step--after intro-flow__step--last">
+      <span class="intro-flow__who"><span class="intro-flow__num">9</span>El tablero mide</span>
+      Nueve indicadores frente a su meta y la decisión al cierre: Ampliar, Ajustar o Detener.
+      <span class="intro-flow__where">Pantalla: Tablero del piloto</span>
+    </div>
+  </div>
+</div>
+
+<div class="note"><p>Cada paso deja un registro en la <strong>bitácora</strong> de la solicitud: quién lo hizo, qué hizo y
+cuándo. Nada se borra ni se corrige encima.</p></div>
+
+<h3>Los estados de una solicitud</h3>
+
+<p>Una solicitud pasa, en orden, por <span class="ui">Recibida</span>, <span class="ui">Identificada</span>,
+<span class="ui">Esperando evidencia</span>, <span class="ui">Lista</span>, <span class="ui">En revisión</span> y
+<span class="ui">Por habilitar</span>, y termina en <span class="ui">Autorizada</span>, <span class="ui">Rechazada</span> o
+<span class="ui">Cerrada sin tanqueo</span>. La <a class="xref" href="#cola-estados"></a> explica cada estado y quién actúa en él.</p>
+
+<h2 id="introduccion-conceptos">Conceptos clave</h2>
+
+<p>Estos términos aparecen en todas las pantallas. Cada uno va con un ejemplo tomado de los datos de la demo. El <a class="xref" href="#glosario"></a> reúne estos y los demás términos en orden alfabético.</p>
+
+<h3>Solicitud</h3>
+
+<p>Es el pedido de combustible de un conductor para un vehículo. Reúne quién pide, para qué recorrido, la foto del
+tablero, el kilometraje y el nivel de combustible. Cada solicitud tiene un número (por ejemplo, <strong>N.º 1</strong>)
+y pasa por los estados que se acaban de nombrar.</p>
+
+<p><strong>Ejemplo:</strong> Carlos Andrés Pérez pide combustible a las 9:40 a. m. para el vehículo de placa ZZA901.</p>
+
+<h3>Reglas y puntos</h3>
+
+<p>Una <strong>regla</strong> es una comprobación automática con un código, por ejemplo <span class="code">R08</span>
+«Sin servicios en EOM». Cuando una regla se cumple, suma <strong>puntos</strong>. Cada regla tiene un
+<strong>umbral</strong>: el límite a partir del cual se cumple. El catálogo tiene 25 reglas en cuatro grupos:</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Grupo</th><th>Códigos</th><th>Cuándo se aplican</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Antes de autorizar</td><td><span class="code">R01</span> a <span class="code">R10</span></td><td>Al evaluar la solicitud. Sus puntos definen el semáforo.</td></tr>
+    <tr><td>Al conciliar</td><td><span class="code">R11</span> a <span class="code">R14</span>, <span class="code">C01</span> y <span class="code">C02</span></td><td>Al cargar el archivo del proveedor.</td></tr>
+    <tr><td>Después de autorizar (control posterior)</td><td><span class="code">C03</span></td><td>Cuando el técnico autoriza una solicitud que estaba en rojo.</td></tr>
+    <tr><td>Por vehículo (análisis de 90 días)</td><td><span class="code">V01</span> a <span class="code">V08</span></td><td>Sobre el comportamiento del vehículo en 90 días.</td></tr>
+  </tbody>
+</table>
+
+<p><strong>Ejemplo:</strong> el vehículo VEH199 pide gas a las 11:14 p. m. Se cumplen tres reglas:
+<span class="code">R05</span> «Recarga sin recorrido» (3 puntos), <span class="code">R08</span> «Sin servicios en EOM»
+(2 puntos) y <span class="code">R09</span> «Tanqueo nocturno sin servicio» (2 puntos). Total: 7 puntos. Las 25 reglas, una por una, están en el <a class="xref" href="#anexo-reglas"></a>.</p>
+
+<p class="why">ninguna regla bloquea una solicitud. Las reglas le explican al técnico por qué mirar con más cuidado; la
+decisión sigue siendo suya.</p>
+
+<div class="note"><p><strong>EOM</strong> es la fuente de los servicios (rutas) programados de cada vehículo. El sistema
+la consulta para saber si el vehículo tiene recorridos pendientes que justifiquen el combustible.</p></div>
+
+<h3>Semáforo</h3>
+
+<p>Resume en un color cuánta atención pide la solicitud. Sale de sumar los puntos de las reglas que se cumplieron.</p>
+
+<table>
+  <thead>
+    <tr><th>Semáforo</th><th>Cuándo aparece</th><th>Cómo se aprueba</th><th>Ejemplo de la demo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="light light-green">Verde</span></td><td>0 puntos y las fuentes cuadran.</td><td>En un clic.</td><td>VEH901: 0 puntos</td></tr>
+    <tr><td><span class="light light-yellow">Amarillo</span></td><td>De 1 a 3 puntos, o 0 puntos con una inconsistencia (por ejemplo, un número no registrado).</td><td>Escribiendo el motivo.</td><td>VEH015: 1 punto (<span class="code">R02</span>)</td></tr>
+    <tr><td><span class="light light-red">Rojo</span></td><td>4 puntos o más.</td><td>Escribiendo el motivo. Además, el coordinador recibe una alerta para revisar esa autorización después.</td><td>VEH199: 7 puntos</td></tr>
+  </tbody>
+</table>
+
+<figure class="fig">
+  <img src="img/consola-05-tabla-de-la-cola.png" alt="Cola de la consola con una solicitud verde, una amarilla y una roja">
+  <figcaption>Los tres semáforos en la cola del técnico: verde con 0 puntos, amarillo con 1 punto y rojo con 7 puntos. Junto a los puntos aparecen los códigos de las reglas.</figcaption>
+</figure>
+
+<h3>Valor sugerido</h3>
+
+<p>Es el valor en pesos que el sistema propone autorizar. Se calcula con lo que el vehículo tiene en el tanque, lo que
+necesita para los servicios que le quedan ese día y una reserva de medio tanque. El resultado se redondea al múltiplo
+de $10.000 más cercano. El técnico ve el cálculo paso a paso.</p>
+
+<p><strong>Ejemplo (VEH901):</strong> tiene ¼ de tanque (3 galones de 12), le quedan 6 servicios (108 km) y debe
+conservar medio tanque. Necesita cargar 5,67 galones, que a $16.000 de referencia son $90.667. Redondeado:
+<strong>$90.000</strong>.</p>
+
+<p>La <a class="xref" href="#detalle-calculo"></a> explica los diez pasos del cálculo, uno por uno.</p>
+
+<div class="limit"><p>La capacidad del tanque, los kilómetros por servicio y los precios de referencia son valores
+ilustrativos cargados con los datos de ejemplo.</p></div>
+
+<h3>Tope</h3>
+
+<p>Es el valor máximo que se puede autorizar para un vehículo. Sale de la capacidad de su tanque por el precio de
+referencia, redondeado hacia abajo al múltiplo de $10.000. El valor sugerido nunca lo supera, y el técnico tampoco puede
+ajustar por encima de él.</p>
+
+<p><strong>Ejemplo:</strong> el tope del VEH901 es $190.000 (12 galones a $16.000). El del VEH199 es $40.000.</p>
+
+<h3>Libro único de tanqueos</h3>
+
+<p>Es la lista de todas las cargas de un vehículo, sin importar con qué proveedor las hizo, junto con sus servicios en
+EOM. Sirve para ver el consumo completo en un solo lugar.</p>
+
+<p><strong>Ejemplo:</strong> el VEH160 carga con dos proveedores. Mirando solo uno, parecería que rinde 783 km por
+galón, algo imposible. Con el libro único, que suma las cargas de gas del otro proveedor, el dato real es 73,5.</p>
+
+<p>La comparación completa está en la <a class="xref" href="#alertas-ejemplos"></a>.</p>
+
+<h3>Habilitación y referencia</h3>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig">
+    <img src="img/consola-21-panel-de-habilitacion.png" alt="Panel Habilitar en el portal del proveedor con los valores para copiar y la referencia">
+    <figcaption>Panel de habilitación de la solicitud del VEH901.</figcaption>
+  </figure>
+  <div>
+    <p><strong>Habilitar</strong> es activar el medio de pago del vehículo (el chip) por el valor aprobado. Lo hace
+    el técnico en el portal del proveedor, copiando los valores que la consola le deja listos.</p>
+    <p>La <strong>referencia</strong> es el código que identifica esa habilitación. El sistema sugiere una (TER-,
+    la fecha y un consecutivo) y el técnico la confirma o la cambia.</p>
+    <p>Mientras falte la referencia, la solicitud está <span class="ui">Por habilitar</span>. Al confirmarla pasa a
+    <span class="ui">Autorizada</span> y el conductor recibe el mensaje.</p>
+    <div class="limit"><p>El prototipo no se conecta con el portal del proveedor. La habilitación se representa
+    copiando los valores y confirmando la referencia.</p></div>
+  </div>
+</div>
+
+<h3>Vigencia</h3>
+
+<p>Es el tiempo durante el cual sirve la autorización: <strong>2 horas</strong>. El mensaje al conductor dice hasta qué
+hora puede cargar.</p>
+
+<figure class="fig w-50">
+  <img src="img/simulador-25-burbuja-de-autorizacion.png" alt="Mensaje de autorización que recibe el conductor">
+  <figcaption>El mensaje que recibe el conductor: valor, producto, referencia y vigencia.</figcaption>
+</figure>
+
+<div class="limit"><p>El prototipo guarda la hora de vencimiento, pero una autorización no pasa sola a «vencida»
+cuando se cumplen las 2 horas.</p></div>
+
+<h3>Bitácora</h3>
+
+<p>Es el historial de la solicitud. Guarda quién hizo cada cosa, qué hizo, cuándo y cómo estaba el dato antes y
+después. Solo se le agregan registros: nada se edita ni se borra.</p>
+
+<figure class="fig w-75">
+  <img src="img/consola-18-bitacora-antes-de-decidir.png" alt="Bitácora de la solicitud con tres registros antes de la decisión">
+  <figcaption>La bitácora del VEH901 antes de decidir: la solicitud recibida, la foto leída y el semáforo calculado.</figcaption>
+</figure>
+
+<p class="why">si alguien pregunta después por qué se autorizó un valor, la respuesta está escrita con nombre, fecha y
+versión de las reglas.</p>
+
+<h3>Alerta</h3>
+
+<p>Es un tanqueo o un vehículo que el sistema marca para que el coordinador lo revise. Cada alerta tiene sus reglas, sus
+puntos, una prioridad y un plazo.</p>
+
+<table>
+  <thead>
+    <tr><th>Prioridad</th><th>Puntos</th><th>Plazo para revisarla</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Alta</td><td>4 o más</td><td>48 horas</td></tr>
+    <tr><td>Media</td><td>2 o 3</td><td>En la semana</td></tr>
+    <tr><td>Baja</td><td>1</td><td>En la semana</td></tr>
+  </tbody>
+</table>
+
+<p>Al revisarla, el coordinador registra uno de tres resultados: <span class="ui">Confirmado</span> (la desviación es
+real), <span class="ui">Justificado</span> (hay una causa válida) o <span class="ui">Error de dato</span> (el dato
+venía mal).</p>
+
+
+
+<p class="why">ninguna alerta detiene el suministro. Se revisa después, y su resultado sirve para saber qué tan
+acertada es cada regla.</p>
+
+<h3>Conciliación</h3>
+
+<p>Es comparar lo que el sistema autorizó con lo que el proveedor realmente registró y cobró. Se hace cargando el
+archivo del proveedor. Lo que coincide queda como <span class="ui">Cuadra</span>; lo que no coincide (otro producto,
+otro valor o una venta sin autorización) se convierte en alerta.</p>
+
+
+
+<p><strong>Ejemplo:</strong> el VEH023 cargó Gasolina Extra a $21.250 por galón cuando su ficha pide Corriente, que
+estaba a $16.330 en la misma estación. El sistema calcula $27.783 pagados de más y crea la alerta
+<span class="code">C01</span>.</p>
+
+<h3>Piloto</h3>
+
+<p>Es la prueba controlada del sistema durante <strong>6 semanas</strong> en Córdoba, zona CARIBE COR. El tablero mide
+nueve indicadores frente a su meta. Al cierre se toma una de tres decisiones: <span class="ui">Ampliar</span>,
+<span class="ui">Ajustar</span> o <span class="ui">Detener</span>. El <a class="xref" href="#tablero"></a> explica cada indicador.</p>
+
+
+
+<h2 id="introduccion-simulado">Qué es simulado en este prototipo</h2>
+
+<p>Este sistema es un prototipo para demostración. Conviene saber qué partes son reales y cuáles están representadas.</p>
+
+<table>
+  <thead>
+    <tr><th>Parte</th><th>Cómo está en el prototipo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>La mensajería del conductor</td><td><strong>Simulada.</strong> La pantalla «Simulador del conductor» hace las veces del chat. No se envían mensajes a ningún teléfono.</td></tr>
+    <tr><td>Las fotos del tablero</td><td><strong>De ejemplo.</strong> Cada caso trae una imagen ya preparada. No se pueden subir fotos propias.</td></tr>
+    <tr><td>El ingreso y los roles</td><td><strong>Simulados.</strong> No hay usuario ni contraseña: el rol se elige en un selector de la cabecera. Los permisos de cada rol sí se respetan.</td></tr>
+    <tr><td>Los datos</td><td><strong>Ilustrativos.</strong> Vehículos, placas, conductores, estaciones, tanqueos y servicios son inventados. Los cuatro usuarios (Laura Mendoza, Carlos Rivas, Marta Salcedo y Diego Paternina) también.</td></tr>
+    <tr><td>La IA</td><td>Por defecto es <strong>«Simulada»</strong>: funciona sin internet y siempre da el mismo resultado. Se puede cambiar a un proveedor externo desde el simulador.</td></tr>
+    <tr><td>El portal del proveedor</td><td><strong>No existe en el prototipo.</strong> El técnico copia los valores y confirma una referencia.</td></tr>
+    <tr><td>El archivo del proveedor</td><td><strong>De ejemplo.</strong> La conciliación carga un archivo preparado de Terpel con un botón.</td></tr>
+    <tr><td>Las reglas, el semáforo y el valor sugerido</td><td><strong>Reales.</strong> Se calculan en el momento con los datos de cada solicitud.</td></tr>
+    <tr><td>La decisión, la habilitación y la bitácora</td><td><strong>Reales.</strong> Quedan guardadas hasta que se reinicia la demo.</td></tr>
+    <tr><td>El tablero</td><td><strong>Mixto.</strong> Cada tarjeta dice si su valor es «Calculado con la demo» o «Valor ilustrativo».</td></tr>
+  </tbody>
+</table>
+
+<div class="limit"><p>Todas las pantallas llevan el pie «Prototipo con datos ilustrativos | Uso exclusivo del proceso
+de selección». Nada de lo que se haga aquí afecta vehículos, pagos ni personas reales.</p></div>
+
+<div class="tip keep">
+  <p><strong>Puntos clave del capítulo</strong></p>
+  <ul>
+    <li>El conductor pide por chat, el asistente arma la solicitud, el sistema propone y el técnico decide.</li>
+    <li>El semáforo sale de los puntos: verde con 0, amarillo de 1 a 3 (o con una inconsistencia) y rojo con 4 o más.</li>
+    <li>Ninguna regla ni alerta bloquea el suministro: todo lo sensible se revisa después y queda en la bitácora.</li>
+    <li>El valor sugerido se calcula paso a paso y nunca pasa del tope del vehículo.</li>
+    <li>Aprobar tiene dos tiempos: decidir y habilitar. El conductor recibe la autorización al confirmar la referencia, con vigencia de 2 horas.</li>
+    <li>El chat, los roles, el portal del proveedor y los datos son simulados o ilustrativos; las reglas, las decisiones y la bitácora funcionan de verdad.</li>
+  </ul>
+</div>

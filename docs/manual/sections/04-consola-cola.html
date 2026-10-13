@@ -1,0 +1,302 @@
+<h1 id="cola">Consola del técnico: la cola de solicitudes</h1>
+
+<p class="lead">En este capítulo: para qué sirve la cola, cómo leer sus contadores y cada columna, en qué orden
+aparecen las solicitudes, cómo funciona el plazo de 10 minutos (SLA), qué significa cada estado y cómo abrir una
+solicitud. Al final, qué es una solicitud incompleta y qué es un número no registrado.</p>
+
+<h2 id="cola-para-que">Para qué sirve</h2>
+
+<p class="who">Quién la usa: <span class="role">Técnico de Control y Monitoreo</span></p>
+
+<p>La cola es la lista de todas las solicitudes de combustible que han escrito los conductores. Cada renglón es una
+solicitud. Desde aquí usted ve cuáles esperan su decisión, cuánto llevan esperando y de qué color es su semáforo.</p>
+
+<p class="why">el conductor está esperando en la estación o en ruta; la cola le muestra primero a quien más lleva esperando.</p>
+
+<ol class="steps">
+  <li>En la cabecera, deje el rol <span class="ui">Técnico de Control y Monitoreo</span>.</li>
+  <li>En el menú de la izquierda, haga clic en <span class="ui">Consola del técnico</span>.</li>
+</ol>
+
+<div class="result">
+  <p>La pantalla <span class="ui">Cola de solicitudes</span>, con el texto «Ordenada por tiempo de espera. Lo verde se
+  aprueba en un clic; lo amarillo o rojo pide el motivo.», cuatro contadores arriba a la derecha y una tabla.</p>
+</div>
+
+<figure class="fig">
+  <img src="img/consola-02-cola-tres-semaforos.png" alt="Cola de solicitudes con tres solicitudes por decidir: una verde, una amarilla y una roja">
+  <figcaption>La cola con tres solicitudes por decidir: una verde, una amarilla y una roja.</figcaption>
+</figure>
+
+<div class="note">
+  <p>La cola <strong>se actualiza sola cada 3 segundos</strong>, como lo dice el pie de la tabla. No hace falta recargar
+  la página: una solicitud nueva aparece apenas el conductor escribe.</p>
+</div>
+
+<h3>Cuando la cola está vacía</h3>
+
+<p>Con la demo recién reiniciada no hay solicitudes. La pantalla dice <span class="ui">No hay solicitudes en la cola</span>
+y ofrece el botón <span class="ui">Ir al simulador</span>, que lleva al <span class="ui">Simulador del conductor</span>
+para enviar una.</p>
+
+<figure class="fig w-75">
+  <img src="img/consola-01-cola-vacia.png" alt="Cola de solicitudes vacía con el botón Ir al simulador">
+  <figcaption>La cola vacía: todos los contadores en 0.</figcaption>
+</figure>
+
+<h2 id="cola-contadores">Los contadores</h2>
+
+<figure class="fig fig--bare w-50">
+  <img src="img/consola-03-contadores.png" alt="Contadores: Por decidir 3, Verde 1, Amarillo 1, Rojo 1">
+  <figcaption>Los cuatro contadores de la cola.</figcaption>
+</figure>
+
+<table>
+  <thead>
+    <tr><th>Contador</th><th>Qué cuenta</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="ui">Por decidir</span></td><td>Las solicitudes que están en manos del técnico: las que esperan decisión y las que ya se decidieron pero falta habilitar.</td></tr>
+    <tr><td><span class="light light-green">Verde</span></td><td>De las que esperan decisión, cuántas están en verde.</td></tr>
+    <tr><td><span class="light light-yellow">Amarillo</span></td><td>De las que esperan decisión, cuántas están en amarillo.</td></tr>
+    <tr><td><span class="light light-red">Rojo</span></td><td>De las que esperan decisión, cuántas están en rojo.</td></tr>
+  </tbody>
+</table>
+
+<p>Los contadores <strong>no</strong> incluyen las solicitudes que el asistente todavía está armando con el conductor
+ni las que ya se cerraron. Por eso, después de atender todo, vuelven a 0 aunque la tabla siga mostrando renglones.</p>
+
+<p>El pie de la tabla muestra el total de renglones de la lista, por ejemplo <span class="ui">3 solicitudes hoy</span>.</p>
+
+<h2 id="cola-columnas">Las columnas de la tabla</h2>
+
+<figure class="fig">
+  <img src="img/consola-05-tabla-de-la-cola.png" alt="Tabla de la cola con sus encabezados y tres filas">
+  <figcaption>La tabla, con sus ocho columnas y el botón de cada fila.</figcaption>
+</figure>
+
+<table>
+  <thead>
+    <tr><th>Columna</th><th>Qué muestra</th><th>Ejemplo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="ui">Semáforo</span></td><td>Color y puntos de la solicitud. Debajo, los códigos de las reglas que se cumplieron. Si aún no se ha evaluado, dice <span class="ui">Sin evaluar</span>.</td><td>Rojo · 7 puntos · R05, R08, R09</td></tr>
+    <tr><td><span class="ui">Placa</span></td><td>Placa del vehículo; debajo, su código y tipo de combustible. Sin vehículo: <span class="ui">Sin placa</span> y «Vehículo sin identificar».</td><td>ZZA901 · VEH901 · Gasolina</td></tr>
+    <tr><td><span class="ui">Conductor</span></td><td>Nombre del conductor. Si el número no está registrado: «Número no registrado» y el número de teléfono.</td><td>Carlos Andrés Pérez</td></tr>
+    <tr><td><span class="ui">Estado</span></td><td>En qué va la solicitud. Si llegó incompleta, debajo dice «Llegó sin: …».</td><td>En revisión</td></tr>
+    <tr><td><span class="ui">Hora</span></td><td>Hora en que el conductor pidió el combustible. En la demo es la hora simulada del caso.</td><td>9:40 a. m.</td></tr>
+    <tr><td><span class="ui">Espera</span></td><td>Minutos y segundos que lleva abierta la solicitud, desde el primer mensaje del conductor. En las cerradas muestra una raya (—).</td><td>00:28</td></tr>
+    <tr><td><span class="ui">SLA (10 min)</span></td><td>Tiempo que queda del plazo de 10 minutos, con una barra que se va vaciando.</td><td>09:31</td></tr>
+    <tr><td><span class="ui">Valor</span></td><td>El valor en pesos y debajo su tipo: <span class="ui">Sugerido</span> (lo que propone el sistema) o <span class="ui">Autorizado</span> (lo que ya se habilitó). Una raya (—) si no hay valor.</td><td>$90.000 · Sugerido</td></tr>
+    <tr><td>(botón)</td><td><span class="ui">Revisar</span> en las solicitudes abiertas; <span class="ui">Ver</span> en las cerradas.</td><td>Revisar</td></tr>
+  </tbody>
+</table>
+
+<p>Cada fila abierta tiene además una línea de color en su borde izquierdo, igual al color del semáforo. Las filas
+cerradas se ven atenuadas, con fondo gris.</p>
+
+<figure class="fig fig--bare">
+  <img src="img/consola-04-fila-verde-con-sla.png" alt="Fila verde de la placa ZZA901 con su cuenta regresiva del SLA">
+  <figcaption>Una fila de cerca: semáforo, placa, conductor, estado, hora, espera, SLA, valor y botón.</figcaption>
+</figure>
+
+<div class="note">
+  <p>La <strong>Hora</strong> es la del caso (por ejemplo, 11:14 p. m. en el caso nocturno). La
+  <strong>Espera</strong> y el <strong>SLA</strong> corren con el reloj real, desde que usted envió el primer mensaje
+  en el simulador.</p>
+</div>
+
+<h2 id="cola-orden">El orden de la cola</h2>
+
+<ol class="steps">
+  <li><strong>Primero, las solicitudes abiertas</strong>, de la que más tiempo lleva esperando a la que menos.</li>
+  <li><strong>Después, las cerradas</strong> (autorizadas, rechazadas o cerradas sin tanqueo), de la más reciente a la más antigua.</li>
+</ol>
+
+<p>El color del semáforo <strong>no</strong> cambia el orden: una solicitud roja no pasa por delante de una verde que
+lleva más tiempo.</p>
+
+<p class="why">el compromiso es responder a cada conductor en 10 minutos, sin importar el color de su solicitud.</p>
+
+<figure class="fig">
+  <img src="img/consola-83-cola-filas-decididas-y-cerradas.png" alt="Cola con una solicitud abierta arriba y cuatro cerradas debajo">
+  <figcaption>Después de usar la demo: arriba, la única solicitud abierta; debajo, las cerradas, con «Cerrada» en la columna del SLA y el botón «Ver».</figcaption>
+</figure>
+
+<h2 id="cola-sla">El SLA y su cuenta regresiva</h2>
+
+<p><strong>SLA</strong> es el plazo máximo para atender una solicitud. En este sistema es de <strong>10 minutos</strong>
+y empieza a contar con el <strong>primer mensaje del conductor</strong>, no cuando la solicitud llega a la cola.</p>
+
+<p class="why">al conductor le importa el tiempo total desde que escribió, incluido lo que tarda la conversación con el asistente.</p>
+
+<table>
+  <thead>
+    <tr><th>Lo que ve en la columna</th><th>Qué significa</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Reloj y tiempo en negro, barra verde: <strong>09:31</strong></td><td>Quedan más de 3 minutos.</td></tr>
+    <tr><td>Tiempo y barra en ámbar: <strong>01:45</strong></td><td>Quedan 3 minutos o menos: atiéndala ya.</td></tr>
+    <tr><td>En rojo, con un triángulo de aviso: <strong>Vencido hace 00:43</strong></td><td>Se pasó el plazo. El contador sigue sumando el tiempo de atraso.</td></tr>
+    <tr><td><span class="ui">Decidida</span></td><td>Ya se aprobó o se ajustó; falta confirmar la habilitación. El plazo dejó de contar.</td></tr>
+    <tr><td><span class="ui">Cerrada</span></td><td>La solicitud terminó.</td></tr>
+  </tbody>
+</table>
+
+<figure class="fig">
+  <img src="img/x-consola-cola-sla-por-vencer.png" alt="Cola con dos solicitudes a las que les queda menos de dos minutos de plazo y dos solicitudes decididas">
+  <figcaption>Las dos primeras filas están en ámbar (queda 01:45). Las dos siguientes ya se decidieron: dicen «Decidida» y «Por habilitar», y su espera sigue contando hasta que se confirme la habilitación.</figcaption>
+</figure>
+
+<figure class="fig">
+  <img src="img/x-consola-cola-sla-vencido.png" alt="Cola con dos solicitudes con el plazo vencido hace 43 segundos">
+  <figcaption>Tres minutos después: las dos primeras filas dicen «Vencido hace 00:43». El contador «Por decidir» marca 4: dos esperan decisión y dos esperan habilitación.</figcaption>
+</figure>
+
+
+<div class="note">
+  <p>El SLA vencido <strong>no bloquea nada</strong>: la solicitud se puede decidir igual. Sirve para priorizar y para
+  medir el servicio.</p>
+</div>
+
+<h3>Qué pasa a los 10 minutos si la solicitud no está completa</h3>
+
+<p>Si se cumple el plazo y el asistente todavía no ha reunido todo (el servicio, la foto del tablero o la confirmación
+del kilometraje), el sistema deja de esperar: pasa la solicitud al técnico <strong>con lo que tenga</strong> y le avisa
+al conductor. Así nadie se queda sin respuesta (véase la <a class="xref" href="#cola-incompletas"></a>).</p>
+
+<h2 id="cola-estados">Los estados de una solicitud</h2>
+
+<p>La columna <span class="ui">Estado</span> dice en qué paso va cada solicitud. Estos son todos los que existen:</p>
+
+<table>
+  <thead>
+    <tr><th>Estado</th><th>Qué significa</th><th>Quién actúa</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="ui">Recibida</span></td><td>Llegó el primer mensaje del conductor.</td><td>El asistente</td></tr>
+    <tr><td><span class="ui">Identificada</span></td><td>El sistema reconoció al conductor y su vehículo por el número de teléfono.</td><td>El asistente</td></tr>
+    <tr><td><span class="ui">Esperando evidencia</span></td><td>El asistente le está pidiendo al conductor lo que falta: el servicio, la foto del tablero o confirmar el kilometraje.</td><td>El conductor</td></tr>
+    <tr><td><span class="ui">Lista</span></td><td>La solicitud está completa y ya tiene semáforo y cálculo.</td><td>El sistema</td></tr>
+    <tr><td><span class="ui">En revisión</span></td><td>Está esperando la decisión del técnico.</td><td><strong>Usted</strong></td></tr>
+    <tr><td><span class="ui">Por habilitar</span></td><td>Ya se aprobó o se ajustó. Falta habilitar el valor en el portal del proveedor y confirmar la referencia.</td><td><strong>Usted</strong></td></tr>
+    <tr><td><span class="ui">Autorizada</span></td><td>Se confirmó la habilitación y el conductor recibió el valor, el producto, la referencia y la vigencia.</td><td>Nadie: terminó</td></tr>
+    <tr><td><span class="ui">Rechazada</span></td><td>El técnico la rechazó y el conductor recibió el motivo.</td><td>Nadie: terminó</td></tr>
+    <tr><td><span class="ui">Cerrada sin tanqueo</span></td><td>El cálculo mostró que el vehículo no necesita cargar ahora y el conductor lo aceptó.</td><td>Nadie: terminó</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <ul>
+    <li><span class="ui">Recibida</span> e <span class="ui">Identificada</span> duran un instante. Lo normal es que en la
+    cola usted vea la solicitud ya en <span class="ui">Esperando evidencia</span>.</li>
+    <li><span class="ui">Lista</span> también dura un instante. Solo se queda en ese estado cuando el cálculo dice que el
+    vehículo no necesita tanquear y el asistente espera la respuesta del conductor.</li>
+  </ul>
+</div>
+
+<figure class="fig">
+  <img src="img/x-consola-cola-con-asistente.png" alt="Cola con dos solicitudes en estado Esperando evidencia y semáforo Sin evaluar, y una en revisión">
+  <figcaption>La primera y la tercera fila son solicitudes que el asistente todavía está armando: «Sin evaluar», «Esperando evidencia» y sin valor. No entran en los contadores (solo cuenta la fila del medio), pero su SLA ya está corriendo.</figcaption>
+</figure>
+
+<p>Usted puede abrir una solicitud que todavía está con el asistente, pero solo para consultarla: no tiene botones para
+decidir hasta que pase a <span class="ui">En revisión</span>.</p>
+
+<h2 id="cola-abrir">Abrir una solicitud</h2>
+
+<ol class="steps">
+  <li>Ubique la fila de la placa que quiere atender. La de arriba es la que más lleva esperando.</li>
+  <li>Haga clic en <span class="ui">Revisar</span>. También sirve hacer clic en cualquier parte de la fila.</li>
+</ol>
+
+<div class="result">
+  <p>Se abre el detalle de la solicitud, con el panel de decisión a la derecha. El <a class="xref" href="#detalle"></a> lo explica
+  bloque por bloque.</p>
+</div>
+
+<p>Para volver a la cola, haga clic en la flecha que está junto a la placa, o en
+<span class="ui">Consola del técnico</span> en el menú.</p>
+
+<div class="note">
+  <p>En las solicitudes cerradas el botón se llama <span class="ui">Ver</span>: abre el mismo detalle, pero solo para
+  consultar lo que pasó.</p>
+</div>
+
+<div class="warn">
+  <p>Si alguien pulsa <span class="ui">Reiniciar demo</span> mientras usted tiene un detalle abierto, verá el mensaje
+  <span class="ui">No existe esa solicitud</span> con el botón <span class="ui">Volver a la cola</span>. Es normal:
+  reiniciar borra todas las solicitudes.</p>
+</div>
+
+<h2 id="cola-incompletas">Solicitudes incompletas</h2>
+
+<p>Una solicitud es <strong>incompleta</strong> cuando llegó a sus manos sin todos los datos. Usted la reconoce por la
+línea «Llegó sin: …» debajo del estado.</p>
+
+<p>En la segunda figura de la <a class="xref" href="#cola-sla"></a> («Vencido hace 00:43»), la primera fila es una solicitud incompleta: el conductor de la placa ZZA199 escribió un
+solo mensaje y no respondió más. A los 10 minutos pasó a <span class="ui">En revisión</span> con la línea
+«Llegó sin: servicio o justificación, foto del tablero». Al abrirla, el detalle lo explica:</p>
+
+<figure class="fig w-75">
+  <img src="img/x-consola-incompleta-avisos-y-razones.png" alt="Avisos y razones de una solicitud incompleta de la placa ZZA199">
+  <figcaption>Detalle de una solicitud incompleta: el aviso amarillo dice qué faltó y la última razón, marcada como «Dato», lo repite.</figcaption>
+</figure>
+
+<p>Como no hubo foto, no hay kilometraje (por eso se cumple la regla <span class="code">R01</span>, «Odómetro sin
+dato») ni nivel de combustible: el sistema no puede calcular el valor y la columna <span class="ui">Valor</span>
+muestra una raya.</p>
+
+
+<table>
+  <thead>
+    <tr><th>«Llegó sin…»</th><th>Qué faltó</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>servicio o justificación</td><td>El conductor no dijo para qué recorrido necesita el combustible.</td></tr>
+    <tr><td>foto del tablero</td><td>No envió la foto, o no se pudo leer el kilometraje.</td></tr>
+    <tr><td>confirmación del kilometraje</td><td>Envió la foto, pero no confirmó el kilometraje leído.</td></tr>
+    <tr><td>conductor no identificado</td><td>El número no está registrado (véase la <a class="xref" href="#cola-no-registrado"></a>).</td></tr>
+    <tr><td>vehículo sin asignación vigente</td><td>El conductor está registrado, pero no tiene un vehículo asignado hoy.</td></tr>
+  </tbody>
+</table>
+
+<p>Una solicitud incompleta nunca queda en verde: aparece por lo menos en
+<span class="light light-yellow">Amarillo</span>, con la razón «Solicitud incompleta». Usted decide con la
+información que haya.</p>
+
+<h2 id="cola-no-registrado">Solicitudes de un número no registrado</h2>
+
+<p>Si escribe alguien cuyo número no está entre los conductores registrados, el asistente no puede armar la solicitud.
+Le responde que pasó su caso al técnico y la solicitud llega <strong>de inmediato</strong> a la cola, sin esperar los
+10 minutos.</p>
+
+<p>En las figuras de la <a class="xref" href="#cola-sla"></a>, es la segunda fila de la cola. Así se lee:</p>
+
+<dl class="fields">
+  <dt>Semáforo</dt><dd><span class="light light-yellow">Amarillo</span> · 0 puntos. No se cumplió ninguna regla, pero hay un dato por aclarar.</dd>
+  <dt>Placa</dt><dd><span class="ui">Sin placa</span> · «Vehículo sin identificar».</dd>
+  <dt>Conductor</dt><dd>«Número no registrado» y, debajo, el número de teléfono.</dd>
+  <dt>Valor</dt><dd>Una raya (—): sin vehículo no hay cálculo.</dd>
+</dl>
+
+<figure class="fig">
+  <img src="img/consola-81-detalle-sin-registro-completo.png" alt="Detalle de una solicitud de un número no registrado">
+  <figcaption>El detalle de un número no registrado: aviso de solicitud incompleta, la razón «Número no registrado» y las tarjetas sin foto, sin tanqueos y sin cálculo.</figcaption>
+</figure>
+
+<p>En el prototipo, una solicitud sin vehículo identificado no se puede aprobar ni ajustar; solo se puede rechazar con
+motivo (véase la <a class="xref" href="#decidir-que-hago"></a>).</p>
+
+
+<div class="tip keep">
+  <p><strong>Puntos clave del capítulo</strong></p>
+  <ul>
+    <li>La cola muestra todas las solicitudes: primero las abiertas, de la que más lleva esperando a la que menos; luego las cerradas.</li>
+    <li>Los contadores solo cuentan lo que está en manos del técnico.</li>
+    <li>El plazo es de 10 minutos desde el primer mensaje del conductor. En ámbar quedan 3 minutos o menos; en rojo, se venció.</li>
+    <li><span class="ui">En revisión</span> y <span class="ui">Por habilitar</span> son los dos estados en los que usted debe actuar.</li>
+    <li>«Llegó sin: …» señala una solicitud incompleta; «Sin placa», un número no registrado.</li>
+    <li>La pantalla se actualiza sola cada 3 segundos.</li>
+  </ul>
+</div>

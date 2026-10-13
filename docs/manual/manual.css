@@ -1,0 +1,558 @@
+/* Manual de usuario · Suministro de combustible · Transportes Esivans S.A.S.
+   Hoja para imprimir en A4 con Chromium (ver build.mjs). Misma identidad visual del sistema.
+   El marcado de cada pieza esta en sections/00-ejemplo.html. */
+
+@font-face { font-family: 'Lato'; font-weight: 400; font-style: normal; src: url('fonts/lato-400.woff2') format('woff2'); }
+@font-face { font-family: 'Lato'; font-weight: 400; font-style: italic; src: url('fonts/lato-400-italic.woff2') format('woff2'); }
+@font-face { font-family: 'Lato'; font-weight: 700; font-style: normal; src: url('fonts/lato-700.woff2') format('woff2'); }
+@font-face { font-family: 'Lato'; font-weight: 900; font-style: normal; src: url('fonts/lato-900.woff2') format('woff2'); }
+
+:root {
+  --navy: #1f3a5f;
+  --orange: #eb6834;
+  --orange-ink: #b8430f;
+  --orange-soft: #fdf0ea;
+  --blue: #2a78d6;
+  --blue-ink: #1b5cab;
+  --bg: #f5f7fa;
+  --blue-soft: #eef4fc;
+  --line: #e4e7ec;
+  --ink: #101828;
+  --ink-2: #475467;
+  --good: #0ca30c;
+  --good-ink: #0a6f0a;
+  --good-soft: #e9f6e9;
+  --warn: #e09a00;
+  --warn-ink: #8a5f00;
+  --warn-soft: #fdf5e0;
+  --crit: #d03b3b;
+  --crit-ink: #a32424;
+  --crit-soft: #fbeaea;
+  --font: 'Lato', Calibri, Carlito, 'Segoe UI', Arial, sans-serif;
+}
+
+/* ---------- Pagina ---------- */
+
+@page {
+  size: A4;
+  margin: 21mm 17mm 20mm 17mm;
+
+  @top-left {
+    content: 'Manual de usuario · Sistema de suministro de combustible';
+    font-family: 'Lato', Calibri, Carlito, 'Segoe UI', Arial, sans-serif;
+    font-size: 7.5pt;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #1f3a5f;
+    vertical-align: bottom;
+    padding-bottom: 5.5mm;
+  }
+
+  @top-right {
+    content: 'Transportes Esivans S.A.S.';
+    font-family: 'Lato', Calibri, Carlito, 'Segoe UI', Arial, sans-serif;
+    font-size: 7.5pt;
+    color: #475467;
+    vertical-align: bottom;
+    padding-bottom: 5.5mm;
+  }
+
+  @bottom-left {
+    content: 'Prototipo con datos ilustrativos | Uso exclusivo del proceso de selección';
+    font-family: 'Lato', Calibri, Carlito, 'Segoe UI', Arial, sans-serif;
+    font-size: 7.5pt;
+    color: #475467;
+    vertical-align: top;
+    padding-top: 7mm;
+  }
+
+  @bottom-right {
+    content: 'Página ' counter(page) ' de ' counter(pages);
+    font-family: 'Lato', Calibri, Carlito, 'Segoe UI', Arial, sans-serif;
+    font-size: 8pt;
+    font-weight: 700;
+    color: #1f3a5f;
+    vertical-align: top;
+    padding-top: 7mm;
+  }
+}
+
+/* La portada no lleva encabezado ni numero; el pie va dentro de la propia portada. */
+@page :first {
+  margin: 0;
+  @top-left { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  font-size: 10.5pt;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  line-height: 1.5;
+    orphans: 3;
+  widows: 3;
+}
+
+/* ---------- Titulos ---------- */
+
+h1, h2, h3, h4 {
+  font-family: var(--font);
+  color: var(--navy);
+  line-height: 1.2;
+  break-after: avoid;
+  break-inside: avoid;
+}
+
+/* Capitulo: siempre empieza pagina. Se numera solo (1, 2, 3...). */
+h1 {
+  break-before: page;
+  margin: 0 0 6mm;
+  padding: 0 0 3.5mm;
+  font-size: 23pt;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  border-bottom: 1.2mm solid var(--orange);
+}
+
+h1::before {
+  content: attr(data-label);
+  display: block;
+  margin-bottom: 1.5mm;
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--orange-ink);
+}
+
+h2 {
+  margin: 8mm 0 2.5mm;
+  font-size: 15pt;
+  font-weight: 900;
+}
+
+h2::before {
+  content: attr(data-num) '\00a0\00a0';
+  color: var(--blue);
+}
+
+h3 {
+  margin: 6mm 0 2mm;
+  font-size: 12pt;
+  font-weight: 700;
+}
+
+h4 {
+  margin: 4mm 0 1.5mm;
+  font-size: 10.5pt;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* Titulos sin numero (portada, contenido, anexos sin numerar) */
+h2.no-num::before { content: none; }
+
+/* Entradilla bajo el titulo del capitulo */
+.lead {
+  margin: 0 0 5mm;
+  font-size: 12pt;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+/* ---------- Texto ---------- */
+
+p { margin: 0 0 2.6mm; }
+strong { font-weight: 700; }
+a { color: var(--blue-ink); text-decoration: none; }
+ul, ol { margin: 0 0 3mm; padding-left: 5.5mm; }
+li { margin-bottom: 1.2mm; }
+li > ul, li > ol { margin-top: 1.2mm; }
+hr { border: 0; border-top: 0.3mm solid var(--line); margin: 5mm 0; }
+
+/* "Por qué": la razon de un paso o de una regla, en una frase */
+.why {
+  margin: 0 0 3mm;
+  padding-left: 3mm;
+  border-left: 0.8mm solid var(--line);
+  color: var(--ink-2);
+}
+
+.why::before {
+  content: 'Por qué: ';
+  font-weight: 700;
+  color: var(--navy);
+}
+
+/* ---------- Pasos numerados ---------- */
+
+ol.steps {
+  list-style: none;
+  margin: 3mm 0 4mm;
+  padding: 0;
+  counter-reset: step;
+}
+
+ol.steps > li {
+  position: relative;
+  margin: 0 0 2.4mm;
+  padding: 0.6mm 0 0 10mm;
+  min-height: 7mm;
+  counter-increment: step;
+  break-inside: avoid;
+}
+
+ol.steps > li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6.6mm;
+  height: 6.6mm;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  font-size: 9.5pt;
+  font-weight: 900;
+  line-height: 6.6mm;
+  text-align: center;
+}
+
+ol.steps > li > p:last-child { margin-bottom: 0; }
+
+/* Para seguir una numeracion despues de una figura: <ol class="steps" start="4" style="counter-reset: step 3"> */
+
+/* ---------- Piezas de texto en linea ---------- */
+
+/* Nombre exacto de un boton, pestaña, campo o texto de la pantalla */
+.ui {
+  padding: 0.1mm 1.4mm 0.3mm;
+  border: 0.25mm solid #c9d3e0;
+  border-radius: 1.2mm;
+  background: var(--bg);
+  font-weight: 700;
+  font-size: 0.95em;
+  color: var(--navy);
+  white-space: nowrap;
+}
+
+/* Variante para textos largos de pantalla que deben poder partirse */
+.ui.ui--wrap { white-space: normal; }
+
+/* Tecla o texto que la persona escribe */
+.kbd {
+  padding: 0.1mm 1.3mm 0.3mm;
+  border: 0.25mm solid #98a2b3;
+  border-bottom-width: 0.6mm;
+  border-radius: 1.2mm;
+  background: #fff;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.9em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* Etiqueta de rol */
+.role {
+  display: inline-block;
+  padding: 0.2mm 2.2mm 0.4mm;
+  border-radius: 10mm;
+  background: var(--navy);
+  color: #fff;
+  font-size: 0.86em;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.role.role--all { background: var(--ink-2); }
+
+/* Linea "Quién lo hace" al inicio de un procedimiento */
+.who {
+  margin: 0 0 3mm;
+  font-size: 0.95em;
+  color: var(--ink-2);
+}
+
+/* Semaforo: siempre con el texto, nunca solo el color */
+.light {
+  display: inline-block;
+  padding: 0.2mm 2.4mm 0.4mm 1.8mm;
+  border: 0.25mm solid;
+  border-radius: 10mm;
+  font-size: 0.9em;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.light::before {
+  content: '';
+  display: inline-block;
+  width: 2.2mm;
+  height: 2.2mm;
+  margin-right: 1.4mm;
+  border-radius: 50%;
+  background: currentColor;
+  vertical-align: 0;
+}
+
+.light-green { color: var(--good-ink); background: var(--good-soft); border-color: #bfe3bf; }
+.light-green::before { background: var(--good); }
+.light-yellow { color: var(--warn-ink); background: var(--warn-soft); border-color: #f1dca0; }
+.light-yellow::before { background: var(--warn); }
+.light-red { color: var(--crit-ink); background: var(--crit-soft); border-color: #f0c2c2; }
+.light-red::before { background: var(--crit); }
+
+/* Codigo de regla (R05, V01, C03) */
+.code {
+  padding: 0 1.3mm 0.2mm;
+  border-radius: 1mm;
+  background: var(--navy);
+  color: #fff;
+  font-size: 0.85em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* ---------- Recuadros ---------- */
+
+.note, .tip, .warn, .result, .limit {
+  margin: 3.5mm 0 4.5mm;
+  padding: 2.8mm 4mm 2.8mm 4mm;
+  border: 0.25mm solid;
+  border-left-width: 1.2mm;
+  border-radius: 1.6mm;
+  break-inside: avoid;
+}
+
+.note::before, .tip::before, .warn::before, .result::before, .limit::before {
+  display: block;
+  margin-bottom: 1mm;
+  font-size: 8.5pt;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.note > :last-child, .tip > :last-child, .warn > :last-child, .result > :last-child, .limit > :last-child { margin-bottom: 0; }
+
+.note { background: var(--blue-soft); border-color: #c5dbf5; border-left-color: var(--blue); }
+.note::before { content: 'Nota'; color: var(--blue-ink); }
+
+.tip { background: var(--good-soft); border-color: #c4e4c4; border-left-color: var(--good); }
+.tip::before { content: 'Consejo'; color: var(--good-ink); }
+
+.warn { background: var(--warn-soft); border-color: #f1dca0; border-left-color: var(--warn); }
+.warn::before { content: 'Cuidado'; color: var(--warn-ink); }
+
+.result { background: #fff; border-color: var(--line); border-left-color: var(--navy); }
+.result::before { content: 'Qué debe ver'; color: var(--navy); }
+
+.limit { background: var(--bg); border-color: var(--line); border-left-color: var(--ink-2); }
+.limit::before { content: 'Límite del prototipo'; color: var(--ink-2); }
+
+/* ---------- Figuras ---------- */
+
+figure.fig {
+  margin: 4mm 0 5mm;
+  text-align: center;
+  break-inside: avoid;
+}
+
+figure.fig img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 205mm;
+  width: auto;
+  height: auto;
+  border: 0.25mm solid var(--line);
+  border-radius: 1.6mm;
+}
+
+figure.fig figcaption {
+  margin-top: 1.8mm;
+  font-size: 8.8pt;
+  line-height: 1.35;
+  color: var(--ink-2);
+  text-align: center;
+}
+
+figure.fig figcaption::before {
+  content: 'Figura ' attr(data-num) '. ';
+  font-weight: 700;
+  color: var(--navy);
+}
+
+/* Anchos de figura (por defecto ocupa todo el ancho util) */
+figure.fig.w-25 img { max-width: 25%; }
+figure.fig.w-33 img { max-width: 33%; }
+figure.fig.w-40 img { max-width: 40%; }
+figure.fig.w-50 img { max-width: 50%; }
+figure.fig.w-60 img { max-width: 60%; }
+figure.fig.w-75 img { max-width: 75%; }
+/* Telefono del simulador y tarjetas altas */
+figure.fig.fig--phone img { max-width: 62mm; max-height: 120mm; border: 0; border-radius: 0; }
+/* Recorte sin marco (avisos, franjas, botones) */
+figure.fig.fig--bare img { border: 0; border-radius: 0; }
+
+/* Imagen pequeña dentro de un paso o de una tabla */
+img.inline-shot {
+  display: block;
+  margin: 1.5mm 0;
+  max-width: 100%;
+  max-height: 60mm;
+  border: 0.25mm solid var(--line);
+  border-radius: 1.2mm;
+}
+
+/* ---------- Dos columnas: imagen + texto ---------- */
+
+.two-col {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 6mm;
+  align-items: start;
+  margin: 4mm 0 5mm;
+  break-inside: avoid;
+}
+
+.two-col.two-col--narrow { grid-template-columns: 64mm minmax(0, 1fr); }
+.two-col.two-col--wide { grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr); }
+.two-col.two-col--rev > :first-child { order: 2; }
+.two-col > figure.fig { margin: 0; }
+.two-col > div > :first-child { margin-top: 0; }
+.two-col > div > :last-child { margin-bottom: 0; }
+
+/* ---------- Tablas ---------- */
+
+table {
+  width: 100%;
+  margin: 3mm 0 5mm;
+  border-collapse: collapse;
+  font-size: 9.6pt;
+  line-height: 1.38;
+}
+
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+
+th {
+  padding: 2mm 2.6mm;
+  background: var(--navy);
+  color: #fff;
+  font-weight: 700;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+th:first-child { border-top-left-radius: 1.4mm; }
+th:last-child { border-top-right-radius: 1.4mm; }
+
+td {
+  padding: 1.9mm 2.6mm;
+  border-bottom: 0.25mm solid var(--line);
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) td { background: var(--bg); }
+td.num, th.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+td.nowrap, th.nowrap { white-space: nowrap; }
+
+/* Tabla de referencia compacta (catalogos largos: reglas, estados, glosario) */
+table.ref { font-size: 8.6pt; line-height: 1.3; }
+table.ref th { padding: 1.4mm 2mm; }
+table.ref td { padding: 1.2mm 2mm; }
+
+/* Fila de grupo dentro de una tabla */
+tr.group td {
+  background: var(--blue-soft) !important;
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 0.92em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Lista de definiciones: campo -> significado */
+dl.fields {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 1.4mm 5mm;
+  margin: 3mm 0 5mm;
+}
+
+dl.fields dt { font-weight: 700; color: var(--navy); }
+dl.fields dd { margin: 0; }
+
+/* ---------- Portada y contenido (los arma el ensamblado) ---------- */
+
+.cover {
+  position: relative;
+  height: 297mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 24mm 0 30mm;
+  border-left: 9mm solid var(--navy);
+  break-after: page;
+}
+
+.cover__eyebrow { font-size: 10pt; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--orange-ink); }
+.cover__title { margin: 4mm 0 4mm; font-size: 40pt; font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; color: var(--navy); }
+.cover__subtitle { font-size: 15pt; line-height: 1.35; color: var(--ink-2); }
+.cover__rule { width: 34mm; height: 1.6mm; margin: 10mm 0; background: var(--orange); }
+.cover__meta { font-size: 10.5pt; line-height: 1.5; color: var(--ink-2); }
+.cover__meta p { margin: 0 0 1.6mm; }
+.cover__meta strong { color: var(--navy); }
+.cover__note { margin-top: 12mm; padding: 3.5mm 4.5mm; border: 0.25mm solid var(--line); border-left: 1.2mm solid var(--ink-2); border-radius: 1.6mm; background: var(--bg); font-size: 9.5pt; line-height: 1.45; color: var(--ink-2); }
+.cover__foot { position: absolute; left: 30mm; right: 24mm; bottom: 16mm; padding-top: 3mm; border-top: 0.25mm solid var(--line); font-size: 7.5pt; color: var(--ink-2); }
+
+.toc { list-style: none; margin: 0; padding: 0; font-size: 9.6pt; line-height: 1.3; }
+.toc li { display: flex; align-items: baseline; gap: 2mm; margin: 0; padding: 0.75mm 0; break-inside: avoid; }
+.toc li.toc__ch { margin-top: 2.6mm; padding-top: 1.6mm; border-top: 0.25mm solid var(--line); break-after: avoid; }
+.toc li.toc__ch:first-child { margin-top: 0; }
+.toc li.toc__sub { padding-left: 9mm; font-size: 0.94em; color: var(--ink-2); }
+.toc a { flex: 1; color: inherit; }
+.toc li.toc__ch a { font-weight: 700; color: var(--navy); }
+.toc .toc__num { display: inline-block; min-width: 9mm; margin-right: 1.5mm; color: var(--blue); font-variant-numeric: tabular-nums; }
+.toc li.toc__ch .toc__num { color: var(--orange-ink); }
+.toc li.toc__ch .toc__num:empty { display: none; }
+.toc__page { min-width: 7mm; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.toc li.toc__ch .toc__page { font-weight: 700; color: var(--navy); }
+
+.figindex { columns: 2; column-gap: 8mm; font-size: 7.9pt; line-height: 1.28; }
+.figindex__ch { margin: 3mm 0 1mm; font-weight: 700; color: var(--navy); break-after: avoid; }
+.figindex__ch:first-child { margin-top: 0; }
+.figindex__row { display: flex; align-items: baseline; gap: 1.5mm; margin: 0 0 0.9mm; break-inside: avoid; }
+.figindex__row a { flex: 1; color: var(--ink); }
+.figindex__num { display: inline-block; min-width: 8mm; margin-right: 1.2mm; font-weight: 700; color: var(--blue-ink); }
+
+/* Referencia cruzada a otra seccion o capitulo */
+a.xref { font-weight: 700; color: var(--blue-ink); white-space: nowrap; }
+a.xref[data-title] { white-space: normal; }
+
+/* ---------- Saltos ---------- */
+
+.page-break { break-before: page; }
+.keep { break-inside: avoid; }
+h2 + figure.fig, h3 + figure.fig, h2 + .two-col, h3 + .two-col { break-before: avoid; }
+p:has(+ ol.steps), p:has(+ figure.fig) { break-after: avoid; }
+
+/* Vista en pantalla (para revisar el HTML antes de imprimir) */
+@media screen {
+  html { background: #d8dde5; }
+  body { width: 210mm; margin: 8mm auto; padding: 18mm 17mm; background: #fff; box-shadow: 0 2mm 8mm rgba(16, 24, 40, 0.18); }
+  h1 { margin-top: 14mm; }
+  .cover { height: 255mm; }
+}

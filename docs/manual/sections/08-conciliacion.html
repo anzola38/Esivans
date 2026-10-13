@@ -1,0 +1,235 @@
+<h1 id="conciliacion">Conciliación</h1>
+
+<p class="lead">En este capítulo: para qué sirve conciliar, quién puede cargar el archivo del proveedor, cómo
+cargarlo y cómo leer el resultado. Incluye, paso a paso, la cuenta del hallazgo del VEH023: $27.783 pagados de más.</p>
+
+<h2 id="conciliacion-para-que">Para qué sirve</h2>
+
+<p>Conciliar es comparar dos listas: lo que el sistema <strong>autorizó</strong> y lo que el proveedor
+<strong>cobró</strong>. La pantalla lo dice así:</p>
+
+<figure class="fig fig--bare">
+  <img src="img/conciliacion-02-para-que-sirve.png" alt="Nota Para qué sirve: compara lo que el sistema autorizó con lo que el proveedor realmente cobró">
+  <figcaption>La nota que encabeza la pestaña «Conciliación».</figcaption>
+</figure>
+
+<p>Al cargar el archivo del día pasan tres cosas:</p>
+
+<ul>
+  <li>Cada venta del archivo entra al <strong>libro único de tanqueos</strong> del vehículo.</li>
+  <li>Las ventas que corresponden a una autorización se cruzan con ella. Si los valores coinciden, queda <span class="ui">Cuadra</span>.</li>
+  <li>Lo que se sale de las reglas (otro producto, un precio raro, una venta por fuera del sistema) se convierte en <strong>alerta</strong>.</li>
+</ul>
+
+<p class="why">sin conciliar, nadie sabría si lo que se pagó es lo que se autorizó.</p>
+
+<h2 id="conciliacion-quien">Quién puede cargar el archivo</h2>
+
+<table>
+  <thead><tr><th>Rol</th><th>Ver la pestaña</th><th>Cargar el archivo</th></tr></thead>
+  <tbody>
+    <tr><td><span class="role">Coordinador</span></td><td>Sí</td><td>Sí</td></tr>
+    <tr><td><span class="role">Finanzas</span></td><td>Sí</td><td>Sí</td></tr>
+    <tr><td><span class="role">Técnico de Control y Monitoreo</span></td><td>Sí</td><td>No</td></tr>
+    <tr><td><span class="role">Soporte</span></td><td>Sí</td><td>No</td></tr>
+  </tbody>
+</table>
+
+<p>Con un rol que no puede cargar, el botón se ve apagado y aparece el aviso «Con el rol Soporte solo puedes
+consultar. El archivo lo carga Coordinador o Finanzas.».</p>
+
+<figure class="fig w-50">
+  <img src="img/conciliacion-22-solo-lectura-soporte.png" alt="Botón de carga desactivado y aviso de solo consulta con el rol Soporte">
+  <figcaption>La carga con el rol «Soporte»: solo consulta.</figcaption>
+</figure>
+
+<h2 id="conciliacion-cargar">Cargar el archivo del proveedor</h2>
+
+<p class="who">Quién lo hace: <span class="role">Coordinador</span> o <span class="role">Finanzas</span></p>
+
+<ol class="steps">
+  <li>En la cabecera, elija el rol <span class="ui">Coordinador</span> (o <span class="ui">Finanzas</span>).</li>
+  <li>En el menú, haga clic en <span class="ui">Alertas del coordinador</span> y luego en la pestaña <span class="ui">Conciliación</span>.</li>
+  <li>En la tarjeta <span class="ui">Archivo del proveedor</span>, haga clic en <span class="ui ui--wrap">Cargar exporte de ejemplo de Terpel</span>.</li>
+</ol>
+
+<figure class="fig">
+  <img src="img/conciliacion-01-antes-de-cargar.png" alt="Pestaña Conciliación antes de cargar: tarjeta Archivo del proveedor con el botón de carga y, a la derecha, Lo que no cuadra sin desviaciones">
+  <figcaption>Antes de cargar: a la izquierda el archivo, a la derecha «Lo que no cuadra», todavía vacío.</figcaption>
+</figure>
+
+<p>Antes de la primera carga, la tarjeta de la izquierda dice «Aún no se ha cargado el archivo de hoy» y la de la
+derecha, «Sin desviaciones todavía».</p>
+
+<div class="result">
+  <p>Aparece el aviso «Archivo de Terpel cargado», con el resumen en una frase: «13 transacciones nuevas en el libro
+  único, 0 duplicadas sin cargar, 0 rechazadas y 5 alertas.» A la izquierda se llenan el resumen, las
+  <span class="ui">Autorizaciones conciliadas</span> y las <span class="ui">Filas del archivo</span>. A la derecha,
+  la tarjeta del <strong>VEH023</strong> y las <span class="ui">Otras desviaciones del archivo</span>. La pestaña
+  <span class="ui">Conciliación</span> muestra el contador <strong>5</strong>.</p>
+</div>
+
+<figure class="fig">
+  <img src="img/conciliacion-10-despues-de-cargar.png" alt="Pestaña Conciliación después de cargar: resumen 13 filas, autorizaciones conciliadas, filas del archivo, tarjeta del VEH023 y otras desviaciones">
+  <figcaption>Después de cargar, habiendo autorizado antes tres solicitudes en la demo.</figcaption>
+</figure>
+
+<div class="limit"><p>El prototipo carga un archivo de ejemplo con un clic. No permite elegir un archivo propio
+desde la pantalla, y solo trae el ejemplo de Terpel (no hay carga de GoPass).</p></div>
+
+<h2 id="conciliacion-resumen">Cómo leer el resumen de la carga</h2>
+
+<figure class="fig w-60">
+  <img src="img/conciliacion-11-resumen-de-la-carga.png" alt="Resumen de la carga: 13 filas, 13 cargadas, 0 duplicadas, 0 rechazadas, 5 alertas">
+  <figcaption>Resumen de la primera carga.</figcaption>
+</figure>
+
+<dl class="fields">
+  <dt>filas</dt><dd>Ventas que traía el archivo.</dd>
+  <dt>cargadas</dt><dd>Ventas nuevas que entraron al libro único.</dd>
+  <dt>duplicadas</dt><dd>Ventas que ya estaban en el libro único. No se cargan otra vez.</dd>
+  <dt>rechazadas</dt><dd>Filas que no se pudieron leer: un vehículo que no existe, una fecha o un número mal escritos, un valor vacío. No entran al libro único.</dd>
+  <dt>alertas</dt><dd>Alertas nuevas que salieron de este archivo.</dd>
+</dl>
+
+<div class="note">
+  <p><strong>¿Por qué 13 filas y no 10?</strong> El archivo de ejemplo trae 10 ventas fijas. Además, el prototipo
+  le agrega una venta por cada autorización de Terpel hecha en la demo y aún sin conciliar. Con tres
+  autorizaciones, son 13. Si no ha autorizado ninguna solicitud, verá 10 filas y la tabla
+  <span class="ui">Autorizaciones conciliadas</span> no aparece.</p>
+</div>
+
+<h3>Autorizaciones conciliadas y el significado de «Cuadra»</h3>
+
+<figure class="fig w-60">
+  <img src="img/conciliacion-14-autorizaciones-conciliadas.png" alt="Tabla Autorizaciones conciliadas: VEH901 $90.000, VEH015 $50.000 y VEH199 $20.000, todas con resultado Cuadra">
+  <figcaption>Las tres autorizaciones de la demo, cruzadas con lo que registró el proveedor.</figcaption>
+</figure>
+
+<dl class="fields">
+  <dt>Vehículo</dt><dd>El vehículo autorizado.</dd>
+  <dt>Referencia</dt><dd>La referencia que el técnico confirmó al habilitar.</dd>
+  <dt>Autorizado</dt><dd>El valor que autorizó el técnico.</dd>
+  <dt>Registrado</dt><dd>El valor que cobró el proveedor.</dd>
+  <dt>Resultado</dt><dd><span class="ui">Cuadra</span> (verde) si la diferencia entre los dos valores es de 5 % o menos. Si es mayor, la etiqueta es ámbar y dice «Diferencia de N %»; además se crea una alerta <span class="code">C02</span> «Valor distinto al autorizado».</dd>
+</dl>
+
+<div class="limit"><p>En el ejemplo, las ventas de las autorizaciones llegan por el valor exacto autorizado. Por eso
+siempre verá <span class="ui">Cuadra</span>, y la etiqueta «Diferencia de N %» no aparece con el archivo de ejemplo.</p></div>
+
+<h3>Filas del archivo</h3>
+
+<figure class="fig w-60">
+  <img src="img/conciliacion-15-filas-del-archivo.png" alt="Tabla Filas del archivo con las columnas Fila, Transacción, Vehículo, Estado y Alerta">
+  <figcaption>Una línea por cada venta del archivo.</figcaption>
+</figure>
+
+<dl class="fields">
+  <dt>Fila</dt><dd>El número de renglón dentro del archivo. Empieza en 2 porque el renglón 1 son los títulos.</dd>
+  <dt>Transacción</dt><dd>El identificador de la venta que da el proveedor.</dd>
+  <dt>Vehículo</dt><dd>El código del vehículo.</dd>
+  <dt>Estado</dt><dd><span class="ui">Cargada</span>, <span class="ui">Duplicada</span> o <span class="ui">Rechazada</span>.</dd>
+  <dt>Alerta</dt><dd>Los códigos de las reglas que se cumplieron, o «Sin alerta». En una fila duplicada o rechazada, aquí va el motivo.</dd>
+</dl>
+
+<h2 id="conciliacion-veh023">El hallazgo del VEH023: $27.783 pagados de más</h2>
+
+<figure class="fig w-60">
+  <img src="img/conciliacion-12-tarjeta-veh023.png" alt="Tarjeta del VEH023: cargó Gasolina Extra a $21.250 por galón, su ficha pide Gasolina Corriente a $16.330 por galón, $27.783 pagados de más">
+  <figcaption>La tarjeta del VEH023 en «Lo que no cuadra».</figcaption>
+</figure>
+
+<p><strong>Qué pasó.</strong> La ficha técnica del VEH023 (placa ZZA023) pide Gasolina Corriente. El archivo
+muestra que cargó Gasolina Extra, que es más cara. Es la regla <span class="code">C01</span> «Producto distinto al
+de la ficha técnica»: 2 puntos, prioridad media, plazo en la semana.</p>
+
+<p><strong>La cuenta, paso a paso:</strong></p>
+
+<table>
+  <thead><tr><th>Paso</th><th>Dato</th><th class="num">Valor</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Precio de la Gasolina Extra que cargó, por galón</td><td class="num">$21.250</td></tr>
+    <tr><td>2</td><td>Precio de la Gasolina Corriente, por galón (misma estación, mismo día)</td><td class="num">$16.330</td></tr>
+    <tr><td>3</td><td>Diferencia por galón: $21.250 − $16.330</td><td class="num">$4.920</td></tr>
+    <tr><td>4</td><td>Galones cargados</td><td class="num">5,647</td></tr>
+    <tr><td>5</td><td><strong>Pagado de más:</strong> $4.920 × 5,647 galones</td><td class="num"><strong>$27.783</strong></td></tr>
+  </tbody>
+</table>
+
+<p>La venta fue en la EDS Montería Centro. El precio de la Corriente no es un supuesto: sale de lo que se vendió de ese
+producto en la misma estación, el mismo día.</p>
+
+<h3>Revisar la alerta del VEH023</h3>
+
+<ol class="steps">
+  <li>En la tarjeta del VEH023, haga clic en <span class="ui">Revisar la alerta</span>.</li>
+</ol>
+
+<div class="result">
+  <p>La pantalla pasa a la pestaña <span class="ui">Tanqueos con alerta</span>, con el filtro
+  <span class="ui">Todas</span> y la alerta del VEH023 abierta. La evidencia repite el bloque
+  «$27.783 pagados de más».</p>
+</div>
+
+<figure class="fig">
+  <img src="img/alertas-60-veh023-detalle.png" alt="Detalle de la alerta del VEH023 en la pestaña Tanqueos con alerta">
+  <figcaption>La alerta del VEH023, lista para registrar su resultado.</figcaption>
+</figure>
+
+<p>Desde ahí se registra el resultado como en cualquier alerta (véase la <a class="xref" href="#alertas-registrar"></a>). Cuando quede revisada, la tarjeta de Conciliación cambia «Plazo: en la semana · sin revisar»
+por «Revisada», con el resultado y el nombre de quien revisó: por ejemplo, «Revisada: Confirmado · Carlos Rivas».</p>
+
+<h2 id="conciliacion-otras">Las demás desviaciones del archivo</h2>
+
+<figure class="fig w-60">
+  <img src="img/conciliacion-16-otras-desviaciones.png" alt="Otras desviaciones del archivo: VEH918 con R01 y R11, VEH912 con R12, VEH907 con R13 y VEH904 con R14">
+  <figcaption>«Otras desviaciones del archivo». Cada una tiene su botón «Revisar».</figcaption>
+</figure>
+
+<table class="ref">
+  <thead><tr><th>Vehículo</th><th>Regla</th><th>Qué encontró</th><th>Prioridad</th></tr></thead>
+  <tbody>
+    <tr><td>VEH918</td><td><span class="code">R01</span> <span class="code">R11</span></td><td>La venta llegó sin odómetro y con tipo de venta «Fuera del sistema».</td><td>Media</td></tr>
+    <tr><td>VEH912</td><td><span class="code">R12</span></td><td>Dos ventas del mismo producto en 12 minutos que suman $172.050 ($99.900 + $72.150): supera el tope de $150.000.</td><td>Media</td></tr>
+    <tr><td>VEH907</td><td><span class="code">R13</span></td><td>Una venta de $1.500, por debajo del mínimo de $2.000.</td><td>Baja</td></tr>
+    <tr><td>VEH904</td><td><span class="code">R14</span></td><td>Precio por galón 20 % por encima de la mediana de la estación.</td><td>Baja</td></tr>
+  </tbody>
+</table>
+
+<p>El botón <span class="ui">Revisar</span> de cada una hace lo mismo que <span class="ui">Revisar la alerta</span>:
+lo lleva al detalle en <span class="ui">Tanqueos con alerta</span>.</p>
+
+<div class="note"><p>Después de cargar, el contador de <span class="ui">Tanqueos con alerta</span> también sube en 5.
+Las desviaciones del archivo se revisan en esa pestaña, junto con las demás alertas de tanqueos.</p></div>
+
+<h2 id="conciliacion-dos-veces">Qué pasa si se carga dos veces el mismo archivo</h2>
+
+<p>Nada se duplica. Haga la prueba: vuelva a pulsar <span class="ui ui--wrap">Cargar exporte de ejemplo de Terpel</span>.</p>
+
+<figure class="fig w-60">
+  <img src="img/conciliacion-21-segunda-carga-resumen.png" alt="Resumen de la segunda carga: 10 filas, 0 cargadas, 10 duplicadas, 0 rechazadas, 0 alertas">
+  <figcaption>Resumen de la segunda carga.</figcaption>
+</figure>
+
+<div class="result">
+  <p>«10 filas · 0 cargadas · 10 duplicadas · 0 rechazadas · 0 alertas». En <span class="ui">Filas del archivo</span>,
+  todas quedan como <span class="ui">Duplicada</span>, con el motivo «Ya estaba en el libro único (mismo hash de
+  transacción)»: quiere decir que el sistema ya tenía esa misma venta. Las alertas de la primera carga siguen en
+  <span class="ui">Lo que no cuadra</span>; no se crean otras.</p>
+</div>
+
+<p>Esta vez son 10 filas y no 13 porque las tres autorizaciones ya quedaron conciliadas en la primera carga, y el
+ejemplo solo agrega las que faltan por conciliar.</p>
+
+<p class="why">el sistema reconoce cada venta por sus datos (proveedor, identificador, vehículo, fecha, producto, cantidad y valor); si ya la tiene, no la vuelve a cargar.</p>
+
+<div class="tip keep">
+  <p><strong>Puntos clave del capítulo</strong></p>
+  <ul>
+    <li>Conciliar compara lo autorizado con lo cobrado por el proveedor.</li>
+    <li>Cargan el archivo el <span class="role">Coordinador</span> o <span class="role">Finanzas</span>.</li>
+    <li><span class="ui">Cuadra</span> significa una diferencia de 5 % o menos entre lo autorizado y lo registrado.</li>
+    <li>VEH023: $4.920 de diferencia por galón × 5,647 galones = $27.783 pagados de más.</li>
+    <li>Cargar dos veces el mismo archivo no duplica ventas ni alertas.</li>
+  </ul>
+</div>

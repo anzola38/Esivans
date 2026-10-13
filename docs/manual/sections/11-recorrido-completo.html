@@ -1,0 +1,301 @@
+<h1 id="recorrido">Recorrido completo de principio a fin</h1>
+
+<p class="lead">En este capítulo: un ejercicio guiado de unos 10 minutos que pasa por las cuatro pantallas en orden.
+Usted hará de conductor, de técnico y de coordinador. En cada paso se indica qué debe ver, con las cifras exactas
+de la demo.</p>
+
+<p>Este capítulo va rápido a propósito. El detalle de cada pantalla está en su capítulo: el simulador en el
+<a class="xref" href="#simulador"></a>, la consola en los capítulos <a class="xref" href="#cola" data-short></a> a <a class="xref" href="#decidir" data-short></a>, las alertas en el <a class="xref" href="#alertas"></a>, la conciliación en el
+<a class="xref" href="#conciliacion"></a> y el tablero en el <a class="xref" href="#tablero"></a>.</p>
+
+<h2 id="recorrido-mapa">El mapa del ejercicio</h2>
+
+<table>
+  <thead><tr><th>Parte</th><th>Pantalla</th><th>Rol</th><th>Qué hará</th></tr></thead>
+  <tbody>
+    <tr><td>0</td><td>Cualquiera</td><td>Técnico</td><td>Dejar la demo en su estado inicial.</td></tr>
+    <tr><td>1</td><td>Simulador y Consola</td><td>Técnico</td><td>Una solicitud en verde: aprobar en un clic.</td></tr>
+    <tr><td>2</td><td>Simulador y Consola</td><td>Técnico</td><td>Una solicitud en amarillo: aprobar con motivo.</td></tr>
+    <tr><td>3</td><td>Simulador y Consola</td><td>Técnico</td><td>Una solicitud en rojo: ajustar el valor.</td></tr>
+    <tr><td>4</td><td>Alertas</td><td>Coordinador</td><td>Ver la alerta del rojo y revisar un vehículo.</td></tr>
+    <tr><td>5</td><td>Alertas · Conciliación</td><td>Coordinador</td><td>Cargar el archivo del proveedor.</td></tr>
+    <tr><td>6</td><td>Tablero</td><td>Cualquiera</td><td>Leer el resultado.</td></tr>
+  </tbody>
+</table>
+
+<div class="tip"><p>Casi no hay que escribir. Cada caso avanza con el botón
+<span class="ui">Siguiente paso del guion</span>, y los motivos y comentarios tienen frases sugeridas de un clic.
+Lo único que se teclea es el valor <span class="kbd">20000</span> de la parte 3.</p></div>
+
+<h2 id="recorrido-0">Parte 0. Preparar la demo</h2>
+
+<ol class="steps">
+  <li>Abra el sistema en el navegador.</li>
+  <li>En la cabecera, deje el rol en <span class="ui ui--wrap">Técnico de Control y Monitoreo</span>.</li>
+  <li>Haga clic en <span class="ui">Reiniciar demo</span> y, en la ventana «¿Reiniciar la demo?», otra vez en <span class="ui">Reiniciar demo</span>.</li>
+  <li>En el menú, haga clic en <span class="ui">Simulador del conductor</span>. En la ficha del caso, confirme que la fila <span class="ui">IA</span> tiene marcada la opción <span class="ui">Simulada</span>.</li>
+</ol>
+
+<div class="result">
+  <p>El aviso «Demo reiniciada». El caso <strong>VEH901</strong> ya viene elegido, el teléfono está vacío y marca
+  las 9:40 a. m.</p>
+</div>
+
+<p>La pantalla queda como en la primera figura del <a class="xref" href="#primeros-pasos"></a>.</p>
+
+<p class="why">los datos de ejemplo se calculan según el día; al reiniciar, las cifras coinciden con este manual.</p>
+
+<h2 id="recorrido-1">Parte 1. Una solicitud en verde (VEH901)</h2>
+
+<h3>Como conductor</h3>
+
+<ol class="steps">
+  <li>
+    <p>Haga clic cuatro veces en <span class="ui">Siguiente paso del guion</span>. Espere la respuesta del
+    asistente entre un clic y el siguiente.</p>
+    <p>Los cuatro pasos son: «Hola, necesito tanquear», «Sí, es para esa ruta», la foto del tablero y «Sí, es correcto».</p>
+  </li>
+</ol>
+
+<div class="result">
+  <p>El asistente saluda al conductor por su nombre, confirma la placa <strong>ZZA901</strong> y le propone su
+  servicio. Tras la foto dice: «Leí en la foto 48.352 km y nivel de ¼ de tanque (25 %). ¿Es correcto?». Al final,
+  a la derecha, la solicitud queda <span class="ui">En revisión</span>, con
+  <span class="light light-green">Verde</span> · 0 puntos y valor sugerido <strong>$90.000</strong>.</p>
+</div>
+
+<figure class="fig">
+  <img src="img/simulador-18-verde-en-revision.png" alt="Simulador al terminar el guion del caso verde: solicitud En revisión, Verde 0 puntos, valor sugerido $90.000">
+  <figcaption>El caso verde, listo para que el técnico decida.</figcaption>
+</figure>
+
+<h3>Como técnico</h3>
+
+<ol class="steps" style="counter-reset: step 1">
+  <li>En la tarjeta <span class="ui">Estado de la solicitud</span>, haga clic en <span class="ui">Ver en la consola</span>.</li>
+  <li>Mire, sin tocar nada: las razones del semáforo («Sin alertas»), la foto con su lectura, el libro único y el cálculo del valor.</li>
+  <li>Haga clic en <span class="ui">Aprobar en un clic</span>.</li>
+  <li>
+    <p>En el panel <span class="ui ui--wrap">Habilitar en el portal del proveedor</span>, deje la
+    <span class="ui">Referencia del portal</span> que viene sugerida y haga clic en <span class="ui">Confirmar</span>.</p>
+  </li>
+</ol>
+
+<figure class="fig">
+  <img src="img/consola-20-habilitacion.png" alt="Detalle de la solicitud verde después de Aprobar en un clic: estado Por habilitar y panel Habilitar en el portal del proveedor">
+  <figcaption>Después de «Aprobar en un clic»: la solicitud queda «Por habilitar» hasta que se confirma la referencia.</figcaption>
+</figure>
+
+<div class="result">
+  <p>Tras <span class="ui">Aprobar en un clic</span>, el estado pasa a <span class="ui">Por habilitar</span>. Tras
+  <span class="ui">Confirmar</span>, pasa a <span class="ui">Autorizada</span> y el panel dice «Autorizada: $90.000
+  de Gasolina Corriente», con la referencia y la vigencia de 2 horas. Abajo, la bitácora suma la aprobación y la
+  habilitación.</p>
+</div>
+
+<div class="warn"><p>Aprobar tiene dos tiempos. Si no pulsa <span class="ui">Confirmar</span>, el conductor no
+recibe su autorización y la solicitud se queda en <span class="ui">Por habilitar</span>.</p></div>
+
+<h2 id="recorrido-2">Parte 2. Una solicitud en amarillo (VEH015)</h2>
+
+<h3>Como conductor</h3>
+
+<ol class="steps">
+  <li>En el menú, haga clic en <span class="ui">Simulador del conductor</span> y elija el caso <span class="ui">VEH015</span>.</li>
+  <li>Haga clic tres veces en <span class="ui">Siguiente paso del guion</span>.</li>
+  <li>En el teléfono, haga clic en la respuesta rápida <span class="ui">Sí, es 34.086</span>.</li>
+</ol>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig">
+    <img src="img/simulador-32-veh015-telefono-propuesta.png" alt="Teléfono del caso VEH015: el asistente leyó 24.086 km, compara con el último registro de 33.948 km y propone 34.086">
+    <figcaption>El asistente propone corregir el kilometraje.</figcaption>
+  </figure>
+  <div>
+    <div class="result">
+      <p>La foto se lee como 24.086 km, pero el último registro del vehículo es de 33.948 km. El asistente detecta
+      que falla un solo dígito y propone <strong>34.086</strong>. Al confirmar, la solicitud queda
+      <span class="ui">En revisión</span>.</p>
+    </div>
+    <p class="why">el kilometraje es el dato que más se equivoca; el sistema lo corrige con el conductor antes de
+    molestar al técnico.</p>
+  </div>
+</div>
+
+<h3>Como técnico</h3>
+
+<ol class="steps" style="counter-reset: step 3">
+  <li>Haga clic en <span class="ui">Ver en la consola</span>.</li>
+  <li>
+    <p>Observe el semáforo: <span class="light light-yellow">Amarillo</span> · 1 punto, por la regla
+    <span class="code">R02</span> «Odómetro con error de digitación». Valor sugerido: <strong>$50.000</strong>.</p>
+    <p>El botón ya no dice «Aprobar en un clic».</p>
+  </li>
+  <li>Haga clic en <span class="ui">Aprobar con motivo</span>.</li>
+  <li>En la ventana que se abre, haga clic en la frase sugerida <span class="ui ui--wrap">Kilometraje corregido y confirmado por el conductor</span> y luego en <span class="ui">Aprobar</span>.</li>
+  <li>En el panel de habilitación, haga clic en <span class="ui">Confirmar</span>.</li>
+</ol>
+
+<figure class="fig w-50">
+  <img src="img/consola-38-aprobar-con-motivo-lleno.png" alt="Diálogo Aprobar con motivo con la sugerencia Kilometraje corregido y confirmado por el conductor ya puesta">
+  <figcaption>La ventana «Aprobar con motivo», con el motivo sugerido.</figcaption>
+</figure>
+
+<div class="result">
+  <p>La solicitud queda <span class="ui">Autorizada</span> por $50.000, y el motivo aparece en el panel y en la
+  bitácora.</p>
+</div>
+
+<h2 id="recorrido-3">Parte 3. Una solicitud en rojo (VEH199)</h2>
+
+<h3>Como conductor</h3>
+
+<ol class="steps">
+  <li>Vuelva al <span class="ui">Simulador del conductor</span> y elija el caso <span class="ui">VEH199</span>. El teléfono marca las 11:14 p. m.</li>
+  <li>Haga clic cuatro veces en <span class="ui">Siguiente paso del guion</span>.</li>
+</ol>
+
+<div class="result">
+  <p>El conductor pide 6,7 m³ de gas y responde «No tengo servicio asignado». La solicitud queda
+  <span class="ui">En revisión</span> con <span class="light light-red">Rojo</span> · 7 puntos y valor sugerido
+  <strong>$10.000</strong>.</p>
+</div>
+
+<h3>Como técnico</h3>
+
+<ol class="steps" style="counter-reset: step 2">
+  <li>Haga clic en <span class="ui">Ver en la consola</span>.</li>
+  <li>
+    <p>Lea las tres razones del semáforo:</p>
+    <table class="ref">
+      <thead><tr><th>Regla</th><th>Razón en pantalla</th><th class="num">Puntos</th></tr></thead>
+      <tbody>
+        <tr><td><span class="code">R05</span> Recarga sin recorrido</td><td>Cargó 6,7 m³ de GNV con 22 km desde su carga anterior (típica 9,7 m³)</td><td class="num">+3</td></tr>
+        <tr><td><span class="code">R08</span> Sin servicios en EOM</td><td>Sin servicios con desplazamiento 24 h antes ni después</td><td class="num">+2</td></tr>
+        <tr><td><span class="code">R09</span> Tanqueo nocturno sin servicio</td><td>Tanqueo a las 23:14 sin servicios cercanos</td><td class="num">+2</td></tr>
+      </tbody>
+    </table>
+  </li>
+  <li>Haga clic en <span class="ui">Ajustar</span>.</li>
+  <li>En <span class="ui ui--wrap">Valor a autorizar (pesos)</span>, escriba <span class="kbd">20000</span>.</li>
+  <li>Haga clic en la frase sugerida <span class="ui ui--wrap">Apoyo nocturno confirmado con el coordinador</span> y luego en <span class="ui">Guardar ajuste</span>.</li>
+  <li>En el panel de habilitación, haga clic en <span class="ui">Confirmar</span>.</li>
+</ol>
+
+<figure class="fig">
+  <img src="img/consola-50-detalle-rojo-veh199.png" alt="Detalle de la solicitud del VEH199 en rojo, con la nota de revisión del coordinador y las tres razones">
+  <figcaption>La solicitud en rojo. Ninguna regla bloquea: el técnico decide.</figcaption>
+</figure>
+
+<figure class="fig w-50">
+  <img src="img/consola-66-ajustar-valor-y-motivo-recorte.png" alt="Diálogo Ajustar el valor con 20000 y el motivo Apoyo nocturno confirmado con el coordinador">
+  <figcaption>La ventana «Ajustar el valor», diligenciada.</figcaption>
+</figure>
+
+<div class="result">
+  <p>La solicitud queda <span class="ui">Autorizada</span> por <strong>$20.000</strong>, con el valor sugerido
+  original ($10.000) guardado. Una nota avisa: «Por estar en rojo, esta autorización pasó a revisión del
+  coordinador (plazo de 48 horas).».</p>
+</div>
+
+<div class="note"><p>El ajuste tiene un límite: el tope del vehículo, que en este caso es de $40.000. Si escribe
+más, la ventana responde «No puede pasar del tope del vehículo ($40.000).».</p></div>
+
+<h2 id="recorrido-4">Parte 4. El coordinador revisa</h2>
+
+<ol class="steps">
+  <li>En la cabecera, cambie el rol a <span class="ui">Coordinador</span>.</li>
+  <li>En el menú, haga clic en <span class="ui">Alertas del coordinador</span>.</li>
+</ol>
+
+<div class="result">
+  <p>En <span class="ui">Tanqueos con alerta</span>, la primera fila es la alerta <span class="code">C03</span>
+  del VEH199, de prioridad alta y 7 puntos. El resumen dice «Abiertas: 12 · Prioridad alta: 5 · Vencidas: 2».</p>
+</div>
+
+<figure class="fig">
+  <img src="img/alertas-30-c03-veh199.png" alt="Alertas del coordinador con la alerta C03 del VEH199 de primera en la lista">
+  <figcaption>La autorización en rojo de la parte 3 ya está en la bandeja del coordinador.</figcaption>
+</figure>
+
+<ol class="steps" style="counter-reset: step 2">
+  <li>Haga clic en la pestaña <span class="ui">Vehículos</span>. La primera fila es el <strong>VEH129</strong>, con 8 puntos.</li>
+  <li>Baje hasta <span class="ui">Registrar el resultado</span> y haga clic en <span class="ui">Confirmado</span>. El comentario se llena con una sugerencia.</li>
+  <li>Haga clic en <span class="ui">Registrar resultado</span>.</li>
+</ol>
+
+<div class="result">
+  <p>El aviso «Alerta revisada». El detalle muestra «Confirmado», el nombre <strong>Carlos Rivas</strong>, la fecha
+  y dos recuadros de <span class="ui">Acción que sigue</span>. El resumen baja a «Abiertas: 11 · Prioridad alta: 4».</p>
+</div>
+
+<figure class="fig">
+  <img src="img/alertas-47-alerta-revisada.png" alt="Pestaña Vehículos con la alerta del VEH129 ya revisada como Confirmado">
+  <figcaption>El VEH129, revisado.</figcaption>
+</figure>
+
+<h2 id="recorrido-5">Parte 5. Conciliar con el proveedor</h2>
+
+<ol class="steps">
+  <li>Haga clic en la pestaña <span class="ui">Conciliación</span>.</li>
+  <li>Haga clic en <span class="ui ui--wrap">Cargar exporte de ejemplo de Terpel</span>.</li>
+</ol>
+
+<div class="result">
+  <p>El resumen: «13 filas · 13 cargadas · 0 duplicadas · 0 rechazadas · 5 alertas». En
+  <span class="ui">Autorizaciones conciliadas</span>, sus tres autorizaciones (VEH901 $90.000, VEH015 $50.000 y
+  VEH199 $20.000) con el resultado <span class="ui">Cuadra</span>. A la derecha, el VEH023 con
+  <strong>$27.783 pagados de más</strong>. Arriba, «Abiertas: 16».</p>
+</div>
+
+<figure class="fig">
+  <img src="img/conciliacion-10-despues-de-cargar.png" alt="Conciliación después de cargar: tres autorizaciones que cuadran y el VEH023 con $27.783 pagados de más">
+  <figcaption>Lo autorizado en las partes 1 a 3 cuadra con el proveedor, y aparece el hallazgo del VEH023.</figcaption>
+</figure>
+
+<h2 id="recorrido-6">Parte 6. Leer el tablero</h2>
+
+<ol class="steps">
+  <li>En el menú, haga clic en <span class="ui">Tablero del piloto</span>.</li>
+</ol>
+
+<div class="result">
+  <p>En la franja: «Demo: 3 solicitudes · 3 decisiones · 9 alertas revisadas». En los indicadores:
+  «Resueltas en un clic» en 33 % y <span class="ui">No cumple</span> (1 de 3); «Conciliación con el proveedor» en
+  100 %; «Alertas de prioridad alta» con precisión de 56 %. Abajo, <span class="ui">Desviaciones abiertas</span>
+  con 16 alertas sin revisar, y la decisión <span class="ui">Ajustar</span> (5 de 6).</p>
+</div>
+
+<figure class="fig w-60">
+  <img src="img/tablero-12-despues-de-usar-completo.png" alt="Tablero del piloto después de usar la demo: indicadores calculados, 16 desviaciones abiertas y decisión Ajustar">
+  <figcaption>El tablero después de usar la demo. Esta captura se tomó con dos casos adicionales, por eso dice «5 solicitudes»; lo demás coincide.</figcaption>
+</figure>
+
+<p>Los tiempos («Tiempo de atención» y «Carga del técnico») dependen de lo que usted se demoró en decidir. Los
+suyos serán distintos a los de la figura, y está bien.</p>
+
+<h2 id="recorrido-extra">Si le queda tiempo</h2>
+
+<table>
+  <thead><tr><th>Pruebe…</th><th>Dónde</th><th>Qué verá</th></tr></thead>
+  <tbody>
+    <tr><td>El caso <span class="ui">VEH902</span></td><td>Simulador</td><td>El asistente le explica al conductor que no necesita tanquear. La solicitud termina «Cerrada sin tanqueo».</td></tr>
+    <tr><td>El caso <span class="ui">Sin registro</span></td><td>Simulador</td><td>Un número que no está registrado: el asistente pasa el caso al técnico.</td></tr>
+    <tr><td>El libro único del VEH160</td><td>Alertas · Vehículos</td><td>La comparación de 783 km por galón contra 73,5 km/gal-eq.</td></tr>
+    <tr><td>Cambiar un umbral</td><td>Alertas · Reglas y umbrales</td><td>La regla pasa a la versión 2 y el catálogo a v2.</td></tr>
+    <tr><td>Cargar el archivo otra vez</td><td>Alertas · Conciliación</td><td>«10 filas · 0 cargadas · 10 duplicadas»: nada se duplica.</td></tr>
+  </tbody>
+</table>
+
+<p>Al terminar, pulse <span class="ui">Reiniciar demo</span> para dejar el sistema listo para la siguiente persona.</p>
+
+<div class="tip keep">
+  <p><strong>Puntos clave del capítulo</strong></p>
+  <ul>
+    <li>Verde se aprueba en un clic; amarillo y rojo piden motivo.</li>
+    <li>Toda aprobación termina con <span class="ui">Confirmar</span> en la habilitación.</li>
+    <li>Autorizar en rojo no se bloquea: le deja una alerta al coordinador.</li>
+    <li>Al conciliar, lo autorizado cuadra y lo irregular se vuelve alerta.</li>
+    <li>El tablero refleja lo que se hizo: por eso pasa de <span class="ui">Ampliar</span> a <span class="ui">Ajustar</span>.</li>
+  </ul>
+</div>

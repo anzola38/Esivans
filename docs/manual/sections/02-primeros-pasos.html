@@ -1,0 +1,364 @@
+<h1 id="primeros-pasos">Primeros pasos</h1>
+
+<p class="lead">En este capítulo: cómo entrar al sistema, cómo está organizada la pantalla, cómo cambiar de rol y qué
+puede hacer cada uno, cuándo conviene reiniciar la demo y qué opción de IA dejar activa.</p>
+
+<h2 id="primeros-pasos-entrar">Cómo entrar</h2>
+
+<ol class="steps">
+  <li>Abra el navegador del equipo donde está instalado el sistema.</li>
+  <li>En la barra de direcciones escriba <span class="kbd">http://localhost:8080</span> y pulse <span class="kbd">Enter</span>.</li>
+</ol>
+
+<div class="result">
+  <p>Se abre la pantalla <span class="ui">Simulador del conductor</span>, con el rol
+  <span class="ui">Técnico de Control y Monitoreo</span> en la cabecera. No se pide usuario ni contraseña.</p>
+</div>
+
+<p>Cada pantalla tiene además su propia dirección, por si quiere llegar directo:</p>
+
+<table>
+  <thead>
+    <tr><th>Pantalla</th><th>Dirección</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Simulador del conductor</td><td><span class="kbd">http://localhost:8080/simulador</span></td></tr>
+    <tr><td>Consola del técnico</td><td><span class="kbd">http://localhost:8080/consola</span></td></tr>
+    <tr><td>Alertas del coordinador</td><td><span class="kbd">http://localhost:8080/alertas</span></td></tr>
+    <tr><td>Tablero del piloto</td><td><span class="kbd">http://localhost:8080/tablero</span></td></tr>
+  </tbody>
+</table>
+
+<div class="note"><p>La dirección solo funciona en el equipo donde el sistema está encendido. La instalación y el
+encendido no hacen parte de este manual: los explica el archivo README que acompaña al proyecto.</p></div>
+
+<div class="tip"><p>El sistema se ve mejor con la ventana del navegador maximizada. En pantallas pequeñas, algunas
+tarjetas necesitan desplazarse hacia abajo para verse completas.</p></div>
+
+<h2 id="primeros-pasos-pantalla">Las partes de la pantalla</h2>
+
+<p>Todas las pantallas comparten el mismo marco: una barra lateral a la izquierda, una cabecera arriba, el contenido al
+centro y un pie abajo.</p>
+
+<figure class="fig w-75">
+  <img src="img/general-01-pantalla-completa.png" alt="Pantalla completa del sistema con la barra lateral, la cabecera, el contenido y el pie">
+  <figcaption>El marco común: barra lateral azul oscuro, cabecera con el rol y «Reiniciar demo», contenido de la pantalla y pie.</figcaption>
+</figure>
+
+<h3>La barra lateral: el recorrido de la demo</h3>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig">
+    <img src="img/general-02-menu-recorrido.png" alt="Barra lateral con el nombre del sistema, las cuatro pantallas y la tarjeta del piloto" style="max-height: 104mm;">
+    <figcaption>La barra lateral.</figcaption>
+  </figure>
+  <div>
+    <p>Es el menú. Está siempre visible y sus entradas van en el orden en que ocurre el proceso.</p>
+    <dl class="fields">
+      <dt>Suministro de combustible</dt><dd>El nombre del sistema, con «Transportes Esivans S.A.S.» debajo. Al hacer clic vuelve al simulador.</dd>
+      <dt>Recorrido de la demo</dt><dd>El título del menú.</dd>
+      <dt>Simulador del conductor</dt><dd>«Chat con el asistente». Aquí nace la solicitud.</dd>
+      <dt>Consola del técnico</dt><dd>«Cola, semáforo y decisión». Aquí se decide.</dd>
+      <dt>Alertas del coordinador</dt><dd>«Revisión y conciliación». Aquí se revisa después.</dd>
+      <dt>Tablero del piloto</dt><dd>«Indicadores y metas». Aquí se mide.</dd>
+      <dt>Piloto de 6 semanas</dt><dd>Una tarjeta informativa: «Córdoba, zona CARIBE COR» y el principio del sistema: «La IA lee y propone; la decisión la toma una persona.» No es un botón.</dd>
+    </dl>
+    <p>La pantalla en la que usted está aparece resaltada.</p>
+  </div>
+</div>
+
+<h3>La cabecera</h3>
+
+<figure class="fig fig--bare">
+  <img src="img/general-03-cabecera.png" alt="Cabecera con el título de la pantalla, el selector de rol y el botón Reiniciar demo">
+  <figcaption>La cabecera: a la izquierda, el título de la pantalla; a la derecha, el rol y «Reiniciar demo».</figcaption>
+</figure>
+
+<dl class="fields">
+  <dt>Título y subtítulo</dt><dd>Dicen en qué pantalla está y para qué sirve. Por ejemplo: «Simulador del conductor · El conductor pide combustible por mensajería y el asistente arma la solicitud».</dd>
+  <dt>Rol simulado</dt><dd>Un círculo con las iniciales, el nombre de la persona y, debajo, una lista para elegir el rol (véase la <a class="xref" href="#primeros-pasos-roles"></a>).</dd>
+  <dt>Reiniciar demo</dt><dd>Devuelve el sistema a su estado inicial (véase la <a class="xref" href="#primeros-pasos-reiniciar"></a>).</dd>
+</dl>
+
+<h3>El pie</h3>
+
+<figure class="fig fig--bare">
+  <img src="img/general-07-pie.png" alt="Pie de la pantalla">
+  <figcaption>El pie recuerda en todas las pantallas que los datos son ilustrativos.</figcaption>
+</figure>
+
+<h3>Los avisos</h3>
+
+<p>Después de algunas acciones aparece por unos segundos un aviso pequeño que confirma lo que pasó. Por ejemplo, al
+reiniciar la demo: «Demo reiniciada · Se volvió a cargar la semilla. Las pantallas ya muestran los datos iniciales.»</p>
+
+<p>Las pantallas se actualizan solas: no hace falta recargar la página para ver una solicitud nueva o un mensaje nuevo.</p>
+
+<h2 id="primeros-pasos-roles">Los roles</h2>
+
+<p>Un rol representa a una persona de la operación. El sistema trae cuatro, cada uno con un nombre de ejemplo.</p>
+
+<table>
+  <thead>
+    <tr><th>Rol</th><th>Persona de ejemplo</th><th>Así se ve en la cabecera</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="role">Técnico de Control y Monitoreo</span></td><td>Laura Mendoza (LM)</td><td><img class="inline-shot" src="img/general-04-rol-tecnico.png" alt="Cabecera con el rol Técnico de Control y Monitoreo" style="max-height: 9mm;"></td></tr>
+    <tr><td><span class="role">Coordinador</span></td><td>Carlos Rivas (CR)</td><td><img class="inline-shot" src="img/general-04-rol-coordinador.png" alt="Cabecera con el rol Coordinador" style="max-height: 9mm;"></td></tr>
+    <tr><td><span class="role">Finanzas</span></td><td>Marta Salcedo (MS)</td><td><img class="inline-shot" src="img/general-04-rol-finanzas.png" alt="Cabecera con el rol Finanzas" style="max-height: 9mm;"></td></tr>
+    <tr><td><span class="role">Soporte</span></td><td>Diego Paternina (DP)</td><td><img class="inline-shot" src="img/general-04-rol-soporte.png" alt="Cabecera con el rol Soporte" style="max-height: 9mm;"></td></tr>
+  </tbody>
+</table>
+
+<div class="limit"><p>El ingreso es simulado: cualquiera puede elegir cualquier rol y los nombres son inventados. Al
+pasar el cursor sobre el selector, el propio sistema lo aclara: «Ingreso simulado: en producción es con SSO (OIDC) y
+MFA», es decir, con el usuario de la empresa y una segunda verificación.</p></div>
+
+<h3>Cambiar de rol</h3>
+
+<p class="who">Quién lo hace: <span class="role role--all">Todos los roles</span></p>
+
+<ol class="steps">
+  <li>En la cabecera, haga clic sobre el nombre del rol actual (debajo de <span class="ui">Rol simulado</span>).</li>
+  <li>En la lista que se despliega, elija el rol: <span class="ui">Técnico de Control y Monitoreo</span>,
+  <span class="ui">Coordinador</span>, <span class="ui">Finanzas</span> o <span class="ui">Soporte</span>.</li>
+</ol>
+
+<div class="result">
+  <p>Cambian las iniciales del círculo y el nombre de la persona. Usted sigue en la misma pantalla, y los botones que
+  ese rol no puede usar quedan apagados, con un aviso que explica quién sí puede.</p>
+</div>
+
+<p class="why">cada acción queda en la bitácora con el nombre de quien la hizo. Si aprueba con el rol de técnico, la
+bitácora dirá «Laura Mendoza»; si registra una alerta como coordinador, dirá «Carlos Rivas».</p>
+
+<div class="note"><p>El rol elegido se conserva al pasar de una pantalla a otra y al recargar la página. «Reiniciar
+demo» tampoco lo cambia.</p></div>
+
+<h3>Qué cambia al cambiar de rol</h3>
+
+<p>Todos los roles ven las cuatro pantallas. Lo que cambia son las acciones permitidas.</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Pantalla y acción</th><th>Técnico</th><th>Coordinador</th><th>Finanzas</th><th>Soporte</th></tr>
+  </thead>
+  <tbody>
+    <tr class="group"><td colspan="5">En todas las pantallas</td></tr>
+    <tr><td>Ver y consultar la información</td><td>Sí</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+    <tr><td>Usar <span class="ui">Reiniciar demo</span></td><td>Sí</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+    <tr class="group"><td colspan="5">Simulador del conductor</td></tr>
+    <tr><td>Elegir el caso, enviar mensajes y fotos, cambiar la hora simulada y la IA</td><td>Sí</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+    <tr class="group"><td colspan="5">Consola del técnico</td></tr>
+    <tr><td>Ver la cola y el detalle de una solicitud</td><td>Sí</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+    <tr><td>Aprobar, ajustar o rechazar una solicitud</td><td>Sí</td><td>Sí</td><td>No</td><td>No</td></tr>
+    <tr><td>Confirmar la habilitación con la referencia</td><td>Sí</td><td>Sí</td><td>No</td><td>No</td></tr>
+    <tr class="group"><td colspan="5">Alertas del coordinador</td></tr>
+    <tr><td>Ver las alertas, la conciliación y el catálogo de reglas</td><td>Sí</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+    <tr><td>Registrar o corregir el resultado de una alerta</td><td>No</td><td>Sí</td><td>No</td><td>No</td></tr>
+    <tr><td>Cargar el archivo del proveedor (pestaña <span class="ui">Conciliación</span>)</td><td>No</td><td>Sí</td><td>Sí</td><td>No</td></tr>
+    <tr><td>Cambiar el umbral de una regla (pestaña <span class="ui">Reglas y umbrales</span>)</td><td>No</td><td>Sí</td><td>No</td><td>No</td></tr>
+    <tr class="group"><td colspan="5">Tablero del piloto</td></tr>
+    <tr><td>Consultar los indicadores (la pantalla no tiene acciones)</td><td>Sí</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+  </tbody>
+</table>
+
+<p>Cuando un rol no puede hacer algo, el sistema no esconde la pantalla: apaga el botón y muestra un aviso. Estos son
+los avisos que verá:</p>
+
+<table>
+  <thead>
+    <tr><th>Dónde</th><th>Aviso</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Detalle de una solicitud, con Finanzas o Soporte</td><td>«Solo lectura: con el rol Finanzas puedes consultar la solicitud, pero la decisión y la habilitación son del técnico de Control y Monitoreo o del coordinador.»</td></tr>
+    <tr><td>Resultado de una alerta, con un rol distinto de Coordinador</td><td>«Con el rol Finanzas solo puedes consultar. El resultado lo registra el Coordinador.»</td></tr>
+    <tr><td>Pestaña «Conciliación», con Técnico o Soporte</td><td>«Con el rol Soporte solo puedes consultar. El archivo lo carga Coordinador o Finanzas.»</td></tr>
+    <tr><td>Pestaña «Reglas y umbrales», con un rol distinto de Coordinador</td><td>«Solo el Coordinador puede cambiar un umbral. Con el rol Soporte el catálogo es de consulta.»</td></tr>
+  </tbody>
+</table>
+
+<p>En cada aviso, el nombre del rol cambia según el que usted tenga elegido.</p>
+
+<figure class="fig w-75">
+  <img src="img/alertas-41-solo-lectura-finanzas-recorte.png" alt="Formulario de resultado de una alerta apagado, con el aviso de solo lectura para el rol Finanzas">
+  <figcaption>Con el rol Finanzas, el formulario para registrar el resultado de una alerta queda apagado y el aviso explica por qué.</figcaption>
+</figure>
+
+<div class="tip"><p>Para recorrer el proceso completo necesita dos roles: <span class="role">Técnico de Control y
+Monitoreo</span> para decidir en la consola y <span class="role">Coordinador</span> para revisar alertas, conciliar y
+cambiar umbrales.</p></div>
+
+<h2 id="primeros-pasos-reiniciar">Reiniciar la demo</h2>
+
+<p><span class="ui">Reiniciar demo</span> devuelve el sistema a su estado inicial: borra todo lo hecho durante la
+sesión y vuelve a cargar los datos de ejemplo.</p>
+
+<h3>Cuándo conviene</h3>
+
+<ul>
+  <li><strong>Antes de empezar</strong> una demostración o una práctica, para partir de una cola vacía.</li>
+  <li><strong>Para repetir un caso.</strong> Cada vehículo solo puede tener una solicitud abierta a la vez y, una vez
+  autorizado, el asistente no acepta otra mientras la autorización esté vigente.</li>
+  <li><strong>Cuando los datos quedaron revueltos</strong> y quiere que las cifras vuelvan a coincidir con las de este manual.</li>
+</ul>
+
+<h3>Cómo se hace</h3>
+
+<p class="who">Quién lo hace: <span class="role role--all">Todos los roles</span></p>
+
+<ol class="steps">
+  <li>En la cabecera, haga clic en <span class="ui">Reiniciar demo</span>.</li>
+  <li>Lea la pregunta <span class="ui">¿Reiniciar la demo?</span> y haga clic en el botón <span class="ui">Reiniciar demo</span>
+  de esa ventana. Si se arrepiente, haga clic en <span class="ui">Cancelar</span>.</li>
+</ol>
+
+<figure class="fig w-50">
+  <img src="img/general-06-reiniciar-dialogo-recorte.png" alt="Ventana ¿Reiniciar la demo? con los botones Cancelar y Reiniciar demo">
+  <figcaption>La ventana de confirmación antes de reiniciar.</figcaption>
+</figure>
+
+<div class="result">
+  <p>La ventana se cierra y aparece el aviso «Demo reiniciada». La pantalla en la que usted está se recarga sola con
+  los datos iniciales.</p>
+</div>
+
+<h3>Qué borra y qué deja</h3>
+
+<table>
+  <thead>
+    <tr><th>Se borra</th><th>Queda como al principio</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <ul>
+          <li>Las conversaciones del simulador.</li>
+          <li>Las solicitudes, las decisiones, las habilitaciones y sus bitácoras.</li>
+          <li>Los resultados de alertas que usted registró.</li>
+          <li>Los archivos del proveedor cargados en la conciliación y las alertas que generaron.</li>
+          <li>Los cambios de umbral: el catálogo de reglas vuelve a la versión 1.</li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li>La cola del técnico, vacía.</li>
+          <li>Las alertas de ejemplo: 4 tanqueos y 7 vehículos por revisar, más 8 alertas que ya vienen revisadas.</li>
+          <li>El tablero, con «0 solicitudes · 0 decisiones · 8 alertas revisadas».</li>
+          <li>La IA, en la opción con la que está configurada la instalación.</li>
+          <li>El rol y el caso que usted tenía elegidos (no cambian).</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="warn"><p>Reiniciar no se puede deshacer y afecta a todas las personas que estén usando el sistema en ese
+momento. Si alguien más está haciendo una prueba, avísele antes.</p></div>
+
+<div class="note"><p>Los datos de ejemplo se acomodan a la fecha del día: los servicios «de hoy» y los tanqueos de los
+últimos 90 días siempre son recientes. Por eso las fechas de su pantalla no coinciden con las de las imágenes.</p></div>
+
+<h2 id="primeros-pasos-ia">Las tres opciones de IA</h2>
+
+<p>La IA hace dos tareas, y solo esas dos: <strong>entender lo que escribe el conductor</strong> y <strong>leer la foto
+del tablero</strong> (kilometraje y nivel de combustible). No calcula el valor ni decide nada.</p>
+
+<p>En el <span class="ui">Simulador del conductor</span>, la fila <span class="ui">IA</span> de la tarjeta
+<span class="ui">Caso de la demo</span> permite elegir quién hace esas tareas.</p>
+
+<figure class="fig w-50">
+  <img src="img/simulador-04-ia-opciones.png" alt="Fila IA del simulador con las opciones Groq, Groq (texto) y Simulada">
+  <figcaption>Las tres opciones de la fila «IA». La activa aparece resaltada; debajo, una línea dice qué hace.</figcaption>
+</figure>
+
+<table>
+  <thead>
+    <tr><th>Opción</th><th>Quién entiende los mensajes</th><th>Quién lee la foto</th><th>Cuándo conviene</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="ui">Simulada</span></td>
+      <td>Un intérprete propio del sistema, sin internet.</td>
+      <td>Una lectura de ejemplo ya preparada para cada foto.</td>
+      <td><strong>Para seguir este manual.</strong> Siempre da el mismo resultado y no depende de nada externo.</td>
+    </tr>
+    <tr>
+      <td><span class="ui">Groq (texto)</span></td>
+      <td>Un servicio externo de IA (Groq). Si no responde, lo reemplaza el intérprete propio.</td>
+      <td>La misma lectura de ejemplo. La foto no se envía al servicio externo.</td>
+      <td>Para mostrar una IA real entendiendo frases libres, con las mismas cifras de los casos. Necesita internet.</td>
+    </tr>
+    <tr>
+      <td><span class="ui">Groq</span></td>
+      <td>El servicio externo, con el mismo reemplazo.</td>
+      <td>El servicio externo. Si no logra leerla, el asistente le pide al conductor que escriba el kilometraje.</td>
+      <td>Solo para mostrar la lectura real de una foto. Las cifras pueden salir distintas de las de este manual.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Cambiar la opción de IA</h3>
+
+<ol class="steps">
+  <li>En el menú, haga clic en <span class="ui">Simulador del conductor</span>.</li>
+  <li>En la tarjeta <span class="ui">Caso de la demo</span>, fila <span class="ui">IA</span>, haga clic en la opción que quiere.</li>
+</ol>
+
+<div class="result">
+  <p>La opción queda resaltada y cambia la línea de debajo. Con <span class="ui">Simulada</span> dice: «Intérprete local
+  y lecturas de ejemplo, sin internet.»</p>
+</div>
+
+<div class="note"><p>El cambio vale para todos los casos y para los mensajes que se envíen desde ese momento.
+<span class="ui">Reiniciar demo</span> devuelve la IA a la opción con la que está configurada la instalación; en la
+instalación con la que se preparó este manual, esa opción es <span class="ui">Simulada</span>.</p></div>
+
+<div class="warn"><p>Todo este manual se preparó con <span class="ui">Simulada</span>. Déjela así para que sus
+resultados coincidan con los que aquí se describen. Las opciones con Groq envían información a un servicio externo y
+tienen un cupo de uso limitado.</p></div>
+
+<div class="limit"><p>Si la instalación no tiene configurado el acceso al servicio externo, las opciones
+<span class="ui">Groq</span> y <span class="ui">Groq (texto)</span> aparecen apagadas y solo funciona
+<span class="ui">Simulada</span>. Las opciones con Groq no se usaron al preparar este manual: lo que aquí se dice de
+ellas viene de la documentación del proyecto.</p></div>
+
+<h3>Los rótulos «IA:» bajo los mensajes</h3>
+
+<p>En el chat del simulador, bajo los mensajes del conductor aparece un rótulo pequeño que dice quién interpretó ese
+mensaje o leyó esa foto. Sale bajo el último mensaje del conductor, bajo cada foto y bajo cualquier mensaje que no haya
+respondido la opción elegida.</p>
+
+<table>
+  <thead>
+    <tr><th>Rótulo</th><th>Qué significa</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>«IA: simulada (intérprete local)»</td><td>El mensaje lo entendió el intérprete propio del sistema.</td></tr>
+    <tr><td>«IA: simulada (lectura de ejemplo)»</td><td>La foto se resolvió con la lectura de ejemplo.</td></tr>
+    <tr><td>«IA: simulada (lectura de ejemplo; la foto no se envió a Groq)»</td><td>Lo mismo, con la opción «Groq (texto)» activa.</td></tr>
+    <tr><td>«IA: Groq · » y el nombre del modelo</td><td>Respondió el servicio externo.</td></tr>
+    <tr><td>«IA: intérprete local (respaldo: Groq, …)»</td><td>El servicio externo no respondió y el mensaje lo entendió el intérprete propio. Entre paréntesis va la causa; por ejemplo, «sin conexión» o «límite por minuto».</td></tr>
+    <tr><td>«IA: Groq no leyó la foto (…): el conductor escribe el dato»</td><td>El servicio externo no pudo leer la foto. El asistente le pide el kilometraje al conductor.</td></tr>
+  </tbody>
+</table>
+
+<figure class="fig fig--phone">
+  <img src="img/simulador-17-verde-telefono-foto-y-lectura.png" alt="Chat del simulador con la foto del tablero y el rótulo IA: simulada (lectura de ejemplo)">
+  <figcaption>Bajo la foto, el rótulo «IA: simulada (lectura de ejemplo)». El mensaje con la lectura lleva una marca en forma de destello.</figcaption>
+</figure>
+
+<p class="why">nunca se presenta como leído por una IA real algo que respondió el sistema por su cuenta. El mismo rótulo
+queda en la consola del técnico y en la bitácora.</p>
+
+<div class="tip keep">
+  <p><strong>Puntos clave del capítulo</strong></p>
+  <ul>
+    <li>Se entra por <span class="kbd">http://localhost:8080</span>, sin usuario ni contraseña.</li>
+    <li>El menú de la izquierda sigue el orden del proceso: simulador, consola, alertas y tablero.</li>
+    <li>El rol se cambia en la cabecera. Todos ven todo; lo que cambia es quién puede decidir, revisar, cargar el archivo o cambiar umbrales.</li>
+    <li>Deciden el Técnico y el Coordinador. Solo el Coordinador registra resultados de alertas y cambia umbrales. El archivo lo cargan el Coordinador o Finanzas. Soporte solo consulta.</li>
+    <li><span class="ui">Reiniciar demo</span> borra todo lo hecho y no se puede deshacer.</li>
+    <li>Deje la IA en <span class="ui">Simulada</span> para obtener las mismas cifras de este manual.</li>
+  </ul>
+</div>

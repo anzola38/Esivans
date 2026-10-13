@@ -1,0 +1,212 @@
+<h1 id="reglas">Reglas y umbrales</h1>
+
+<p class="lead">En este capítulo: qué es una regla y qué es un umbral, cómo leer el catálogo, quién puede cambiarlo
+y cómo se cambia un umbral paso a paso. También, qué es una versión y por qué las alertas viejas conservan la suya.</p>
+
+<h2 id="reglas-que-es">Qué es una regla y qué es un umbral</h2>
+
+<dl class="fields">
+  <dt>Regla</dt><dd>Una pregunta que el sistema se hace sobre un tanqueo o un vehículo. Por ejemplo, <span class="code">R08</span>: «¿Este vehículo tiene servicios cerca de la hora del tanqueo?».</dd>
+  <dt>Umbral</dt><dd>El número que marca el límite de esa pregunta. En <span class="code">R08</span> es una ventana de 24 horas antes y después.</dd>
+  <dt>Puntos</dt><dd>Lo que suma la regla cuando se cumple. La suma de puntos define el semáforo de una solicitud y la prioridad de una alerta.</dd>
+</dl>
+
+<p class="why">los umbrales no son verdades fijas; se ajustan con lo que se aprende al revisar alertas.</p>
+
+<p>La lista completa, regla por regla, está en el <a class="xref" href="#anexo-reglas" data-title></a>.</p>
+
+<h2 id="reglas-catalogo">El catálogo en pantalla</h2>
+
+<ol class="steps">
+  <li>En el menú, haga clic en <span class="ui">Alertas del coordinador</span>.</li>
+  <li>Haga clic en la pestaña <span class="ui">Reglas y umbrales</span>.</li>
+</ol>
+
+<div class="result">
+  <p>A la izquierda, la tabla con las 25 reglas, agrupadas. A la derecha, el detalle de una regla: al entrar, la
+  <span class="code">R08</span> «Sin servicios en EOM». Para ver otra, haga clic en su fila.</p>
+</div>
+
+<figure class="fig w-75">
+  <img src="img/reglas-01-catalogo.png" alt="Pestaña Reglas y umbrales: tabla del catálogo a la izquierda y detalle de la regla R08 a la derecha">
+  <figcaption>El catálogo y, a la derecha, el detalle de la regla R08.</figcaption>
+</figure>
+
+<h3>Los cuatro grupos</h3>
+
+<table>
+  <thead><tr><th>Grupo en pantalla</th><th>Reglas</th><th>Cuándo se revisan</th></tr></thead>
+  <tbody>
+    <tr><td><span class="ui">Antes de autorizar</span></td><td><span class="code">R01</span> a <span class="code">R10</span></td><td>Cuando llega la solicitud del conductor. Definen el semáforo que ve el técnico.</td></tr>
+    <tr><td><span class="ui">Al conciliar</span></td><td><span class="code">R11</span> a <span class="code">R14</span>, <span class="code">C01</span> y <span class="code">C02</span></td><td>Cuando se carga el archivo del proveedor.</td></tr>
+    <tr><td><span class="ui ui--wrap">Después de autorizar (control posterior)</span></td><td><span class="code">C03</span></td><td>Cuando el técnico autoriza una solicitud en rojo.</td></tr>
+    <tr><td><span class="ui ui--wrap">Por vehículo (análisis de 90 días)</span></td><td><span class="code">V01</span> a <span class="code">V08</span></td><td>Sobre el comportamiento del vehículo en 90 días.</td></tr>
+  </tbody>
+</table>
+
+<h3>Las columnas de la tabla</h3>
+
+<dl class="fields">
+  <dt>Código</dt><dd>El identificador corto de la regla.</dd>
+  <dt>Regla y umbral vigente</dt><dd>El nombre y, debajo, el umbral que aplica hoy.</dd>
+  <dt>Tratamiento</dt><dd><span class="ui">Automática</span> o <span class="ui">Revisión</span>. Vea el recuadro siguiente.</dd>
+  <dt>Puntos</dt><dd>Lo que suma cuando se cumple.</dd>
+  <dt>Versión</dt><dd><strong>v1</strong> es la inicial. Sube cada vez que se cambia el umbral o los puntos de esa regla.</dd>
+  <dt>Precisión</dt><dd>De las alertas revisadas con esa regla, qué parte resultó <span class="ui">Confirmado</span>. «67 % · 2 de 3» significa 2 confirmadas de 3 revisadas. «Sin revisar» significa que aún no hay ninguna.</dd>
+</dl>
+
+<div class="note">
+  <p><strong>Automática o Revisión.</strong> El detalle de cada regla lo explica con estas palabras:</p>
+  <ul>
+    <li><span class="ui">Automática</span>: «Control determinista: marca sola, pero nunca rechaza ni bloquea el vehículo.»</li>
+    <li><span class="ui">Revisión</span>: «Con precisión de 90 % o más durante 4 semanas pasa a automática; entre 50 y 90 % sigue como alerta; por debajo de 50 % se ajusta o se retira.»</li>
+  </ul>
+</div>
+
+<p>Al pie de la tabla se lee «Catálogo vigente: <strong>v1</strong> · 25 reglas» y «Precisión = confirmadas ÷
+revisadas».</p>
+
+<div class="limit"><p>El paso de «Revisión» a «Automática» es un criterio escrito en la pantalla. El prototipo no
+cambia el tratamiento de una regla por su cuenta.</p></div>
+
+<h2 id="reglas-detalle">El detalle de una regla</h2>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig">
+    <img src="img/reglas-04-detalle-r08-recorte.png" alt="Detalle de la regla R08: 2 puntos, versión v1, precisión 67 por ciento, formulario Cambiar el umbral e Historial de versiones">
+    <figcaption>Detalle de la regla R08.</figcaption>
+  </figure>
+  <div>
+    <dl class="fields">
+      <dt>Encabezado</dt><dd>Código, nombre y el umbral en palabras.</dd>
+      <dt>Tres cifras</dt><dd>Puntos, versión vigente y precisión.</dd>
+      <dt>Texto</dt><dd>El grupo, el tratamiento y qué implica.</dd>
+      <dt><span class="ui">Cambiar el umbral</span></dt><dd>El formulario para crear una versión nueva.</dd>
+      <dt><span class="ui">Historial de versiones</span></dt><dd>Todas las versiones de la regla, la más reciente arriba. La que aplica hoy lleva la etiqueta <span class="ui">Vigente</span>.</dd>
+    </dl>
+  </div>
+</div>
+
+<h2 id="reglas-quien">Quién puede cambiar un umbral</h2>
+
+<p>Solo el <span class="role">Coordinador</span>. Los demás roles ven el catálogo completo, pero con los campos y
+los botones apagados y este aviso: «Solo el Coordinador puede cambiar un umbral. Con el rol Técnico de Control y
+Monitoreo el catálogo es de consulta.» (con el nombre del rol que tenga).</p>
+
+<figure class="fig w-50">
+  <img src="img/reglas-12-solo-lectura-recorte.png" alt="Formulario Cambiar el umbral en solo lectura con el aviso de que solo el Coordinador puede cambiarlo">
+  <figcaption>El modo de solo lectura, con el rol «Técnico de Control y Monitoreo».</figcaption>
+</figure>
+
+<p class="why">un umbral cambia lo que el sistema marca para todos; por eso lo decide una sola función y queda con nombre y motivo.</p>
+
+<h2 id="reglas-cambiar">Cambiar un umbral</h2>
+
+<p class="who">Quién lo hace: <span class="role">Coordinador</span></p>
+
+<p>El ejemplo cambia la ventana de la regla <span class="code">R08</span> de 24 a 12 horas.</p>
+
+<ol class="steps">
+  <li>En la cabecera, elija el rol <span class="ui">Coordinador</span>.</li>
+  <li>En la tabla del catálogo, haga clic en la fila de la regla. Para el ejemplo, <span class="code">R08</span>.</li>
+  <li>
+    <p>En <span class="ui">Cambiar el umbral</span>, escriba el valor nuevo. Para el ejemplo, en
+    <span class="ui">Ventana (± horas)</span> escriba <span class="kbd">12</span>.</p>
+    <p>Debajo de cada campo, «Vigente: 24» le recuerda el valor que aplica hoy. También puede cambiar
+    <span class="ui">Puntos (0 a 5)</span>.</p>
+  </li>
+  <li>En <span class="ui">Motivo del cambio</span>, escriba por qué se cambia y con quién se acordó. Es obligatorio.</li>
+  <li>Haga clic en <span class="ui">Guardar como versión 2</span>.</li>
+</ol>
+
+<figure class="fig w-50">
+  <img src="img/reglas-16-cambio-pendiente-recorte.png" alt="Formulario con la ventana cambiada a 12, el motivo escrito y el botón Guardar como versión 2">
+  <figcaption>El cambio listo para guardar.</figcaption>
+</figure>
+
+<div class="result">
+  <p>Aparece el aviso «Umbral actualizado · R08 quedó en la versión 2. La anterior se conserva en el historial.».
+  En la tabla, la fila <span class="code">R08</span> muestra <strong>v2</strong> y «Ventana (± horas): 12». El pie
+  dice «Catálogo vigente: <strong>v2</strong>». El botón pasa a llamarse <span class="ui">Guardar como versión 3</span>.</p>
+</div>
+
+<figure class="fig">
+  <img src="img/reglas-18-version-2-guardada.png" alt="Catálogo con la regla R08 en la versión 2 y el pie Catálogo vigente v2">
+  <figcaption>La regla R08 ya en la versión 2.</figcaption>
+</figure>
+
+<h3>El botón «Deshacer»</h3>
+
+<p><span class="ui">Deshacer</span> devuelve el formulario a los valores vigentes y borra el motivo que iba
+escribiendo. Sirve <strong>antes</strong> de guardar.</p>
+
+<div class="warn"><p><span class="ui">Deshacer</span> no anula una versión ya guardada. Para volver al valor
+anterior, guarde una versión nueva con ese valor y su motivo. En la demo, <span class="ui">Reiniciar demo</span>
+devuelve todas las reglas a la versión 1.</p></div>
+
+<h3>Mensajes que puede ver al guardar</h3>
+
+<table class="ref">
+  <thead><tr><th>Mensaje</th><th>Qué pasó</th><th>Qué hacer</th></tr></thead>
+  <tbody>
+    <tr><td>«El motivo del cambio es obligatorio.»</td><td>Cambió un valor, pero no escribió el motivo (mínimo 3 caracteres).</td><td>Escriba el motivo.</td></tr>
+    <tr><td>«Cambia al menos un valor frente a la versión vigente.»</td><td>Los valores son iguales a los vigentes.</td><td>Cambie el umbral o los puntos.</td></tr>
+    <tr><td>«Revisa los valores: números de 0 en adelante y puntos enteros de 0 a 5.»</td><td>Hay un campo vacío, con letras, con un número negativo, o los puntos no son un entero entre 0 y 5.</td><td>Corrija el valor. Los decimales se escriben con coma o con punto.</td></tr>
+  </tbody>
+</table>
+
+<figure class="fig w-50">
+  <img src="img/reglas-14-motivo-obligatorio.png" alt="Formulario con la ventana en 12 y el error El motivo del cambio es obligatorio">
+  <figcaption>Sin motivo, el cambio no se guarda.</figcaption>
+</figure>
+
+<div class="note"><p>Algunas reglas no tienen un número que ajustar (por ejemplo, <span class="code">R01</span>
+«Odómetro sin dato»). En ellas el formulario solo muestra <span class="ui">Puntos (0 a 5)</span>.</p></div>
+
+<h2 id="reglas-versiones">Qué es una versión</h2>
+
+<p>Cada cambio crea una <strong>versión nueva</strong> de la regla. La anterior no se borra ni se modifica: queda
+en el <span class="ui">Historial de versiones</span>.</p>
+
+<figure class="fig w-50">
+  <img src="img/reglas-20-historial-de-versiones.png" alt="Historial de versiones de R08: v2 con ventana 12, vigente, por Carlos Rivas con su motivo; v1 con ventana 24, calibración inicial">
+  <figcaption>Historial de la regla R08 después del cambio.</figcaption>
+</figure>
+
+<p>Cada línea del historial dice el valor del umbral, los puntos, quién lo cambió, cuándo y el motivo. La versión 1
+figura a nombre de «Calibración inicial (análisis de 90 días)», con el motivo «Umbral inicial de la hoja Reglas y
+umbrales». En una regla sin número que ajustar, la línea dice «Sin parámetros».</p>
+
+<h3>Versión de la regla y versión del catálogo</h3>
+
+<dl class="fields">
+  <dt>Versión de la regla</dt><dd>La de la columna <span class="ui">Versión</span>. Cuenta los cambios de esa regla.</dd>
+  <dt>Catálogo vigente</dt><dd>La del pie de la tabla. Sube en uno con cada cambio, de cualquier regla.</dd>
+</dl>
+
+<h3>Por qué las alertas viejas conservan su versión</h3>
+
+<p>Cada alerta guarda la versión del catálogo con la que nació. Se ve en su cabecera: <span class="ui">Reglas v1</span>.
+Cuando usted cambia un umbral:</p>
+
+<ul>
+  <li>Las alertas y las solicitudes <strong>ya evaluadas</strong> no cambian. Siguen diciendo <span class="ui">Reglas v1</span>.</li>
+  <li>Lo que se evalúe <strong>de ahí en adelante</strong> usa el umbral nuevo y queda marcado con la versión nueva.</li>
+</ul>
+
+<p class="why">así siempre se puede saber con qué regla se marcó cada caso, aunque la regla haya cambiado después.</p>
+
+<div class="limit"><p>Las alertas de la pestaña <span class="ui">Vehículos</span> vienen ya calculadas con los datos
+de ejemplo. Cambiar el umbral de una regla <span class="code">V01</span> a <span class="code">V08</span> crea la
+versión y queda en el historial, pero el prototipo no vuelve a calcular esas alertas.</p></div>
+
+<div class="tip keep">
+  <p><strong>Puntos clave del capítulo</strong></p>
+  <ul>
+    <li>El catálogo tiene 25 reglas en cuatro grupos.</li>
+    <li>Solo el <span class="role">Coordinador</span> cambia umbrales; los demás consultan.</li>
+    <li>Todo cambio exige un motivo y crea una versión nueva; la anterior se conserva.</li>
+    <li><span class="ui">Deshacer</span> limpia el formulario; no anula una versión guardada.</li>
+    <li>Cada alerta conserva la versión de reglas con la que nació.</li>
+  </ul>
+</div>

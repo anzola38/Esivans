@@ -1,0 +1,327 @@
+<h1 id="tablero">Tablero del piloto</h1>
+
+<p class="lead">En este capítulo: para qué sirve el tablero, cómo leer cada uno de sus nueve indicadores y qué
+significan el gráfico de horas, las desviaciones abiertas y la decisión al cierre de las 6 semanas. También, cuáles
+cifras salen de lo que usted hace en la demo y cuáles son de ejemplo.</p>
+
+<h2 id="tablero-para-que">Para qué sirve</h2>
+
+<p>El piloto dura 6 semanas en una zona. Al final hay que decidir si el sistema se amplía, se ajusta o se detiene.
+El tablero reúne en una sola pantalla lo necesario para esa decisión: cada indicador frente a su punto de partida
+(la <strong>línea base</strong>) y a lo que se quiere lograr (la <strong>meta</strong>).</p>
+
+<p class="who">Quién lo ve: <span class="role role--all">Todos los roles</span>. Es una pantalla de consulta: no tiene botones ni formularios.</p>
+
+<ol class="steps">
+  <li>En el menú de la izquierda, haga clic en <span class="ui">Tablero del piloto</span>.</li>
+</ol>
+
+<div class="result">
+  <p>De arriba abajo: la franja del piloto, nueve tarjetas de indicadores, el gráfico de horas, las
+  <span class="ui">Desviaciones abiertas</span> y la <span class="ui">Decisión al cierre de las 6 semanas</span>.</p>
+</div>
+
+<figure class="fig">
+  <img src="img/tablero-02-recien-reiniciado-completo.png" alt="Tablero del piloto completo con la demo recién reiniciada: franja, nueve indicadores, gráfico de horas, desviaciones abiertas y decisión Ampliar">
+  <figcaption>El tablero completo con la demo recién reiniciada.</figcaption>
+</figure>
+
+<div class="note"><p>El tablero se actualiza solo cada 5 segundos. No hace falta recargar la página después de
+decidir una solicitud o revisar una alerta.</p></div>
+
+<h2 id="tablero-franja">La franja superior</h2>
+
+<figure class="fig fig--bare">
+  <img src="img/tablero-13-franja-del-piloto.png" alt="Franja del piloto: Córdoba, 59 vehículos, 66 tanqueos al día, 467 servicios al día, actividad de la demo y 7 de 9 cumplen la meta">
+  <figcaption>La franja del piloto, después de usar la demo.</figcaption>
+</figure>
+
+<dl class="fields">
+  <dt>Piloto de 6 semanas · Córdoba (CARIBE COR)</dt><dd>La duración y la zona del piloto.</dd>
+  <dt>59 vehículos · 66 tanqueos al día · 467 servicios al día</dt><dd>El tamaño de la zona del piloto. Son cifras fijas de referencia; la demo trabaja con 24 vehículos de ejemplo.</dd>
+  <dt>Demo: solicitudes · decisiones · alertas revisadas</dt><dd>Lo que se ha hecho en la demo hasta ahora. Recién reiniciada dice «0 solicitudes · 0 decisiones · 8 alertas revisadas»: las 8 son alertas de ejemplo que ya vienen revisadas.</dd>
+  <dt>7 de 9 cumplen la meta</dt><dd>Cuántos de los nueve indicadores están hoy en «Cumple la meta».</dd>
+</dl>
+
+<h2 id="tablero-tarjeta">Cómo leer una tarjeta</h2>
+
+<p>Las nueve tarjetas tienen la misma forma.</p>
+
+<div class="two-col">
+  <figure class="fig">
+    <img src="img/tablero-15-tarjeta-tiempo-de-atencion.png" alt="Tarjeta Tiempo de atención: Cumple la meta, 0,8 min, Calculado con la demo, meta y línea base">
+    <figcaption>La tarjeta «Tiempo de atención».</figcaption>
+  </figure>
+  <div>
+    <dl class="fields">
+      <dt>Nombre y estado</dt><dd>Arriba. El borde izquierdo toma el color del estado.</dd>
+      <dt>Qué mide</dt><dd>Una línea bajo el nombre.</dd>
+      <dt>Valor de hoy</dt><dd>La cifra grande.</dd>
+      <dt>Origen</dt><dd><span class="ui">Calculado con la demo</span> o <span class="ui">Valor ilustrativo</span>.</dd>
+      <dt>Barra hacia la meta</dt><dd>Vea abajo.</dd>
+      <dt>Meta</dt><dd>Lo que se quiere lograr.</dd>
+      <dt>Línea base</dt><dd>De dónde se parte o cómo se va a medir.</dd>
+    </dl>
+  </div>
+</div>
+
+<h3>La barra hacia la meta</h3>
+
+<ul>
+  <li>La <strong>raya vertical</strong> es la meta.</li>
+  <li>El <strong>tramo azul claro</strong> de la barra es la zona que cumple.</li>
+  <li>El <strong>punto</strong> es el valor de hoy. Su color es el del estado.</li>
+</ul>
+
+<p>Si el punto está dentro del tramo azul, el valor está del lado bueno de la meta. En los indicadores de tiempo
+y en «Continuidad», menos es mejor: la zona que cumple queda a la izquierda de la raya. En los de porcentaje, más
+es mejor: queda a la derecha.</p>
+
+<h3>Los cuatro estados</h3>
+
+<table>
+  <thead><tr><th>Estado</th><th>Color</th><th>Qué significa</th></tr></thead>
+  <tbody>
+    <tr><td><span class="ui">Cumple la meta</span></td><td>Verde</td><td>El valor de hoy alcanza la meta.</td></tr>
+    <tr><td><span class="ui">Cerca de la meta</span></td><td>Ámbar</td><td>No la alcanza, pero está dentro de un margen cercano.</td></tr>
+    <tr><td><span class="ui">No cumple</span></td><td>Rojo</td><td>Está lejos de la meta.</td></tr>
+    <tr><td><span class="ui">Sin datos todavía</span></td><td>Gris</td><td>Aún no hay con qué calcularlo.</td></tr>
+  </tbody>
+</table>
+
+<h3>«Calculado con la demo» o «Valor ilustrativo»</h3>
+
+<dl class="fields">
+  <dt><span class="ui">Calculado con la demo</span></dt><dd>La cifra sale de lo que se ha hecho en la demo: solicitudes, decisiones, cargas del archivo y revisiones.</dd>
+  <dt><span class="ui">Valor ilustrativo</span></dt><dd>La cifra es de ejemplo. Muestra cómo se vería el indicador, pero no mide nada real.</dd>
+</dl>
+
+<p>Varias tarjetas empiezan como ilustrativas y pasan a calculadas en cuanto hay actividad. Dos son siempre
+ilustrativas: <span class="ui">Integraciones</span> y <span class="ui">Continuidad</span>.</p>
+
+<div class="tip"><p>Deje el cursor quieto sobre una tarjeta: aparece una nota con el detalle del cálculo (por
+ejemplo, cuántas solicitudes se usaron).</p></div>
+
+<h2 id="tablero-indicadores">Los nueve indicadores</h2>
+
+<figure class="fig">
+  <img src="img/tablero-14-indicadores.png" alt="Las nueve tarjetas de indicadores después de usar la demo">
+  <figcaption>Los nueve indicadores después de usar la demo. «Resueltas en un clic» quedó en «No cumple».</figcaption>
+</figure>
+
+<table class="ref">
+  <thead>
+    <tr><th>Indicador</th><th>Qué mide</th><th>Meta</th><th>Línea base</th><th>Origen de la cifra</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Tiempo de atención</strong></td>
+      <td>Del primer mensaje del conductor a la decisión. Se muestra la mediana, en minutos.</td>
+      <td>Mediana de 3 min o menos y 9 de cada 10 en 10 min o menos</td>
+      <td>2 semanas de marcas de tiempo de WhatsApp; referencia del caso: 3 a 20 min</td>
+      <td>Ilustrativo (2,6 min) hasta la primera decisión; después, calculado.</td>
+    </tr>
+    <tr>
+      <td><strong>Resueltas en un clic</strong></td>
+      <td>De las solicitudes decididas, qué parte se aprobó en verde con un solo clic, sin ajustes ni motivo.</td>
+      <td>60 % o más; sin intervención desde la etapa 3, con la autoaprobación</td>
+      <td>Hoy 0 %: todo es manual</td>
+      <td>Ilustrativo (64 %) hasta la primera decisión; después, calculado.</td>
+    </tr>
+    <tr>
+      <td><strong>Completas al primer intento</strong></td>
+      <td>De las solicitudes que llegan al técnico, qué parte llega sin datos faltantes.</td>
+      <td>90 % o más</td>
+      <td>Muestra de 100 conversaciones etiquetadas</td>
+      <td>Ilustrativo (92 %) hasta que una solicitud llega al técnico; después, calculado.</td>
+    </tr>
+    <tr>
+      <td><strong>Conciliación con el proveedor</strong></td>
+      <td>De las autorizaciones hechas, qué parte ya se cruzó con el cobro del proveedor.</td>
+      <td>100 % conciliado en 24 h; diferencia de 5 % o menos en el 95 % de los casos</td>
+      <td>Hoy no es medible: no hay registro de lo autorizado</td>
+      <td>Siempre calculado. Sin autorizaciones dice «Sin autorizaciones».</td>
+    </tr>
+    <tr>
+      <td><strong>Alertas de prioridad alta</strong></td>
+      <td>La precisión: de las alertas revisadas, qué parte resultó «Confirmado». Además exige que no haya alertas altas vencidas.</td>
+      <td>Revisadas en 48 h; precisión de 50 % o más</td>
+      <td>Prueba con datos históricos: 1.682 tanqueos con alerta en 90 días, 53 de prioridad alta</td>
+      <td>Siempre calculado.</td>
+    </tr>
+    <tr>
+      <td><strong>Integraciones</strong></td>
+      <td>Intercambios con proveedores que llegan sin fallas.</td>
+      <td>Flujo de 99,5 % o más</td>
+      <td>Se mide desde el día 1</td>
+      <td>Siempre ilustrativo (99,7 %).</td>
+    </tr>
+    <tr>
+      <td><strong>Carga del técnico</strong></td>
+      <td>Espera en cola: de solicitud lista a decidida. Se muestra el promedio, en minutos.</td>
+      <td>Espera en pico menor a 5 min</td>
+      <td>Solicitudes por hora pico y espera en cola</td>
+      <td>Ilustrativo (3,4 min) hasta la primera decisión; después, calculado.</td>
+    </tr>
+    <tr>
+      <td><strong>Uso del asistente</strong></td>
+      <td>Solicitudes que entran por el asistente.</td>
+      <td>80 % o más de las solicitudes</td>
+      <td>Se mide desde el día 1</td>
+      <td>Ilustrativo (84 %) hasta la primera solicitud; después, calculado.</td>
+    </tr>
+    <tr>
+      <td><strong>Continuidad</strong></td>
+      <td>Vehículos sin combustible por causa del sistema.</td>
+      <td>Cero vehículos sin combustible por causa del sistema</td>
+      <td>Se mide desde el día 1</td>
+      <td>Siempre ilustrativo (0 incidentes).</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Cuándo pasa cada indicador a «Cerca de la meta» o «No cumple»</h3>
+
+<table class="ref">
+  <thead><tr><th>Indicador</th><th>Cumple la meta</th><th>Cerca de la meta</th><th>No cumple</th></tr></thead>
+  <tbody>
+    <tr><td>Tiempo de atención</td><td>Mediana de 3 min o menos y 90 % o más en 10 min</td><td>Mediana de 6 min o menos</td><td>Mediana de más de 6 min</td></tr>
+    <tr><td>Resueltas en un clic</td><td>60 % o más</td><td>Entre 45 y 60 %</td><td>Menos de 45 %</td></tr>
+    <tr><td>Completas al primer intento</td><td>90 % o más</td><td>Entre 80 y 90 %</td><td>Menos de 80 %</td></tr>
+    <tr><td>Conciliación con el proveedor</td><td>100 %</td><td>Entre 80 y 100 %</td><td>Menos de 80 %</td></tr>
+    <tr><td>Alertas de prioridad alta</td><td>Precisión de 50 % o más y ninguna alta vencida</td><td>Precisión de 30 % o más</td><td>Precisión menor de 30 %</td></tr>
+    <tr><td>Carga del técnico</td><td>5 min o menos</td><td>Hasta 7 min</td><td>Más de 7 min</td></tr>
+  </tbody>
+</table>
+
+<p>«Integraciones», «Uso del asistente» y «Continuidad» aparecen siempre en «Cumple la meta» en el prototipo.</p>
+
+<h3>Cuatro lecturas que suelen generar dudas</h3>
+
+<dl class="fields">
+  <dt>«Alertas de prioridad alta» dice «Cerca de la meta» con 50 %</dt>
+  <dd>La precisión sí llega a la meta (4 confirmadas de 8 revisadas), pero la demo trae dos alertas de prioridad alta vencidas. Mientras haya altas vencidas, el indicador no pasa a «Cumple la meta».</dd>
+  <dt>«Resueltas en un clic» baja a 33 % y «No cumple»</dt>
+  <dd>Pasa si usted decide tres solicitudes y solo una fue en verde con un clic: 1 de 3. Es correcto: las amarillas y rojas piden motivo y no cuentan como «un clic».</dd>
+  <dt>«Conciliación con el proveedor» dice «No cumple» con 0 %</dt>
+  <dd>Hay autorizaciones, pero aún no se ha cargado el archivo del proveedor. Cárguelo en la pestaña <span class="ui">Conciliación</span> y pasa a 100 %.</dd>
+  <dt>«Tiempo de atención» muestra segundos</dt>
+  <dd>Mide lo que usted tardó de verdad entre el primer mensaje y la decisión. En una demo eso son segundos; por eso se ven valores como 0,8 min.</dd>
+</dl>
+
+<div class="limit"><p>«Uso del asistente» marca 100 % apenas hay una solicitud, porque en la demo todas entran por el
+asistente. «Integraciones» y «Continuidad» no miden nada: el prototipo no tiene integraciones reales ni vehículos
+en operación.</p></div>
+
+<h2 id="tablero-grafico">El gráfico «De 66,7 a 10 horas de gestión al día»</h2>
+
+<div class="two-col">
+  <figure class="fig">
+    <img src="img/tablero-18-grafico-de-horas.png" alt="Gráfico de horas de gestión al día: 66,7 horas hoy frente a 10 horas con el MVP y la línea de 24 horas de turnos">
+    <figcaption>Horas de gestión de solicitudes al día.</figcaption>
+  </figure>
+  <div>
+    <p>Responde una pregunta: ¿cuántas horas de trabajo al día cuesta gestionar las solicitudes?</p>
+    <dl class="fields">
+      <dt>Barra de arriba</dt><dd>Hoy: 200 solicitudes de 20 minutos = 66,7 horas.</dd>
+      <dt>Barra de abajo</dt><dd>Con el MVP: 200 solicitudes de 3 minutos = 10 horas. «MVP» es la sigla de «producto mínimo viable»: la primera versión del sistema que se llevaría a la operación.</dd>
+      <dt>Línea punteada</dt><dd>24 h de turnos: las horas de turno disponibles en un día.</dd>
+      <dt>Tramo rojo</dt><dd>Lo que la carga de hoy se pasa de las 24 horas.</dd>
+    </dl>
+  </div>
+</div>
+
+<p>El texto de abajo lo resume: hoy la gestión son <strong>2,8 veces</strong> las horas de turno disponibles
+(66,7 ÷ 24).</p>
+
+<div class="note"><p>Este gráfico es fijo. Muestra el punto de partida y la meta del proyecto; no cambia con lo
+que usted haga en la demo.</p></div>
+
+<h2 id="tablero-desviaciones">Desviaciones abiertas</h2>
+
+<figure class="fig w-75">
+  <img src="img/tablero-19-desviaciones-abiertas.png" alt="Desviaciones abiertas: 16 alertas sin revisar, 2 vencidas, por prioridad, por regla y por antigüedad">
+  <figcaption>«Desviaciones abiertas», después de usar la demo.</figcaption>
+</figure>
+
+<p>Resume las alertas que siguen sin revisar. El subtítulo da el total y cuántas están vencidas. Son las mismas
+alertas de la pantalla <span class="ui">Alertas del coordinador</span> (véase el <a class="xref" href="#alertas"></a>).</p>
+
+<dl class="fields">
+  <dt>Por prioridad</dt><dd>Cuántas son Alta (plazo de 48 h), Media o Baja (plazo de una semana).</dd>
+  <dt>Por regla</dt><dd>Las ocho reglas con más alertas abiertas, de mayor a menor. Si hay más, dice «y N reglas más con menos casos». Una alerta con dos reglas cuenta en las dos.</dd>
+  <dt>Por antigüedad</dt><dd>Cuántas tienen menos de 48 h, de 2 a 7 días y más de 7 días desde que se generaron. La franja de arriba muestra la proporción.</dd>
+</dl>
+
+<h2 id="tablero-decision">Decisión al cierre de las 6 semanas</h2>
+
+<figure class="fig">
+  <img src="img/tablero-20-decision-al-cierre.png" alt="Decisión al cierre de las 6 semanas: con los valores de hoy aplicaría Ajustar, 5 de 6 criterios, y las opciones Ampliar, Ajustar y Detener">
+  <figcaption>La decisión que aplicaría con los valores de hoy, después de usar la demo.</figcaption>
+</figure>
+
+<p>El subtítulo lo advierte: «Los indicadores se leen juntos». De nada sirve bajar el tiempo si aparecen vehículos
+sin combustible. Esta tarjeta tiene tres zonas.</p>
+
+<dl class="fields">
+  <dt>El recuadro grande</dt><dd>«Con los valores de hoy aplicaría», la opción que corresponde, la razón y cuántos criterios se cumplen (por ejemplo, «5 de 6»). Las seis rayitas de abajo son los seis criterios.</dd>
+  <dt>Los seis criterios</dt><dd>Con chulo verde los que se cumplen y con equis roja los que no.</dd>
+  <dt>Las tres opciones</dt><dd><span class="ui">Ampliar</span>, <span class="ui">Ajustar</span> y <span class="ui">Detener</span>, cada una con su condición. La que aplica hoy queda resaltada.</dd>
+</dl>
+
+<h3>Los seis criterios de ampliación</h3>
+
+<table class="ref">
+  <thead><tr><th>Criterio en pantalla</th><th>Indicador del que sale</th></tr></thead>
+  <tbody>
+    <tr><td>Mediana de 3 min o menos</td><td>Tiempo de atención</td></tr>
+    <tr><td>90 % o más completas</td><td>Completas al primer intento</td></tr>
+    <tr><td>60 % o más en un clic</td><td>Resueltas en un clic</td></tr>
+    <tr><td>80 % o más por el asistente</td><td>Uso del asistente</td></tr>
+    <tr><td>Precisión de 50 % o más</td><td>Alertas de prioridad alta</td></tr>
+    <tr><td>0 vehículos sin combustible</td><td>Continuidad</td></tr>
+  </tbody>
+</table>
+
+<h3>Las tres opciones</h3>
+
+<table>
+  <thead><tr><th>Opción</th><th>Condición que muestra la pantalla</th><th>Cuándo la marca el prototipo</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><span class="ui">Ampliar</span></td>
+      <td>Mediana de 3 min o menos, 90 % o más de solicitudes completas, 60 % o más en un clic, 80 % o más por el asistente, precisión de alertas de 50 % o más y ningún vehículo sin combustible.</td>
+      <td>Cuando se cumplen los seis criterios. Dice «Se cumplen los seis criterios de ampliación. (6 de 6)».</td>
+    </tr>
+    <tr>
+      <td><span class="ui">Ajustar</span></td>
+      <td>Cualquier otro resultado, como una mediana entre 3 y 6 min, precisión entre 30 y 50 % o adopción entre 50 y 80 %: se corrige y se extiende 4 semanas.</td>
+      <td>Cuando falla al menos un criterio y no aplica «Detener». Dice «Algún criterio de ampliación todavía no se cumple: se corrige y se extiende 4 semanas.».</td>
+    </tr>
+    <tr>
+      <td><span class="ui">Detener</span></td>
+      <td>Cualquier vehículo sin combustible atribuible al sistema, un tiempo peor que la línea base después de 4 semanas o una adopción menor al 50 %.</td>
+      <td>Cuando «Continuidad» es mayor que cero o «Uso del asistente» baja del 50 %.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note"><p><strong>Por qué cambia de «Ampliar» a «Ajustar».</strong> Con la demo recién reiniciada dice
+<span class="ui">Ampliar</span> (6 de 6), porque varios valores son ilustrativos. Después de decidir solicitudes en
+amarillo o rojo, «Resueltas en un clic» baja de 60 % y pasa a <span class="ui">Ajustar</span> (5 de 6). Es el
+comportamiento esperado.</p></div>
+
+<div class="limit"><p>El recuadro es una lectura automática de los indicadores, no una decisión tomada: esa la toman
+las personas al cierre del piloto. La condición «un tiempo peor que la línea base después de 4 semanas» no la
+calcula el prototipo. Con los datos de la demo, <span class="ui">Detener</span> no llega a marcarse.</p></div>
+
+<div class="tip keep">
+  <p><strong>Puntos clave del capítulo</strong></p>
+  <ul>
+    <li>Cada tarjeta dice si su cifra es <span class="ui">Calculado con la demo</span> o <span class="ui">Valor ilustrativo</span>.</li>
+    <li>En la barra: la raya es la meta, el tramo azul claro es la zona que cumple y el punto es el valor de hoy.</li>
+    <li>«Integraciones» y «Continuidad» son siempre ilustrativos.</li>
+    <li>El gráfico de 66,7 a 10 horas es fijo: no depende de la demo.</li>
+    <li>La decisión se lee con los seis criterios juntos: <span class="ui">Ampliar</span>, <span class="ui">Ajustar</span> o <span class="ui">Detener</span>.</li>
+  </ul>
+</div>

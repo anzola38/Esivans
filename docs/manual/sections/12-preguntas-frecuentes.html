@@ -1,0 +1,266 @@
+<h1 id="faq">Preguntas frecuentes y solución de problemas</h1>
+
+<p class="lead">En este capítulo: las dudas más comunes al usar el sistema, ordenadas por pantalla, con su causa y
+qué hacer. Al final, la lista de lo que el prototipo no hace, para que nadie lo busque.</p>
+
+<div class="tip"><p><strong>Antes de buscar más:</strong> la mayoría de las dudas se resuelven con una de estas tres
+acciones: revisar el <strong>rol</strong> de la cabecera, pulsar <span class="ui">Reiniciar demo</span> o recargar la
+página con <span class="kbd">Ctrl</span> + <span class="kbd">F5</span>.</p></div>
+
+<h2 id="faq-general">Roles y uso general</h2>
+
+<table class="ref">
+  <thead><tr><th>Lo que pasa</th><th>Por qué</th><th>Qué hacer</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>Cambié de rol y no pasó nada.</td>
+      <td>El rol no cambia de pantalla: cambia lo que usted puede <em>hacer</em> en ella. Los botones se encienden o se apagan y aparece o desaparece un aviso con candado.</td>
+      <td>Mire los botones de acción de la pantalla. La tabla de permisos de la <a class="xref" href="#primeros-pasos-roles"></a> dice cuáles se activan.</td>
+    </tr>
+    <tr>
+      <td>Los botones están apagados y hay un aviso con candado.</td>
+      <td>El rol elegido solo puede consultar esa parte.</td>
+      <td>El mismo aviso dice qué rol puede hacerlo. Elíjalo en la cabecera.</td>
+    </tr>
+    <tr>
+      <td>Recargué la página y sigo con el mismo rol.</td>
+      <td>El navegador recuerda el último rol elegido.</td>
+      <td>Es normal. Cámbielo en la cabecera cuando lo necesite.</td>
+    </tr>
+    <tr>
+      <td>Las cifras no coinciden con las del manual.</td>
+      <td>Los datos de ejemplo se calculan según el día en que se cargaron, o ya se hicieron cosas en la demo (solicitudes, revisiones, cargas).</td>
+      <td>Pulse <span class="ui">Reiniciar demo</span> y confirme. Las fechas siempre serán las de su día; las cantidades y los valores sí deben coincidir.</td>
+    </tr>
+    <tr>
+      <td>La página se ve vieja, desordenada o en blanco.</td>
+      <td>El navegador está mostrando una copia guardada.</td>
+      <td>Recargue con <span class="kbd">Ctrl</span> + <span class="kbd">F5</span>.</td>
+    </tr>
+    <tr>
+      <td><span class="ui">Reiniciar demo</span> mostró un error.</td>
+      <td>Es una falla ocasional conocida del prototipo.</td>
+      <td>Pulse <span class="ui">Reiniciar demo</span> otra vez. Si se repite varias veces, avise a quien instaló el sistema.</td>
+    </tr>
+    <tr>
+      <td>Aparece «No hay conexión con el servidor.».</td>
+      <td>El sistema está arrancando o se detuvo.</td>
+      <td>Espere unos segundos y recargue la página. Si sigue igual, avise a quien instaló el sistema.</td>
+    </tr>
+    <tr>
+      <td>Aparece «Tu rol no tiene permiso para esta acción.».</td>
+      <td>Intentó algo que su rol no puede hacer.</td>
+      <td>Cambie al rol que corresponde.</td>
+    </tr>
+    <tr>
+      <td>¿Qué se pierde al pulsar <span class="ui">Reiniciar demo</span>?</td>
+      <td>Todo lo hecho en la demo: solicitudes, decisiones, revisiones de alertas y cargas del archivo. Las reglas vuelven a la versión 1.</td>
+      <td>Úselo con tranquilidad: para eso está. No cambia el rol elegido.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Qué puede hacer cada rol, acción por acción, está en la tabla de permisos de la <a class="xref" href="#primeros-pasos-roles"></a>. En resumen: deciden y
+habilitan el Técnico y el Coordinador; solo el Coordinador registra resultados de alertas y cambia umbrales; el
+archivo del proveedor lo cargan el Coordinador o Finanzas; Soporte solo consulta, y todos pueden reiniciar la demo.</p>
+
+<h2 id="faq-simulador">Simulador del conductor</h2>
+
+<table class="ref">
+  <thead><tr><th>Lo que pasa</th><th>Por qué</th><th>Qué hacer</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>El asistente dice «No encuentro este número entre los conductores registrados».</td>
+      <td>Está en el caso <span class="ui">Sin registro</span>, que muestra justo eso: un número desconocido que pasa al técnico.</td>
+      <td>Para una conversación normal, elija <span class="ui">VEH901</span>, <span class="ui">VEH015</span> o <span class="ui">VEH199</span>.</td>
+    </tr>
+    <tr>
+      <td>No puedo cambiar la <span class="ui">Hora simulada</span>.</td>
+      <td>Queda fija con el primer mensaje del conductor.</td>
+      <td>Cámbiela antes de enviar el primer mensaje. Para repetir el caso con otra hora, reinicie la demo.</td>
+    </tr>
+    <tr>
+      <td>Las opciones <span class="ui">Groq</span> y <span class="ui">Groq (texto)</span> están apagadas.</td>
+      <td>El sistema se instaló sin acceso a la IA externa.</td>
+      <td>Use <span class="ui">Simulada</span>. Da las cifras de este manual y no necesita internet.</td>
+    </tr>
+    <tr>
+      <td>Con <span class="ui">Groq</span>, los casos no dan las cifras del manual.</td>
+      <td>En ese modo una IA externa lee la foto de verdad, y el nivel del tanque puede salir distinto.</td>
+      <td>Para seguir el manual, use <span class="ui">Simulada</span>.</td>
+    </tr>
+    <tr>
+      <td>El caso VEH902 terminó sin llegar al técnico.</td>
+      <td>Es lo esperado: el asistente calcula que el vehículo no necesita tanquear y cierra la solicitud como «Cerrada sin tanqueo».</td>
+      <td>Nada: no hay valor que autorizar.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="faq-consola">Consola del técnico</h2>
+
+<table class="ref">
+  <thead><tr><th>Lo que pasa</th><th>Por qué</th><th>Qué hacer</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>La cola está vacía.</td>
+      <td>Después de reiniciar no hay solicitudes: nacen en el simulador.</td>
+      <td>Complete un caso en <span class="ui">Simulador del conductor</span>. La cola se actualiza sola cada 3 segundos.</td>
+    </tr>
+    <tr>
+      <td>No aparece el botón <span class="ui">Aprobar en un clic</span>.</td>
+      <td>Ese botón solo existe cuando el semáforo está en <span class="light light-green">Verde</span>. En amarillo o rojo se llama <span class="ui">Aprobar con motivo</span>.</td>
+      <td>Use <span class="ui">Aprobar con motivo</span> y escriba o elija el motivo.</td>
+    </tr>
+    <tr>
+      <td>No me deja aprobar sin motivo.</td>
+      <td>En amarillo o rojo, y siempre al ajustar o rechazar, el motivo es obligatorio (mínimo 5 caracteres). Queda en la bitácora.</td>
+      <td>Escriba el motivo o haga clic en una de las frases sugeridas de la ventana.</td>
+    </tr>
+    <tr>
+      <td>Aprobé, pero el conductor no recibió nada y el estado dice <span class="ui">Por habilitar</span>.</td>
+      <td>Falta el segundo tiempo: confirmar la habilitación.</td>
+      <td>En el panel <span class="ui ui--wrap">Habilitar en el portal del proveedor</span>, haga clic en <span class="ui">Confirmar</span>.</td>
+    </tr>
+    <tr>
+      <td>Al ajustar dice «No puede pasar del tope del vehículo».</td>
+      <td>Cada vehículo tiene un valor máximo por tanqueo.</td>
+      <td>Escriba un valor igual o menor al tope que indica la ventana.</td>
+    </tr>
+    <tr>
+      <td>Los botones de decisión están apagados.</td>
+      <td>El rol es <span class="role">Finanzas</span> o <span class="role">Soporte</span>, o la solicitud ya fue decidida.</td>
+      <td>Cambie al rol <span class="ui ui--wrap">Técnico de Control y Monitoreo</span>. Si ya fue decidida, solo se puede consultar.</td>
+    </tr>
+  </tbody>
+</table>
+
+<figure class="fig w-50">
+  <img src="img/consola-23-referencia-del-portal.png" alt="Campo Referencia del portal con la referencia sugerida y el botón Confirmar">
+  <figcaption>El botón «Confirmar» de la habilitación: el segundo tiempo de toda aprobación.</figcaption>
+</figure>
+
+<h2 id="faq-alertas">Alertas, conciliación y reglas</h2>
+
+<table class="ref">
+  <thead><tr><th>Lo que pasa</th><th>Por qué</th><th>Qué hacer</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>El coordinador no ve la alerta de la solicitud que se autorizó en rojo.</td>
+      <td>La alerta <span class="code">C03</span> nace cuando el técnico pulsa <span class="ui">Confirmar</span> en la habilitación, no al aprobar o ajustar.</td>
+      <td>Vuelva a la solicitud en la consola y pulse <span class="ui">Confirmar</span>. Luego búsquela en <span class="ui">Tanqueos con alerta</span>, filtro <span class="ui">Abiertas</span>.</td>
+    </tr>
+    <tr>
+      <td>No me deja registrar el resultado de una alerta.</td>
+      <td>Falta elegir la opción o el comentario, o el rol no es <span class="role">Coordinador</span>.</td>
+      <td>Elija el rol <span class="ui">Coordinador</span>, marque una opción y deje un comentario.</td>
+    </tr>
+    <tr>
+      <td>Revisé una alerta y sigue en la lista de <span class="ui">Abiertas</span>.</td>
+      <td>La alerta que tiene abierta se queda a la vista para que pueda leer el resultado.</td>
+      <td>Haga clic en otra alerta o en otro filtro: desaparece de <span class="ui">Abiertas</span> y queda en <span class="ui">Revisadas</span>.</td>
+    </tr>
+    <tr>
+      <td>Me equivoqué al registrar un resultado.</td>
+      <td>—</td>
+      <td>Abra la alerta en <span class="ui">Revisadas</span> y use <span class="ui">Corregir</span>.</td>
+    </tr>
+    <tr>
+      <td>Recién reiniciada, la demo ya tiene alertas revisadas.</td>
+      <td>Son alertas de ejemplo: 6 en tanqueos y 2 en vehículos.</td>
+      <td>Es normal. Sirven de muestra.</td>
+    </tr>
+    <tr>
+      <td>Al conciliar me salen 10 filas y no 13.</td>
+      <td>El archivo trae 10 ventas fijas más una por cada autorización hecha en la demo y sin conciliar.</td>
+      <td>Es normal. Verá 13 si antes autorizó tres solicitudes.</td>
+    </tr>
+    <tr>
+      <td>No aparece la tabla <span class="ui">Autorizaciones conciliadas</span>.</td>
+      <td>No había autorizaciones pendientes por conciliar.</td>
+      <td>Autorice una solicitud (hasta <span class="ui">Confirmar</span>) y cargue el archivo de nuevo.</td>
+    </tr>
+    <tr>
+      <td>Cargué el archivo dos veces por error.</td>
+      <td>—</td>
+      <td>No pasa nada: la segunda vez todas las filas quedan como <span class="ui">Duplicada</span> y no se crean alertas.</td>
+    </tr>
+    <tr>
+      <td>Cerré el navegador y el resumen de la carga ya no está.</td>
+      <td>El resumen se muestra mientras la pestaña del navegador siga abierta.</td>
+      <td>Las ventas y las alertas sí quedaron guardadas: están en <span class="ui">Lo que no cuadra</span> y en <span class="ui">Tanqueos con alerta</span>.</td>
+    </tr>
+    <tr>
+      <td>Cambié un umbral y las alertas que ya había no cambiaron.</td>
+      <td>Cada alerta conserva la versión de reglas con la que nació.</td>
+      <td>Es lo esperado. El umbral nuevo aplica a lo que se evalúe de ahí en adelante.</td>
+    </tr>
+    <tr>
+      <td>Quiero deshacer una versión que ya guardé.</td>
+      <td><span class="ui">Deshacer</span> solo limpia el formulario antes de guardar.</td>
+      <td>Guarde una versión nueva con el valor anterior. En la demo, <span class="ui">Reiniciar demo</span> devuelve todo a la versión 1.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="faq-tablero">Tablero del piloto</h2>
+
+<table class="ref">
+  <thead><tr><th>Lo que pasa</th><th>Por qué</th><th>Qué hacer</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>La decisión pasó de <span class="ui">Ampliar</span> a <span class="ui">Ajustar</span>.</td>
+      <td>Al decidir solicitudes en amarillo o rojo, «Resueltas en un clic» baja de 60 %.</td>
+      <td>Es lo esperado: los indicadores se leen juntos.</td>
+    </tr>
+    <tr>
+      <td>Un indicador dice <span class="ui">Valor ilustrativo</span>.</td>
+      <td>Todavía no hay actividad en la demo para calcularlo, o el prototipo no puede medirlo.</td>
+      <td>Haga una solicitud completa y decídala: varios pasan a <span class="ui">Calculado con la demo</span>.</td>
+    </tr>
+    <tr>
+      <td>«Conciliación con el proveedor» dice «Sin autorizaciones» o 0 %.</td>
+      <td>No hay autorizaciones, o no se ha cargado el archivo del proveedor.</td>
+      <td>Autorice una solicitud y cargue el archivo en <span class="ui">Conciliación</span>.</td>
+    </tr>
+    <tr>
+      <td>«Alertas de prioridad alta» no pasa de <span class="ui">Cerca de la meta</span>.</td>
+      <td>La demo trae dos alertas de prioridad alta vencidas.</td>
+      <td>Revíselas en <span class="ui">Alertas del coordinador</span> (VEH906 y VEH015). Sin altas vencidas, el estado depende solo de la precisión: 50 % o más cumple.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="faq-limites">Limitaciones conocidas del prototipo</h2>
+
+<p>Esto es un prototipo con datos de ejemplo, no el sistema definitivo. Lo siguiente <strong>no</strong> lo hace, y
+no es un error:</p>
+
+<table class="ref">
+  <thead><tr><th>Tema</th><th>Cómo es en el prototipo</th></tr></thead>
+  <tbody>
+    <tr><td>Ingreso</td><td>No hay usuario ni contraseña. El rol se elige en la cabecera y los nombres de las personas son de ejemplo.</td></tr>
+    <tr><td>Mensajería</td><td>El chat del conductor es un simulador dentro de la pantalla. No se envían mensajes a teléfonos reales.</td></tr>
+    <tr><td>Fotos</td><td>Son imágenes de ejemplo, una por caso. No hay un caso con foto ilegible.</td></tr>
+    <tr><td>Habilitación</td><td>El sistema no se conecta con el portal del proveedor. El técnico copia los valores y confirma una referencia.</td></tr>
+    <tr><td>Vencimiento de la autorización</td><td>La vigencia de 2 horas se informa, pero la autorización no pasa sola a «vencida».</td></tr>
+    <tr><td>Conciliación</td><td>Solo carga el archivo de ejemplo de Terpel, con un clic. No hay carga de GoPass ni cierre diario, y no distingue autorizaciones usadas, parciales o no usadas.</td></tr>
+    <tr><td>Alertas por vehículo</td><td>Vienen ya calculadas con los datos de ejemplo. No se recalculan cada semana ni al cambiar un umbral.</td></tr>
+    <tr><td>Regla <span class="code">R10</span></td><td>Está en el catálogo, pero el prototipo no la evalúa.</td></tr>
+    <tr><td>«Acción que sigue»</td><td>Es una guía en pantalla. No crea tareas ni avisa a nadie.</td></tr>
+    <tr><td>Ficha técnica</td><td>No hay pantalla para crear o editar vehículos, conductores ni topes: vienen con los datos de ejemplo.</td></tr>
+    <tr><td>Tablero</td><td>«Integraciones» y «Continuidad» son siempre valores ilustrativos. El gráfico de horas es fijo.</td></tr>
+    <tr><td>Datos</td><td>Todo lo que se hace se borra al pulsar <span class="ui">Reiniciar demo</span>.</td></tr>
+    <tr><td>Navegador</td><td>Las pruebas automáticas del prototipo se hicieron en Chromium, la base de Chrome y Edge. Otros navegadores no se probaron.</td></tr>
+  </tbody>
+</table>
+
+<div class="tip keep">
+  <p><strong>Puntos clave del capítulo</strong></p>
+  <ul>
+    <li>Si un botón está apagado, revise el rol: el aviso con candado dice quién puede.</li>
+    <li>Si las cifras no coinciden, pulse <span class="ui">Reiniciar demo</span>.</li>
+    <li>Si la pantalla se ve rara, recargue con <span class="kbd">Ctrl</span> + <span class="kbd">F5</span>.</li>
+    <li>Aprobar siempre termina con <span class="ui">Confirmar</span>; sin eso no hay autorización ni alerta del rojo.</li>
+  </ul>
+</div>

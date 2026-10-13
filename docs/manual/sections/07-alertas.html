@@ -1,0 +1,463 @@
+<h1 id="alertas">Alertas del coordinador</h1>
+
+<p class="lead">En este capítulo: qué es una alerta, cómo se ordena la bandeja del coordinador, cómo leer el detalle
+de una alerta y cómo dejar registrado el resultado de la revisión. Al final, la alerta que nace cuando el técnico
+autoriza una solicitud en rojo y lo que ve cada rol.</p>
+
+<h2 id="alertas-que-es">Qué es una alerta</h2>
+
+<p>Una <strong>alerta</strong> es un aviso de que algo en el consumo de combustible merece una segunda mirada.
+No detiene nada: el vehículo ya tanqueó o ya fue autorizado. La alerta se revisa <em>después</em>, con calma y con
+la evidencia a la vista.</p>
+
+<table>
+  <thead>
+    <tr><th></th><th>Solicitud</th><th>Alerta</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Qué es</strong></td><td>Un conductor pide combustible ahora.</td><td>Una señal de que un tanqueo o un vehículo se sale de lo normal.</td></tr>
+    <tr><td><strong>Dónde se ve</strong></td><td><span class="ui">Consola del técnico</span></td><td><span class="ui">Alertas del coordinador</span></td></tr>
+    <tr><td><strong>Quién la atiende</strong></td><td><span class="role">Técnico de Control y Monitoreo</span></td><td><span class="role">Coordinador</span></td></tr>
+    <tr><td><strong>Plazo</strong></td><td>10 minutos.</td><td>48 horas si la prioridad es alta; una semana en los demás casos.</td></tr>
+    <tr><td><strong>Cómo termina</strong></td><td>Aprobada, ajustada o rechazada.</td><td>Revisada, con un resultado: Confirmado, Justificado o Error de dato.</td></tr>
+  </tbody>
+</table>
+
+<p class="why">ninguna alerta detiene el suministro; sirve para corregir a tiempo y para medir si cada regla acierta.</p>
+
+<h2 id="alertas-pantalla">La pantalla de alertas</h2>
+
+<ol class="steps">
+  <li>En la cabecera, elija el rol <span class="ui">Coordinador</span>.</li>
+  <li>En el menú de la izquierda, haga clic en <span class="ui">Alertas del coordinador</span>.</li>
+</ol>
+
+<div class="result">
+  <p>Cuatro pestañas arriba, un resumen de tres cifras a la derecha, la lista de alertas a la izquierda y el detalle
+  de la alerta elegida a la derecha. Con la demo recién reiniciada, la primera alerta de la lista es la del
+  vehículo <strong>VEH906</strong>.</p>
+</div>
+
+<figure class="fig">
+  <img src="img/alertas-01-tanqueos-lista-y-detalle.png" alt="Pantalla Alertas del coordinador con la pestaña Tanqueos con alerta, la lista de cuatro alertas y el detalle del VEH906">
+  <figcaption>Alertas del coordinador con la demo recién reiniciada: pestañas, resumen, lista y detalle.</figcaption>
+</figure>
+
+<div class="note"><p>La pantalla recuerda la última pestaña que usted usó. Si al entrar no ve la lista de alertas, haga clic
+en la pestaña <span class="ui">Tanqueos con alerta</span>. Al cerrar la ventana del navegador vuelve a abrir en esa
+primera pestaña.</p></div>
+
+<h3>Las cuatro pestañas</h3>
+
+<table>
+  <thead>
+    <tr><th>Pestaña</th><th>Qué muestra</th><th>El número al lado</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="nowrap"><span class="ui">Tanqueos con alerta</span></td>
+      <td>Alertas sobre <strong>un tanqueo en particular</strong>: una carga sin recorrido, una venta por fuera del sistema, una autorización en rojo. También recibe las desviaciones que aparecen al conciliar.</td>
+      <td>Alertas abiertas de esta pestaña.</td>
+    </tr>
+    <tr>
+      <td class="nowrap"><span class="ui">Vehículos</span></td>
+      <td>Alertas sobre <strong>el comportamiento de un vehículo</strong> en los últimos 90 días: rinde poco, no tiene servicios, carga con dos proveedores.</td>
+      <td>Alertas abiertas de esta pestaña.</td>
+    </tr>
+    <tr>
+      <td class="nowrap"><span class="ui">Conciliación</span></td>
+      <td>La carga del archivo del proveedor y lo que no cuadra. Se explica en el <a class="xref" href="#conciliacion"></a>.</td>
+      <td>Desviaciones abiertas del archivo. Aparece solo después de cargarlo.</td>
+    </tr>
+    <tr>
+      <td class="nowrap"><span class="ui">Reglas y umbrales</span></td>
+      <td>El catálogo de reglas. Se explica en el <a class="xref" href="#reglas"></a>.</td>
+      <td>No tiene.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="tip"><p>Piense en la diferencia así: <span class="ui">Tanqueos con alerta</span> responde «¿qué pasó en
+esta carga?» y <span class="ui">Vehículos</span> responde «¿qué le pasa a este carro?».</p></div>
+
+<h3>El resumen</h3>
+
+<figure class="fig fig--bare">
+  <img src="img/alertas-02-pestanas-y-resumen.png" alt="Franja de pestañas con sus contadores y el resumen Abiertas 11, Prioridad alta 4, Vencidas 2">
+  <figcaption>Pestañas con sus contadores y, a la derecha, el resumen.</figcaption>
+</figure>
+
+<dl class="fields">
+  <dt>Abiertas</dt><dd>Alertas sin revisar, sumando todas las pestañas. Con la demo recién reiniciada son 11: 4 de tanqueos y 7 de vehículos.</dd>
+  <dt>Prioridad alta</dt><dd>De las abiertas, cuántas son de prioridad alta. Son las primeras que debe revisar.</dd>
+  <dt>Vencidas</dt><dd>De las abiertas, cuántas ya pasaron su plazo sin revisión.</dd>
+</dl>
+
+<h2 id="alertas-prioridades">Prioridades y plazos</h2>
+
+<p>Cada regla que se cumple suma puntos. El total de puntos define la prioridad, y la prioridad define el plazo.</p>
+
+<table>
+  <thead>
+    <tr><th>Prioridad</th><th>Puntos</th><th>Plazo para revisar</th><th>Cómo aparece en la lista</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Alta</strong></td><td>4 o más</td><td>48 horas desde que se generó</td><td><span class="ui">48 horas</span></td></tr>
+    <tr><td><strong>Media</strong></td><td>2 o 3</td><td>7 días desde que se generó</td><td><span class="ui">En la semana</span></td></tr>
+    <tr><td><strong>Baja</strong></td><td>1</td><td>7 días desde que se generó</td><td><span class="ui">En la semana</span></td></tr>
+  </tbody>
+</table>
+
+<p>Cuando el plazo se cumple y la alerta sigue abierta, la lista la marca con la etiqueta roja
+<span class="ui">Vencida</span>. La alerta no se cierra sola: sigue esperando su revisión.</p>
+
+<h2 id="alertas-lista">La lista y los filtros</h2>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig">
+    <img src="img/alertas-03-filtros.png" alt="Filtros Abiertas 4, Revisadas 6, Todas 10 y el rótulo Por prioridad y puntos">
+    <figcaption>Filtros de la lista.</figcaption>
+  </figure>
+  <div>
+    <dl class="fields">
+      <dt>Abiertas</dt><dd>Lo pendiente. Es el filtro con el que abre la pantalla.</dd>
+      <dt>Revisadas</dt><dd>Las que ya tienen resultado.</dd>
+      <dt>Todas</dt><dd>Unas y otras juntas.</dd>
+    </dl>
+    <p>El número de cada filtro cuenta solo las alertas de la pestaña en la que usted está. La lista siempre va
+    <span class="ui">Por prioridad y puntos</span>: primero las altas, y dentro de cada prioridad, la de más puntos.</p>
+  </div>
+</div>
+
+<div class="note"><p>La demo no empieza en cero. Recién reiniciada ya trae alertas revisadas de ejemplo:
+<span class="ui">Revisadas · 6</span> en tanqueos y <span class="ui">Revisadas · 2</span> en vehículos. Sirven para
+ver cómo queda una alerta cerrada. Figuran revisadas por «Andrés Molina», un nombre de ejemplo que no está entre los
+cuatro roles de la cabecera.</p></div>
+
+<h3>Cómo leer una fila</h3>
+
+<figure class="fig w-60">
+  <img src="img/alertas-05-fila-de-la-lista.png" alt="Fila de la lista: Alta, VEH906, ZZA906, Vencida, R05 R11, Recarga sin recorrido y 1 más, 5 puntos">
+  <figcaption>Una fila de la lista.</figcaption>
+</figure>
+
+<table class="ref">
+  <thead><tr><th>En la fila</th><th>Qué significa</th></tr></thead>
+  <tbody>
+    <tr><td><span class="ui">Alta</span></td><td>La prioridad: Alta, Media o Baja.</td></tr>
+    <tr><td><strong>VEH906</strong> · ZZA906</td><td>El código interno del vehículo y su placa.</td></tr>
+    <tr><td><span class="ui">Vencida</span>, <span class="ui">48 horas</span> o <span class="ui">En la semana</span></td><td>El plazo, o el aviso de que ya se pasó. En las revisadas aparece el resultado (por ejemplo, <span class="ui">Confirmado</span>).</td></tr>
+    <tr><td><span class="code">R05</span> <span class="code">R11</span></td><td>Los códigos de las reglas que se cumplieron. El <a class="xref" href="#anexo-reglas"></a> explica cada una.</td></tr>
+    <tr><td>«Recarga sin recorrido y 1 más»</td><td>El nombre de la primera regla y cuántas más hay.</td></tr>
+    <tr><td><strong>5 puntos</strong></td><td>La suma de los puntos de todas las reglas.</td></tr>
+    <tr><td>La línea de abajo</td><td>La razón de la primera regla, con las cifras del caso.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="alertas-detalle">Cómo leer el detalle de una alerta</h2>
+
+<p>Haga clic en cualquier fila de la lista. A la derecha se abre el detalle, que siempre trae las mismas cinco
+partes, de arriba abajo.</p>
+
+<figure class="fig w-75">
+  <img src="img/alertas-07-tanqueo-razones-y-evidencia.png" alt="Parte superior del detalle del VEH906: cabecera, plazo vencido, razones R05 y R11 y las tarjetas Tanqueo con alerta y Carga anterior">
+  <figcaption>Parte de arriba del detalle del VEH906: cabecera, plazo, razones y evidencia.</figcaption>
+</figure>
+
+<table>
+  <thead><tr><th>Parte</th><th>Qué encuentra</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Cabecera</strong></td>
+      <td>Vehículo, placa y tipo de combustible. A la derecha, la prioridad, los puntos y <span class="ui">Reglas v1</span>: la versión de las reglas con la que nació la alerta.</td>
+    </tr>
+    <tr>
+      <td><strong>Plazo</strong></td>
+      <td>«Plazo: 48 horas» o «Plazo: en la semana», cuánto falta o hace cuánto venció, y la fecha en que se generó. Si está vencida, la franja se ve en rojo.</td>
+    </tr>
+    <tr>
+      <td><span class="ui">Por qué se marcó</span></td>
+      <td>Una línea por regla: código, nombre, la explicación con las cifras del caso y los puntos que suma (por ejemplo, <strong>+3</strong>).</td>
+    </tr>
+    <tr>
+      <td><span class="ui">Evidencia</span></td>
+      <td>Los datos que sustentan la alerta. Cambian según el tipo de alerta; vea la tabla siguiente. Junto al título, una etiqueta dice de dónde sale: «Prueba con datos históricos» (alertas de tanqueos que vienen con la demo), «Análisis de 90 días» (alertas de vehículos) o «Solicitud de tanqueo» (autorización en rojo). Las alertas que nacen al conciliar no la llevan.</td>
+    </tr>
+    <tr>
+      <td><span class="ui">Libro único de tanqueos</span></td>
+      <td>Todas las cargas del vehículo, de todos los proveedores, en una sola tabla.</td>
+    </tr>
+    <tr>
+      <td><span class="ui">Registrar el resultado</span></td>
+      <td>El formulario para cerrar la revisión. Si ya está revisada, se llama <span class="ui">Resultado de la revisión</span>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>La evidencia, según el tipo de alerta</h3>
+
+<table>
+  <thead><tr><th>Tipo de alerta</th><th>Qué muestra la evidencia</th></tr></thead>
+  <tbody>
+    <tr><td>De un tanqueo</td><td>Dos tarjetas: <span class="ui">Tanqueo con alerta</span> y <span class="ui">Carga anterior</span>, cada una con fecha, estación, proveedor, producto, cantidad, valor y odómetro. Así se comparan a simple vista.</td></tr>
+    <tr><td>De un vehículo</td><td>Dos barras que comparan el rendimiento del vehículo con la mediana de su grupo, y cuatro cifras de los últimos 90 días.</td></tr>
+    <tr><td>De producto distinto (<span class="code">C01</span>)</td><td>El bloque rojo con lo <strong>pagado de más</strong> y la cuenta que lo explica.</td></tr>
+    <tr><td>De autorización en rojo (<span class="code">C03</span>)</td><td>La tarjeta <span class="ui">Autorización en rojo (control posterior)</span>, con lo que autorizó el técnico y por qué.</td></tr>
+  </tbody>
+</table>
+
+<h3>El libro único de tanqueos</h3>
+
+<p class="why">un vehículo puede cargar con Terpel y con GoPass; si se mira un solo proveedor, la cuenta sale mal.</p>
+
+<figure class="fig w-75">
+  <img src="img/alertas-18-veh160-libro-unico.png" alt="Libro único del VEH160: 41 cargas, comparación, proveedores Terpel, GoPass y EOM, filtro y tabla de movimientos">
+  <figcaption>Libro único del VEH160, que carga con los dos proveedores.</figcaption>
+</figure>
+
+<dl class="fields">
+  <dt>Encabezado</dt><dd>Número de cargas, valor total y el rango de fechas. En el VEH160: «41 cargas · $1.345.244».</dd>
+  <dt>Etiquetas de proveedor</dt><dd>Cargas y valor por cada proveedor, y los servicios del vehículo en EOM en 90 días.</dd>
+  <dt><span class="ui">Todos</span> / <span class="ui">Terpel</span> / <span class="ui">GoPass</span></dt><dd>Filtro por proveedor. Aparece solo si el vehículo usa más de uno.</dd>
+  <dt>Tabla</dt><dd>Fecha, proveedor, producto, cantidad, valor, odómetro y <strong>km</strong> (kilómetros recorridos desde la carga anterior). La fila resaltada es el tanqueo de la alerta. La etiqueta <span class="ui">Archivo</span> marca las cargas que entraron al conciliar.</dd>
+  <dt><span class="ui ui--wrap">Ver los N movimientos</span></dt><dd>La tabla muestra los 8 más recientes. Este botón los despliega todos; <span class="ui">Ver solo los últimos</span> la recoge.</dd>
+</dl>
+
+<h2 id="alertas-ejemplos">Tres ejemplos de la pestaña «Vehículos»</h2>
+
+<p>Haga clic en la pestaña <span class="ui">Vehículos</span>. Estos tres casos vienen con la demo y muestran las tres
+prioridades.</p>
+
+<h3>VEH129: prioridad alta, 8 puntos</h3>
+
+<figure class="fig w-75">
+  <img src="img/alertas-12-veh129-razones.png" alt="Detalle del VEH129: prioridad alta, 8 puntos, razones V01, V05 y V08">
+  <figcaption>VEH129: tres reglas que suman 8 puntos.</figcaption>
+</figure>
+
+<table class="ref">
+  <thead><tr><th>Regla</th><th>Qué dice la pantalla</th><th class="num">Puntos</th></tr></thead>
+  <tbody>
+    <tr><td><span class="code">V01</span> Rendimiento bajo</td><td>Rinde 20,3 km/gal-eq frente a la mediana de su grupo, 52,7 (61 % menos); el límite es 39,5.</td><td class="num">+3</td></tr>
+    <tr><td><span class="code">V05</span> Sin servicios en EOM</td><td>102 tanqueos por $4,1 M sin un solo servicio en EOM en los 90 días.</td><td class="num">+3</td></tr>
+    <tr><td><span class="code">V08</span> Muchas alertas</td><td>26 % de sus tanqueos con al menos una alerta.</td><td class="num">+2</td></tr>
+  </tbody>
+</table>
+
+<figure class="fig w-75">
+  <img src="img/alertas-13-veh129-evidencia.png" alt="Evidencia del VEH129: barra de 20,3 frente a la mediana 52,7 y las cifras 102 tanqueos, $4.128.960, 0 servicios en EOM y 26 % de tanqueos con alerta">
+  <figcaption>Evidencia del VEH129. La línea punteada es el límite bajo (39,5): la barra del vehículo no llega.</figcaption>
+</figure>
+
+<p><strong>Cómo leerlo:</strong> el vehículo gasta mucho más combustible que sus similares y, además, tanquea sin
+tener servicios registrados. Como suma 8 puntos, es prioridad alta y el plazo es de 48 horas.</p>
+
+<h3>VEH215: prioridad media, 3 puntos</h3>
+
+<p>Una sola regla: <span class="code">V01</span> Rendimiento bajo. Rinde 24,0 km/gal frente a 41,8 de su grupo
+(43 % menos); el límite es 31,4. Tiene 17 tanqueos por $1.205.000 y 720 servicios en EOM. El plazo es
+«en la semana».</p>
+
+<figure class="fig">
+  <img src="img/alertas-14-vehiculos-veh215.png" alt="Pestaña Vehículos con el VEH215 seleccionado, prioridad media y 3 puntos">
+  <figcaption>VEH215 en la pestaña «Vehículos».</figcaption>
+</figure>
+
+<p><strong>Cómo leerlo:</strong> el vehículo sí trabaja (tiene servicios), pero rinde poco. Lo más probable es una
+causa mecánica; por eso la acción que sigue, si se confirma, es una revisión del vehículo.</p>
+
+<h3>VEH160: prioridad baja, 1 punto</h3>
+
+<p>Una sola regla: <span class="code">V06</span> Usa los dos proveedores. La pantalla dice: «Carga con Terpel y con
+GoPass: ningún proveedor ve todo su consumo».</p>
+
+<figure class="fig w-75">
+  <img src="img/alertas-19-veh160-comparacion.png" alt="Comparación del VEH160: GoPass solo calcularía 783 km por galón; con el libro único, 73,5 km/gal-eq">
+  <figcaption>La comparación que aparece en el libro único del VEH160.</figcaption>
+</figure>
+
+<table>
+  <thead><tr><th>Si se mira…</th><th>La cuenta</th><th>Resultado</th></tr></thead>
+  <tbody>
+    <tr><td>Solo GoPass</td><td>4.803 km ÷ 6,135 galones</td><td><strong>783 km por galón</strong>, una cifra imposible.</td></tr>
+    <tr><td>El libro único</td><td>Suma además 34 cargas de gas en Terpel (313,6 m³)</td><td><strong>73,5 km/gal-eq</strong></td></tr>
+  </tbody>
+</table>
+
+<p><strong>Cómo leerlo:</strong> el vehículo no tiene un problema; el problema es mirar un solo proveedor. Por eso
+la alerta es de prioridad baja y por eso existe el libro único.</p>
+
+<h2 id="alertas-registrar">Registrar el resultado de una revisión</h2>
+
+<p class="who">Quién lo hace: <span class="role">Coordinador</span></p>
+
+<p class="why">el resultado deja constancia de quién revisó y qué encontró, y con él se mide si la regla acierta.</p>
+
+<ol class="steps">
+  <li>Abra la alerta desde la lista. Para el ejemplo: pestaña <span class="ui">Vehículos</span>, fila <strong>VEH129</strong>.</li>
+  <li>Baje hasta <span class="ui">Registrar el resultado</span>.</li>
+  <li>
+    <p>Elija una de las tres opciones.</p>
+    <table class="ref">
+      <thead><tr><th>Opción</th><th>En pantalla dice</th><th>Elíjala cuando…</th></tr></thead>
+      <tbody>
+        <tr><td><span class="ui">Confirmado</span></td><td>La desviación es real</td><td>Revisó la evidencia y el problema existe.</td></tr>
+        <tr><td><span class="ui">Justificado</span></td><td>Hay una causa válida</td><td>Lo que pasó es cierto, pero tiene una explicación aceptable.</td></tr>
+        <tr><td><span class="ui">Error de dato</span></td><td>El dato venía mal</td><td>No hubo desviación: el odómetro, la ficha o la asignación estaban mal registrados.</td></tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <p>Revise el campo <span class="ui">Comentario</span>. Es obligatorio (mínimo 3 caracteres, máximo 500).</p>
+    <p>Al elegir la opción, el sistema escribe un comentario sugerido. Puede dejarlo o cambiarlo por el suyo:
+    qué encontró y con quién lo revisó.</p>
+  </li>
+  <li>Haga clic en <span class="ui">Registrar resultado</span>.</li>
+</ol>
+
+<figure class="fig w-75">
+  <img src="img/alertas-45-resultado-lleno.png" alt="Formulario Registrar el resultado con Confirmado marcado y el comentario escrito">
+  <figcaption>El formulario listo para guardar.</figcaption>
+</figure>
+
+<div class="result">
+  <p>Aparece el aviso «Alerta revisada · Resultado "Confirmado" registrado en la bitácora.». El formulario se
+  reemplaza por <span class="ui">Resultado de la revisión</span>, con el resultado, su nombre, la fecha y la hora.
+  En el resumen, <span class="ui">Abiertas</span> baja en uno.</p>
+</div>
+
+<figure class="fig w-40 fig--bare">
+  <img src="img/alertas-46-aviso-resultado-registrado.png" alt="Aviso Alerta revisada: resultado Confirmado registrado en la bitácora">
+  <figcaption>Aviso de confirmación.</figcaption>
+</figure>
+
+<div class="warn"><p>Si pulsa <span class="ui">Registrar resultado</span> sin elegir opción o sin comentario, nada
+se guarda. La pantalla muestra «Elige el resultado de la revisión.» y «El comentario es obligatorio.».</p></div>
+
+<figure class="fig w-60">
+  <img src="img/alertas-43-resultado-validacion.png" alt="Formulario con los dos mensajes de error: falta el resultado y falta el comentario">
+  <figcaption>Lo que ve si falta el resultado o el comentario.</figcaption>
+</figure>
+
+<div class="note"><p>Debajo del comentario la pantalla dice «Queda con tu nombre, la fecha y la versión de la
+regla.». No tiene que escribir su nombre: el sistema toma el del rol con el que está trabajando.</p></div>
+
+<h3>La «Acción que sigue»</h3>
+
+<p>Una vez guardado, el sistema le dice qué hacer después, quién responde y cuándo se da por cerrado.</p>
+
+<figure class="fig w-75">
+  <img src="img/alertas-48-revisada-con-corregir.png" alt="Resultado de la revisión del VEH129: Confirmado, Carlos Rivas, botón Corregir, comentario y dos acciones que siguen">
+  <figcaption>VEH129 ya revisado: resultado, autor, comentario y las acciones que siguen.</figcaption>
+</figure>
+
+<table class="ref">
+  <thead><tr><th>Resultado</th><th>Acción que sigue</th><th>Responsable</th><th>Se cierra</th></tr></thead>
+  <tbody>
+    <tr><td>Confirmado, por rendimiento bajo o caída reciente (<span class="code">V01</span>, <span class="code">V03</span>)</td><td>Revisión mecánica del vehículo; mientras tanto, el valor sugerido usa su rendimiento real.</td><td>Coordinador con mantenimiento</td><td>Cuando el vehículo vuelve a su rango por 4 semanas.</td></tr>
+    <tr><td>Confirmado, por cualquier otra regla</td><td>Conversación con el conductor con la evidencia; si se repite, se aplica el reglamento interno.</td><td>Coordinador</td><td>Con la decisión y su soporte en la bitácora.</td></tr>
+    <tr><td>Justificado</td><td>Se registra la causa y, si se repite, una excepción con vigencia (por ejemplo, una ruta de montaña).</td><td>Técnico</td><td>Al registrar la causa o al vencer la excepción.</td></tr>
+    <tr><td>Error de dato</td><td>Se corrige en la fuente: odómetro, ficha técnica o asignación en EOM.</td><td>Técnico; el proveedor si el dato es suyo</td><td>Cuando el dato queda corregido.</td></tr>
+  </tbody>
+</table>
+
+<p>El VEH129 tiene reglas de los dos tipos, así que muestra las dos acciones de «Confirmado». Debajo, la pantalla
+recuerda: «Ninguna alerta detiene el suministro; el resultado queda en la bitácora y mide la precisión de la regla.»</p>
+
+<div class="limit"><p>La «Acción que sigue» es una guía en pantalla. El prototipo no crea tareas, no avisa al
+responsable ni hace seguimiento del cierre.</p></div>
+
+<h2 id="alertas-corregir">Corregir una alerta ya revisada</h2>
+
+<p class="who">Quién lo hace: <span class="role">Coordinador</span></p>
+
+<ol class="steps">
+  <li>En la lista, haga clic en el filtro <span class="ui">Revisadas</span> y abra la alerta.</li>
+  <li>En <span class="ui">Resultado de la revisión</span>, haga clic en <span class="ui">Corregir</span>.</li>
+  <li>Cambie la opción, el comentario o ambos. Para salir sin cambiar nada, haga clic en <span class="ui">Cancelar</span>.</li>
+  <li>Haga clic en <span class="ui">Registrar resultado</span>.</li>
+</ol>
+
+<figure class="fig w-60">
+  <img src="img/alertas-49-corregir-formulario.png" alt="Formulario reabierto con Corregir: las tres opciones, el comentario y los botones Cancelar y Registrar resultado">
+  <figcaption>El formulario reabierto con «Corregir».</figcaption>
+</figure>
+
+<div class="result">
+  <p>El resultado nuevo reemplaza al anterior en pantalla, con su nombre y la fecha y hora de la corrección.
+  La bitácora guarda las dos revisiones.</p>
+</div>
+
+<h2 id="alertas-c03">La alerta de autorización en rojo (C03)</h2>
+
+<p>Cuando el técnico aprueba o ajusta una solicitud con semáforo <span class="light light-red">Rojo</span>, el
+conductor recibe su autorización sin demoras. Al mismo tiempo, el sistema le deja al coordinador una alerta
+<span class="code">C03</span> «Autorización de solicitud en rojo».</p>
+
+<p class="why">nadie se queda sin combustible esperando un visto bueno, pero toda autorización en rojo la mira después una segunda persona.</p>
+
+<table>
+  <thead><tr><th>Dato</th><th>Cómo es en la alerta C03</th></tr></thead>
+  <tbody>
+    <tr><td>Cuándo nace</td><td>Cuando el técnico pulsa <span class="ui">Confirmar</span> en la habilitación. Antes de ese clic, la alerta no existe.</td></tr>
+    <tr><td>Dónde aparece</td><td>Pestaña <span class="ui">Tanqueos con alerta</span>, de primera en la lista.</td></tr>
+    <tr><td>Puntos</td><td>Los mismos de la solicitud. Así el coordinador ve el puntaje que vio el técnico.</td></tr>
+    <tr><td>Prioridad y plazo</td><td>Alta, 48 horas.</td></tr>
+    <tr><td>Cuántas</td><td>Una sola por solicitud.</td></tr>
+  </tbody>
+</table>
+
+<figure class="fig w-75">
+  <img src="img/alertas-30-c03-veh199.png" alt="Alertas del coordinador después de autorizar el VEH199 en rojo: la alerta C03 encabeza la lista y su detalle está abierto">
+  <figcaption>La alerta C03 del VEH199, de primera en la lista. El resumen pasa a «Abiertas: 12 · Prioridad alta: 5».</figcaption>
+</figure>
+
+<figure class="fig w-75">
+  <img src="img/alertas-33-c03-autorizacion-en-rojo.png" alt="Detalle de la alerta C03: razón y tarjeta Autorización en rojo con valor autorizado, sugerido, quién autorizó, semáforo, motivo y referencia">
+  <figcaption>La tarjeta «Autorización en rojo (control posterior)».</figcaption>
+</figure>
+
+<dl class="fields">
+  <dt>Valor autorizado</dt><dd>Lo que el técnico autorizó. En el ejemplo, $20.000.</dd>
+  <dt>Valor sugerido</dt><dd>Lo que había calculado el sistema. En el ejemplo, $10.000.</dd>
+  <dt>Autorizó</dt><dd>Nombre del técnico, fecha y hora.</dd>
+  <dt>Semáforo</dt><dd>«Rojo · 7 puntos (R05, R08, R09)»: las reglas que pusieron la solicitud en rojo.</dd>
+  <dt>Motivo</dt><dd>El que escribió el técnico al decidir.</dd>
+  <dt>Referencia</dt><dd>La referencia de la habilitación.</dd>
+</dl>
+
+<p>Se revisa igual que cualquier otra alerta: <span class="ui">Confirmado</span>, <span class="ui">Justificado</span>
+o <span class="ui">Error de dato</span>, con su comentario.</p>
+
+<div class="note"><p>El VEH199 aparece más de una vez en estas pantallas, y es normal. La demo ya trae alertas de
+ejemplo de ese vehículo (de tanqueos anteriores y de su comportamiento). La <span class="code">C03</span> es
+la que usted genera al autorizar la solicitud en rojo.</p></div>
+
+<h2 id="alertas-roles">Qué ve cada rol</h2>
+
+<table>
+  <thead><tr><th>Rol</th><th>Ver alertas y detalle</th><th>Registrar o corregir el resultado</th></tr></thead>
+  <tbody>
+    <tr><td><span class="role">Coordinador</span></td><td>Sí</td><td>Sí</td></tr>
+    <tr><td><span class="role">Técnico de Control y Monitoreo</span></td><td>Sí</td><td>No</td></tr>
+    <tr><td><span class="role">Finanzas</span></td><td>Sí</td><td>No</td></tr>
+    <tr><td><span class="role">Soporte</span></td><td>Sí</td><td>No</td></tr>
+  </tbody>
+</table>
+
+<p>Con un rol que solo consulta, el formulario se ve apagado y aparece el aviso «Con el rol Finanzas solo puedes
+consultar. El resultado lo registra el Coordinador.» (con el nombre del rol que tenga). El botón
+<span class="ui">Corregir</span> tampoco aparece.</p>
+
+<p>La figura de ese aviso está en la <a class="xref" href="#primeros-pasos-roles"></a>.</p>
+
+<div class="tip keep">
+  <p><strong>Puntos clave del capítulo</strong></p>
+  <ul>
+    <li>Una alerta no detiene el suministro: se revisa después.</li>
+    <li><span class="ui">Tanqueos con alerta</span> mira una carga; <span class="ui">Vehículos</span> mira el comportamiento de 90 días.</li>
+    <li>4 puntos o más es prioridad alta y se revisa en 48 horas; lo demás, en la semana.</li>
+    <li>Solo el <span class="role">Coordinador</span> registra el resultado, siempre con comentario.</li>
+    <li>Autorizar en rojo no se bloquea: crea una alerta <span class="code">C03</span> de prioridad alta.</li>
+  </ul>
+</div>

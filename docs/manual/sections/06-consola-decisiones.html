@@ -1,0 +1,658 @@
+<h1 id="decidir">Decidir una solicitud</h1>
+
+<p class="lead">En este capítulo: cómo aprobar, ajustar o rechazar una solicitud; cómo habilitar el valor y avisarle
+al conductor; qué pasa cuando la solicitud está en rojo o cuando dos personas deciden a la vez; qué puede hacer cada
+rol, y tres recorridos completos con las cifras de la demo.</p>
+
+<h2 id="decidir-resumen">Las tres decisiones y los dos tiempos</h2>
+
+<p class="who">Quién lo hace: <span class="role">Técnico de Control y Monitoreo</span> <span class="role">Coordinador</span></p>
+
+<p>Toda solicitud <span class="ui">En revisión</span> termina con una de tres decisiones. Los botones están en el
+panel de decisión, a la derecha del detalle.</p>
+
+<table>
+  <thead>
+    <tr><th>Decisión</th><th>Qué hace</th><th>¿Pide motivo?</th><th>Qué sigue</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="ui">Aprobar en un clic</span></td><td>Autoriza el valor sugerido.</td><td>No.</td><td>Habilitar.</td></tr>
+    <tr><td><span class="ui">Aprobar con motivo</span></td><td>Autoriza el valor sugerido de una solicitud que no está en verde.</td><td>Sí.</td><td>Habilitar.</td></tr>
+    <tr><td><span class="ui">Ajustar</span></td><td>Autoriza un valor distinto del sugerido.</td><td>Sí.</td><td>Habilitar.</td></tr>
+    <tr><td><span class="ui">Rechazar</span></td><td>No autoriza.</td><td>Sí.</td><td>El conductor recibe el motivo. La solicitud queda cerrada.</td></tr>
+  </tbody>
+</table>
+
+<p>Aprobar y ajustar tienen <strong>dos tiempos</strong>:</p>
+
+<ol class="steps">
+  <li><strong>Decidir.</strong> La solicitud pasa a <span class="ui">Por habilitar</span>. El conductor todavía no recibe nada.</li>
+  <li><strong>Habilitar.</strong> Usted habilita el valor en el portal del proveedor, escribe la referencia y hace clic en
+  <span class="ui">Confirmar</span>. La solicitud pasa a <span class="ui">Autorizada</span> y el conductor recibe el mensaje.</li>
+</ol>
+
+<p class="why">el conductor solo debe recibir el aviso cuando el valor ya está de verdad habilitado en el proveedor.</p>
+
+<div class="warn">
+  <p>Cada solicitud admite <strong>una sola decisión</strong> y no se puede deshacer. Ningún botón pide una segunda
+  confirmación antes de guardar: revise antes de hacer clic.</p>
+</div>
+
+<h2 id="decidir-un-clic">Aprobar en un clic</h2>
+
+<p>Es la forma rápida de aprobar una solicitud sin novedades.</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>El botón dice…</th><th>Cuándo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="ui">Aprobar en un clic</span></td><td>El semáforo está en <span class="light light-green">Verde</span>, la solicitud está <span class="ui">En revisión</span> y tiene un valor sugerido mayor que $0.</td></tr>
+    <tr><td><span class="ui">Aprobar con motivo</span></td><td>En cualquier otro caso: semáforo <span class="light light-yellow">Amarillo</span> o <span class="light light-red">Rojo</span>.</td></tr>
+    <tr><td>El botón está apagado</td><td>Su rol no puede decidir (véase la <a class="xref" href="#decidir-roles"></a>).</td></tr>
+    <tr><td>No hay botones</td><td>La solicitud ya fue decidida, está cerrada o todavía la está armando el asistente.</td></tr>
+  </tbody>
+</table>
+
+<ol class="steps">
+  <li>En la <span class="ui">Consola del técnico</span>, abra la solicitud con <span class="ui">Revisar</span>.</li>
+  <li>Verifique que la tarjeta <span class="ui">Razones del semáforo</span> diga <span class="ui">Sin alertas</span>.</li>
+  <li>Dé una mirada a la foto, al libro único y al valor sugerido.</li>
+  <li>Haga clic en <span class="ui">Aprobar en un clic</span>.</li>
+</ol>
+
+<div class="result">
+  <p>El estado cambia a <span class="ui">Por habilitar</span>, el rótulo <span class="ui">Valor sugerido</span> pasa a
+  <span class="ui">Valor autorizado</span> y debajo aparece el panel
+  <span class="ui">Habilitar en el portal del proveedor</span>. En la bitácora queda, por ejemplo,
+  «Laura Mendoza aprobó la solicitud por $90.000 en un clic».</p>
+</div>
+
+<figure class="fig">
+  <img src="img/consola-20-habilitacion.png" alt="Detalle de la placa ZZA901 después de aprobar en un clic, con el panel de habilitación a la derecha">
+  <figcaption>Después de «Aprobar en un clic»: la solicitud queda «Por habilitar» y aparece el panel de habilitación.</figcaption>
+</figure>
+
+<p>Continúe en la <a class="xref" href="#decidir-habilitar" data-title></a>.</p>
+
+<h2 id="decidir-con-motivo">Aprobar con motivo</h2>
+
+<p>Si el semáforo está en amarillo o en rojo, usted puede aprobar el valor sugerido, pero debe decir por qué.</p>
+
+<p class="why">cuando una regla avisa y aun así se autoriza, la razón de esa decisión debe quedar escrita.</p>
+
+<ol class="steps">
+  <li>Abra la solicitud y lea cada razón de la tarjeta <span class="ui">Razones del semáforo</span>.</li>
+  <li>Haga clic en <span class="ui">Aprobar con motivo</span>. Se abre la ventana del mismo nombre, que recuerda el semáforo, la placa y el valor sugerido.</li>
+  <li>
+    <p>En <span class="ui">Motivo</span>, escriba la razón (mínimo 5 caracteres, máximo 300).</p>
+    <p>También puede hacer clic en una de las frases sugeridas: <span class="ui ui--wrap">Kilometraje corregido y confirmado por el conductor</span>
+    o <span class="ui ui--wrap">Recorrido confirmado con el coordinador</span>. La frase pasa al campo y usted la puede editar.</p>
+  </li>
+  <li>Haga clic en <span class="ui">Aprobar</span>.</li>
+</ol>
+
+<div class="result">
+  <p>La ventana se cierra, el estado cambia a <span class="ui">Por habilitar</span> y aparece el panel de habilitación
+  con el valor sugerido como valor autorizado.</p>
+</div>
+
+<div class="two-col">
+  <figure class="fig">
+    <img src="img/consola-38-aprobar-con-motivo-lleno.png" alt="Ventana Aprobar con motivo con el motivo ya escrito">
+    <figcaption>La ventana con el motivo diligenciado.</figcaption>
+  </figure>
+  <figure class="fig">
+    <img src="img/consola-37-motivo-obligatorio-recorte.png" alt="Ventana Aprobar con motivo con el mensaje de motivo obligatorio">
+    <figcaption>Sin motivo no se guarda: «Escribe el motivo (mínimo 5 caracteres): queda en la bitácora.»</figcaption>
+  </figure>
+</div>
+
+<div class="note">
+  <p>Para salir sin decidir, haga clic en <span class="ui">Cancelar</span>, en la X o presione
+  <span class="kbd">Esc</span>. No se guarda nada.</p>
+</div>
+
+<h2 id="decidir-ajustar">Ajustar</h2>
+
+<p>Use <span class="ui">Ajustar</span> cuando el valor que se debe autorizar no es el sugerido: más o menos. Está
+disponible con cualquier color de semáforo.</p>
+
+<ol class="steps">
+  <li>Abra la solicitud y haga clic en <span class="ui">Ajustar</span>. Se abre la ventana <span class="ui">Ajustar el valor</span>.</li>
+  <li>
+    <p>En <span class="ui">Valor a autorizar (pesos)</span>, escriba el valor en pesos, sin puntos ni decimales:
+    <span class="kbd">20000</span>. El campo viene con el valor sugerido.</p>
+    <p>Debajo, una línea le confirma lo que va a autorizar:
+    «Se autoriza $20.000. Sugerido: $10.000. Tope del vehículo: $40.000.»</p>
+  </li>
+  <li>
+    <p>En <span class="ui">Motivo</span>, escriba la razón del ajuste (mínimo 5 caracteres).</p>
+    <p>Frases sugeridas: <span class="ui ui--wrap">Apoyo nocturno confirmado con el coordinador</span> y
+    <span class="ui ui--wrap">Ruta adicional asignada por fuera de EOM</span>.</p>
+  </li>
+  <li>Haga clic en <span class="ui">Guardar ajuste</span>.</li>
+</ol>
+
+<div class="result">
+  <p>El estado cambia a <span class="ui">Por habilitar</span>. El panel de habilitación muestra el valor ajustado y la
+  frase «Ajustada por Laura Mendoza (sugerido $10.000)».</p>
+</div>
+
+<div class="two-col">
+  <figure class="fig">
+    <img src="img/consola-66-ajustar-valor-y-motivo-recorte.png" alt="Ventana Ajustar el valor con 20000 y el motivo diligenciado">
+    <figcaption>Ajuste de $10.000 a $20.000, con motivo.</figcaption>
+  </figure>
+  <figure class="fig">
+    <img src="img/consola-64-ajustar-validacion.png" alt="Ventana Ajustar el valor con los errores de tope y de motivo">
+    <figcaption>Los dos controles: el tope del vehículo y el motivo obligatorio.</figcaption>
+  </figure>
+</div>
+
+<h3>Lo que el sistema no deja pasar</h3>
+
+<table class="ref">
+  <thead>
+    <tr><th>Mensaje</th><th>Qué hacer</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>«Escribe un valor mayor que $0.»</td><td>Escriba un valor. Para no autorizar nada, use <span class="ui">Rechazar</span>.</td></tr>
+    <tr><td>«El valor va en pesos, sin decimales.»</td><td>Quite los decimales.</td></tr>
+    <tr><td>«No puede pasar del tope del vehículo ($40.000).»</td><td>Baje el valor. El tope es lo que cuesta llenar el tanque y no se puede superar.</td></tr>
+    <tr><td>«Escribe el motivo (mínimo 5 caracteres): queda en la bitácora.»</td><td>Escriba el motivo.</td></tr>
+  </tbody>
+</table>
+
+<h3>Qué queda guardado del valor original</h3>
+
+<p>El ajuste no borra el cálculo del sistema. El valor sugerido original sigue visible en cuatro lugares:</p>
+
+<ul>
+  <li>En el panel de habilitación: «(sugerido $10.000)».</li>
+  <li>En el panel de la solicitud ya autorizada: «Valor sugerido original: $10.000 · Motivo: …».</li>
+  <li>En la bitácora: «Laura Mendoza ajustó la solicitud por $20.000 (sugerido $10.000). Motivo: …», con el valor sugerido en <strong>Antes</strong> y el valor ajustado en <strong>Después</strong>.</li>
+  <li>En la tarjeta <span class="ui">Cálculo del valor sugerido</span>, que no cambia.</li>
+</ul>
+
+<p>El conductor también se entera: a su mensaje de autorización se le agrega
+«El técnico ajustó el valor. Motivo: …».</p>
+
+<figure class="fig w-75">
+  <img src="img/consola-71-rojo-bitacora-con-ajuste.png" alt="Bitácora de la placa ZZA199 con el registro del ajuste, la habilitación y la alerta C03">
+  <figcaption>Bitácora de un ajuste: en «Antes», el valor sugerido de $10.000; en «Después», el valor de $20.000 y el motivo.</figcaption>
+</figure>
+
+<h2 id="decidir-rechazar">Rechazar</h2>
+
+<p>Use <span class="ui">Rechazar</span> cuando no se debe autorizar el tanqueo.</p>
+
+<p class="why">el conductor necesita saber por qué no se le autorizó; por eso el motivo es obligatorio y le llega tal como usted lo escribe.</p>
+
+<ol class="steps">
+  <li>Abra la solicitud y haga clic en <span class="ui">Rechazar</span>. Se abre la ventana <span class="ui">Rechazar la solicitud</span>.</li>
+  <li>
+    <p>En <span class="ui">Motivo</span>, escriba la razón (mínimo 5 caracteres).</p>
+    <p>Frases sugeridas: <span class="ui ui--wrap">Sin servicio que respalde la carga</span> y
+    <span class="ui ui--wrap">Recarga reciente sin recorrido</span>.</p>
+  </li>
+  <li>Haga clic en el botón rojo <span class="ui">Rechazar</span>.</li>
+</ol>
+
+<div class="result">
+  <p>Aparece el aviso «Solicitud rechazada: el conductor recibió el motivo.» El estado cambia a
+  <span class="ui">Rechazada</span> y el panel muestra en rojo: «Rechazada por Laura Mendoza. Motivo: Sin servicio que
+  respalde la carga. El conductor ya recibió el motivo.» No hay habilitación.</p>
+</div>
+
+<div class="two-col">
+  <figure class="fig">
+    <img src="img/consola-93-rechazar-con-motivo.png" alt="Ventana Rechazar la solicitud con el motivo escrito">
+    <figcaption>La ventana «Rechazar la solicitud».</figcaption>
+  </figure>
+  <figure class="fig">
+    <img src="img/consola-95-panel-rechazada.png" alt="Panel de la solicitud ZZA199 rechazada con el motivo">
+    <figcaption>El panel después de rechazar.</figcaption>
+  </figure>
+</div>
+
+<h3>Qué recibe el conductor</h3>
+
+<p>El conductor recibe de inmediato este mensaje en su chat:</p>
+<p>«Wilson, tu solicitud no fue autorizada. Motivo: Sin servicio que respalde la carga. Si necesitas ayuda,
+responde este mensaje y te atiende el técnico de turno.»</p>
+<p>Para verlo, haga clic en <span class="ui">Ver el mensaje al conductor</span> en el panel: se abre el
+<span class="ui">Simulador del conductor</span> con esa conversación. La <a class="xref" href="#simulador-veh199"></a> muestra cómo se ve.</p>
+<div class="warn"><p>El motivo llega al conductor con sus mismas palabras. Escríbalo con respeto y de forma que él lo entienda.</p></div>
+
+<h2 id="decidir-habilitar">La habilitación</h2>
+
+<p><strong>Habilitar</strong> es dejar disponible en el proveedor de combustible el valor autorizado, para ese
+vehículo y por un tiempo limitado. En la demo los tres casos usan el chip de Terpel.</p>
+
+<div class="limit">
+  <p>El prototipo <strong>no se conecta con el portal del proveedor</strong>. Usted hace la habilitación a mano en el
+  portal y aquí solo copia los valores y confirma la referencia. Por eso, en la demo, basta con hacer clic en
+  <span class="ui">Confirmar</span>.</p>
+</div>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig">
+    <img src="img/consola-21-panel-de-habilitacion.png" alt="Panel Habilitar en el portal del proveedor con los cinco valores y la referencia">
+    <figcaption>Panel de habilitación del caso verde.</figcaption>
+  </figure>
+  <div>
+    <p>Arriba se lee quién decidió: «Aprobada por Laura Mendoza. Copia estos valores en el portal de Terpel para
+    habilitar el chip y confirma la referencia.»</p>
+    <dl class="fields">
+      <dt>Proveedor</dt><dd>Terpel.</dd>
+      <dt>Vehículo</dt><dd>La placa: ZZA901.</dd>
+      <dt>Valor</dt><dd>$90.000. Al copiarlo se copia el número sin signos: 90000.</dd>
+      <dt>Producto</dt><dd>Gasolina Corriente.</dd>
+      <dt>Vigencia</dt><dd>2 horas.</dd>
+      <dt>Copiar todo</dt><dd>Copia los cinco datos de una vez, uno por renglón.</dd>
+      <dt>Referencia del portal</dt><dd>El número con el que el portal confirma la habilitación. Es obligatoria.</dd>
+    </dl>
+  </div>
+</div>
+
+<h3>Procedimiento</h3>
+
+<ol class="steps">
+  <li>
+    <p>En el panel <span class="ui">Habilitar en el portal del proveedor</span>, haga clic en el ícono de copiar que está
+    al lado de cada valor y péguelo en el portal del proveedor. O use <span class="ui">Copiar todo</span>.</p>
+    <p>Cada vez aparece un aviso corto, por ejemplo «Copiado · Placa en el portapapeles.»</p>
+  </li>
+  <li>
+    <p>En <span class="ui">Referencia del portal</span>, escriba la referencia que le entregó el portal (de 3 a 60 caracteres).</p>
+    <p>El campo ya trae una referencia sugerida, por ejemplo <strong>TER-261013-0001</strong>. Usted la puede cambiar.</p>
+  </li>
+  <li>Haga clic en <span class="ui">Confirmar</span>.</li>
+</ol>
+
+<div class="result">
+  <p>Aparece el aviso «Habilitación confirmada: el conductor recibió valor, producto, referencia y vigencia.» El estado
+  cambia a <span class="ui">Autorizada</span> y el panel muestra en verde: «Autorizada: $90.000 de Gasolina Corriente.
+  Referencia TER-261013-0001 en Terpel (chip), habilitada por Laura Mendoza. Vigencia: 2 horas (hasta las 11:40 a. m.)».</p>
+</div>
+
+<figure class="fig fig--bare w-60">
+  <img src="img/consola-25-aviso-autorizada.png" alt="Aviso Habilitación confirmada">
+  <figcaption>El aviso que confirma la habilitación.</figcaption>
+</figure>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig">
+    <img src="img/consola-27-panel-autorizada.png" alt="Panel de la solicitud ZZA901 autorizada por $90.000">
+    <figcaption>La solicitud ya «Autorizada».</figcaption>
+  </figure>
+  <div>
+    <h3>La referencia sugerida</h3>
+    <p>La referencia sugerida se arma así: <strong>TER</strong> (Terpel), la fecha de la solicitud en formato
+    año-mes-día (<strong>261013</strong> es el 13 de octubre de 2026) y el número de la solicitud
+    (<strong>0001</strong>). Por eso en su pantalla la fecha y el número pueden ser otros.</p>
+    <p class="why">en la demo no hay portal que entregue una referencia; la sugerida permite completar el recorrido.</p>
+    <h3>La vigencia de 2 horas</h3>
+    <p>La autorización vale 2 horas desde el momento en que usted confirma. El panel y el mensaje al conductor
+    muestran la hora límite en la hora del caso: solicitud de las 9:40 a. m., vigencia «hasta las 11:40 a. m.».</p>
+    <p>Mientras esté vigente, si el conductor vuelve a pedir combustible para el mismo vehículo, el asistente le
+    responde que ya tiene una autorización vigente y no crea otra solicitud.</p>
+  </div>
+</div>
+
+<div class="limit">
+  <p>Cuando pasan las 2 horas, la pantalla no cambia: la solicitud sigue apareciendo como
+  <span class="ui">Autorizada</span>. El prototipo no muestra un estado «vencida».</p>
+</div>
+
+<h3>El mensaje al conductor</h3>
+
+<p>Al confirmar, el conductor recibe en su chat:</p>
+<p>«Autorizado, Carlos: $90.000 de Gasolina Corriente. Referencia: TER-261013-0001. Vigencia: 2 horas (hasta las
+11:40 a. m.). Tu chip ya está habilitado solo por ese valor.»</p>
+<p>Si la decisión fue un ajuste, se agrega: «El técnico ajustó el valor. Motivo: …».</p>
+<p>Para verlo, haga clic en <span class="ui">Ver el mensaje al conductor</span>. La <a class="xref" href="#simulador-veh901"></a> muestra cómo se ve.</p>
+<div class="note"><p>Entre la decisión y la confirmación, si el conductor pregunta por su solicitud, el asistente
+le responde que ya fue aprobada y que el técnico está habilitando el medio de pago.</p></div>
+
+<h2 id="decidir-dos-personas">Si dos personas deciden la misma solicitud</h2>
+
+<p>Solo cuenta la <strong>primera</strong> decisión. La segunda no se guarda, aunque llegue un instante después.</p>
+
+<p class="why">un mismo tanqueo no puede quedar aprobado por una persona y rechazado por otra, ni autorizado dos veces.</p>
+
+<p>Ejemplo: usted abre la ventana <span class="ui">Rechazar la solicitud</span> y, mientras escribe el motivo, el
+coordinador aprueba esa misma solicitud. Al hacer clic en <span class="ui">Rechazar</span>, su decisión no se guarda y
+la ventana le dice quién decidió, qué decidió y cuándo:</p>
+
+<figure class="fig w-50">
+  <img src="img/x-consola-ya-decidida.png" alt="Ventana Rechazar la solicitud con el aviso de que la solicitud ya fue decidida por otra persona">
+  <figcaption>«Esta solicitud ya fue decidida por Carlos Rivas (aprobada) el 13/10/2026 a las 1:01 a. m.»</figcaption>
+</figure>
+
+<p>Haga clic en <span class="ui">Cancelar</span>: el detalle ya muestra la decisión que quedó en firme (en el ejemplo,
+<span class="ui">Por habilitar</span>, «Aprobada por Carlos Rivas»).</p>
+
+
+<ul>
+  <li>Mientras usted mira el detalle, la pantalla se actualiza sola cada 3 segundos. Si otra persona decide, los
+  botones desaparecen y usted ve el nuevo estado.</li>
+  <li>Con la habilitación pasa lo mismo: si alguien ya confirmó, el segundo intento no se guarda y el mensaje dice
+  quién la habilitó y con qué referencia.</li>
+</ul>
+
+<h2 id="decidir-rojo">El control posterior de las solicitudes en rojo</h2>
+
+<p>Una solicitud en <span class="light light-red">Rojo</span> no está prohibida. Usted puede aprobarla con motivo o
+ajustarla. Lo que cambia es que <strong>después</strong> el coordinador revisa esa autorización.</p>
+
+<p class="why">el conductor no se queda esperando una segunda aprobación, y aun así otra persona revisa las autorizaciones de mayor riesgo.</p>
+
+<table>
+  <thead>
+    <tr><th>Momento</th><th>Qué ve usted</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Al abrir la solicitud</td><td>Una nota azul sobre las razones: «Por estar en rojo, esta autorización pasará a revisión del coordinador (plazo de 48 horas).»</td></tr>
+    <tr><td>Al aprobar con motivo o ajustar</td><td>La solicitud queda <span class="ui">Por habilitar</span>. Todavía no existe ninguna alerta.</td></tr>
+    <tr><td>Al hacer clic en <span class="ui">Confirmar</span></td><td><strong>Aquí nace la alerta.</strong> La nota cambia a «…esta autorización <strong>pasó</strong> a revisión del coordinador (plazo de 48 horas).»</td></tr>
+    <tr><td>En la bitácora</td><td>Un registro nuevo del Sistema: «Por estar en rojo, la autorización pasó a revisión del coordinador: alerta C03 de prioridad alta (plazo de 48 horas)».</td></tr>
+  </tbody>
+</table>
+
+<figure class="fig">
+  <img src="img/consola-70-rojo-autorizada-nota-coordinador.png" alt="Solicitud ZZA199 autorizada en rojo con la nota de que pasó a revisión del coordinador">
+  <figcaption>Solicitud en rojo ya autorizada: la nota dice «pasó a revisión del coordinador».</figcaption>
+</figure>
+
+<p>La alerta lleva el código <span class="code">C03</span>, «Autorización de solicitud en rojo». Le aparece al
+coordinador en <span class="ui">Alertas del coordinador</span>, pestaña <span class="ui">Tanqueos con alerta</span>,
+con quién autorizó, cuánto, las reglas, el motivo y el valor sugerido (véase la <a class="xref" href="#alertas-c03"></a>).</p>
+
+<figure class="fig w-50">
+  <img src="img/alertas-31-c03-fila.png" alt="Fila de la alerta C03 del vehículo VEH199 en la lista del coordinador">
+  <figcaption>Así ve el coordinador la alerta que nació de la autorización del VEH199.</figcaption>
+</figure>
+
+<div class="note">
+  <ul>
+    <li>Nada se bloquea: el conductor ya tiene su autorización.</li>
+    <li>Se crea una sola alerta por solicitud.</li>
+    <li>Si usted <strong>rechaza</strong> una solicitud en rojo, no se crea alerta.</li>
+    <li>Usted no tiene que hacer nada más: la revisión es tarea del coordinador.</li>
+  </ul>
+</div>
+
+<h2 id="decidir-roles">Qué puede hacer cada rol en esta pantalla</h2>
+
+<p>Todos los roles pueden abrir la cola y el detalle. Lo que cambia es quién puede decidir.</p>
+
+<table>
+  <thead>
+    <tr><th>Rol</th><th>Ver cola y detalle</th><th>Aprobar, ajustar, rechazar</th><th>Confirmar la habilitación</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="role">Técnico de Control y Monitoreo</span></td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+    <tr><td><span class="role">Coordinador</span></td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+    <tr><td><span class="role">Finanzas</span></td><td>Sí</td><td>No (solo lectura)</td><td>No</td></tr>
+    <tr><td><span class="role">Soporte</span></td><td>Sí</td><td>No (solo lectura)</td><td>No</td></tr>
+  </tbody>
+</table>
+
+<p>Con un rol de solo lectura, sobre las razones aparece un aviso amarillo y los botones quedan apagados:</p>
+
+<figure class="fig fig--bare">
+  <img src="img/consola-61-solo-lectura-aviso.png" alt="Aviso de solo lectura con el rol Soporte">
+  <figcaption>«Solo lectura: con el rol Soporte puedes consultar la solicitud, pero la decisión y la habilitación son del técnico de Control y Monitoreo o del coordinador.»</figcaption>
+</figure>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig">
+    <img src="img/consola-62-solo-lectura-botones.png" alt="Panel de decisión con los tres botones desactivados">
+    <figcaption>Rol «Soporte»: botones apagados.</figcaption>
+  </figure>
+  <div>
+    <p>Con un rol de solo lectura usted puede:</p>
+    <ul>
+      <li>Leer las razones, la foto, el libro único, el cálculo y la bitácora.</li>
+      <li>Ampliar la foto.</li>
+      <li>Ver quién decidió, cuánto y con qué motivo.</li>
+    </ul>
+    <p>No puede decidir ni confirmar la referencia. En una solicitud <span class="ui">Por habilitar</span>, el campo
+    <span class="ui">Referencia del portal</span> y el botón <span class="ui">Confirmar</span> quedan apagados.</p>
+    <p>El nombre que queda en la bitácora es el de la persona del rol elegido en la cabecera.</p>
+  </div>
+</div>
+
+<figure class="fig">
+  <img src="img/x-consola-coordinador-panel.png" alt="Detalle de una solicitud con el rol Coordinador: los botones de decisión están activos">
+  <figcaption>Con el rol «Coordinador» (Carlos Rivas) no hay aviso de solo lectura y los tres botones están activos.</figcaption>
+</figure>
+
+
+<h2 id="decidir-recorridos">Tres recorridos completos</h2>
+
+<p>Cada recorrido empieza con la solicitud ya enviada desde el <span class="ui">Simulador del conductor</span> (véase el
+<a class="xref" href="#simulador"></a>) y con el rol <span class="ui">Técnico de Control y Monitoreo</span>. La fecha y el número de
+la referencia dependen del día y del orden en que usted envíe los casos.</p>
+
+<h3>Recorrido 1. Verde: VEH901, placa ZZA901</h3>
+
+<table class="ref">
+  <tbody>
+    <tr><td>Conductor</td><td>Carlos Andrés Pérez · pedida a las 9:40 a. m.</td></tr>
+    <tr><td>Semáforo</td><td><span class="light light-green">Verde</span> · 0 puntos · «Sin alertas»</td></tr>
+    <tr><td>Lectura</td><td>48.352 km (confianza 97 %) · ¼ de tanque (confianza 92 %)</td></tr>
+    <tr><td>Libro único</td><td>Último tanqueo de $80.000 · 142 km recorridos · 6 servicios pendientes de 9</td></tr>
+    <tr><td>Valor sugerido</td><td><strong>$90.000</strong> (tope $190.000)</td></tr>
+  </tbody>
+</table>
+
+<ol class="steps">
+  <li>En el menú, haga clic en <span class="ui">Consola del técnico</span>.</li>
+  <li>En la fila de la placa <strong>ZZA901</strong>, haga clic en <span class="ui">Revisar</span>.</li>
+  <li>Confirme que dice <span class="ui">Sin alertas</span> y que el valor sugerido es <strong>$90.000</strong>.</li>
+  <li>Haga clic en <span class="ui">Aprobar en un clic</span>.</li>
+  <li>En el panel de habilitación, deje la referencia sugerida y haga clic en <span class="ui">Confirmar</span>.</li>
+  <li>Haga clic en <span class="ui">Ver el mensaje al conductor</span>.</li>
+</ol>
+
+<div class="result">
+  <p>Estado <span class="ui">Autorizada</span>: «$90.000 de Gasolina Corriente… Vigencia: 2 horas (hasta las
+  11:40 a. m.)». La bitácora tiene cinco registros. El conductor recibió «Autorizado, Carlos: $90.000 de Gasolina
+  Corriente…».</p>
+</div>
+
+
+<h3>Recorrido 2. Amarillo: VEH015, placa ZZA015</h3>
+
+<table class="ref">
+  <tbody>
+    <tr><td>Conductor</td><td>Jorge Iván Castaño · pedida a las 2:20 p. m.</td></tr>
+    <tr><td>Semáforo</td><td><span class="light light-yellow">Amarillo</span> · 1 punto</td></tr>
+    <tr><td>Razón</td><td><span class="code">R02</span> Odómetro con error de digitación · +1 punto · «Leyó 24.086 km (dígito cambiado); última lectura válida: 33.948 km; valor corregido: 34.086 km»</td></tr>
+    <tr><td>Lectura</td><td>34.086 km (confianza 78 %), corregido y confirmado por el conductor · ¼ de tanque</td></tr>
+    <tr><td>Libro único</td><td>«Sin servicios hoy · El vehículo no aparece en EOM» · Motivo dado: «Traslado no programado» · banderas <span class="code">V01</span> y <span class="code">V05</span></td></tr>
+    <tr><td>Valor sugerido</td><td><strong>$50.000</strong> (tope $190.000)</td></tr>
+  </tbody>
+</table>
+
+<figure class="fig w-75">
+  <img src="img/consola-33-amarillo-razones-r02.png" alt="Razón R02 de la placa ZZA015">
+  <figcaption>La única razón del caso amarillo.</figcaption>
+</figure>
+
+<ol class="steps">
+  <li>En la cola, haga clic en <span class="ui">Revisar</span> en la fila de la placa <strong>ZZA015</strong>.</li>
+  <li>Lea la razón <span class="code">R02</span>. Haga clic en <span class="ui">Ampliar</span> y compruebe en la foto que el kilometraje correcto es 34.086.</li>
+  <li>Haga clic en <span class="ui">Aprobar con motivo</span>.</li>
+  <li>Haga clic en la frase <span class="ui ui--wrap">Kilometraje corregido y confirmado por el conductor</span>.</li>
+  <li>Haga clic en <span class="ui">Aprobar</span>.</li>
+  <li>En el panel de habilitación, haga clic en <span class="ui">Confirmar</span>.</li>
+</ol>
+
+<div class="result">
+  <p>Estado <span class="ui">Autorizada</span>: «Autorizada: $50.000 de Gasolina Corriente. Referencia TER-261013-0002
+  en Terpel (chip), habilitada por Laura Mendoza. Vigencia: 2 horas (hasta las 4:20 p. m.) · Motivo: Kilometraje
+  corregido y confirmado por el conductor».</p>
+</div>
+
+<figure class="fig w-75">
+  <img src="img/consola-40-amarillo-autorizada.png" alt="Detalle de la placa ZZA015 ya autorizada">
+  <figcaption>Final del recorrido amarillo: el motivo queda a la vista en el panel.</figcaption>
+</figure>
+
+<h3>Recorrido 3. Rojo: VEH199, placa ZZA199</h3>
+
+<table class="ref">
+  <tbody>
+    <tr><td>Conductor</td><td>Wilson Darío Hoyos · pedida a las 11:14 p. m.</td></tr>
+    <tr><td>Semáforo</td><td><span class="light light-red">Rojo</span> · 7 puntos</td></tr>
+    <tr><td>Razones</td><td><span class="code">R05</span> Recarga sin recorrido (+3) · <span class="code">R08</span> Sin servicios en EOM (+2) · <span class="code">R09</span> Tanqueo nocturno sin servicio (+2)</td></tr>
+    <tr><td>Lectura</td><td>195.406 km (confianza 96 %) · ¼ de tanque (confianza 88 %)</td></tr>
+    <tr><td>Libro único</td><td>Último tanqueo de $9.600 (3 m³) · 22 km recorridos · «Sin servicios hoy» · Motivo dado: «No tengo servicio asignado» · bandera <span class="code">V08</span></td></tr>
+    <tr><td>Valor sugerido</td><td><strong>$10.000</strong> (tope $40.000). El conductor pidió 6,7 m³; el cálculo da 3,5 m³.</td></tr>
+  </tbody>
+</table>
+
+<figure class="fig">
+  <img src="img/consola-50-detalle-rojo-veh199.png" alt="Detalle de la placa ZZA199 en rojo con la nota del coordinador y tres razones">
+  <figcaption>El caso rojo: nota de revisión del coordinador y tres razones.</figcaption>
+</figure>
+
+<p>Con esta información hay dos caminos razonables. El recorrido usa el primero.</p>
+
+<p><strong>Camino A. Hay una justificación (por ejemplo, el coordinador confirma un apoyo nocturno): ajustar.</strong></p>
+
+<ol class="steps">
+  <li>En la cola, haga clic en <span class="ui">Revisar</span> en la fila de la placa <strong>ZZA199</strong>.</li>
+  <li>Lea la nota azul y las tres razones.</li>
+  <li>Haga clic en <span class="ui">Ajustar</span>.</li>
+  <li>En <span class="ui">Valor a autorizar (pesos)</span>, escriba <span class="kbd">20000</span>.</li>
+  <li>Haga clic en la frase <span class="ui ui--wrap">Apoyo nocturno confirmado con el coordinador</span>.</li>
+  <li>Haga clic en <span class="ui">Guardar ajuste</span>.</li>
+  <li>En el panel de habilitación, que dice «Ajustada por Laura Mendoza (sugerido $10.000)», haga clic en <span class="ui">Confirmar</span>.</li>
+</ol>
+
+<div class="result">
+  <p>Estado <span class="ui">Autorizada</span>: «Autorizada: $20.000 de GNV. Referencia TER-261013-0003 en Terpel
+  (chip), habilitada por Laura Mendoza. Vigencia: 2 horas (hasta las 1:14 a. m.) · Valor sugerido original: $10.000 ·
+  Motivo: Apoyo nocturno confirmado con el coordinador». La nota azul cambia a «pasó a revisión del coordinador» y en la
+  bitácora queda la alerta <span class="code">C03</span>.</p>
+</div>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig">
+    <img src="img/consola-68-rojo-panel-habilitacion-ajustada.png" alt="Panel de habilitación de la placa ZZA199 con el valor ajustado de $20.000">
+    <figcaption>Habilitación con el valor ajustado.</figcaption>
+  </figure>
+  <div>
+    <p><strong>Camino B. No hay justificación: rechazar.</strong></p>
+    <ol class="steps">
+      <li>Haga clic en <span class="ui">Rechazar</span>.</li>
+      <li>Haga clic en la frase <span class="ui ui--wrap">Sin servicio que respalde la carga</span>.</li>
+      <li>Haga clic en el botón rojo <span class="ui">Rechazar</span>.</li>
+    </ol>
+    <div class="result">
+      <p>Estado <span class="ui">Rechazada</span>. El conductor recibe el motivo. No hay habilitación ni alerta para el coordinador.</p>
+    </div>
+    <div class="note"><p>Si intenta ajustar por encima de $40.000, el sistema responde «No puede pasar del tope del vehículo ($40.000).»</p></div>
+  </div>
+</div>
+
+<h2 id="decidir-que-hago">Tabla resumen: «Qué hago si…»</h2>
+
+<table>
+  <thead>
+    <tr><th>Qué hago si…</th><th>Qué revisar</th><th>Qué hacer</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>…el semáforo está en <span class="light light-green">Verde</span></td>
+      <td>Que diga <span class="ui">Sin alertas</span> y que el valor sea razonable.</td>
+      <td><span class="ui">Aprobar en un clic</span> y luego <span class="ui">Confirmar</span>.</td>
+    </tr>
+    <tr>
+      <td>…está en <span class="light light-yellow">Amarillo</span></td>
+      <td>La razón (de 1 a 3 puntos, o un «Dato»). Amplíe la foto si la razón es del kilometraje.</td>
+      <td><span class="ui">Aprobar con motivo</span>, <span class="ui">Ajustar</span> o <span class="ui">Rechazar</span>; siempre con motivo.</td>
+    </tr>
+    <tr>
+      <td>…está en <span class="light light-red">Rojo</span></td>
+      <td>Cada razón, el libro único y lo que respondió el conductor.</td>
+      <td>Igual que en amarillo. Si autoriza, la autorización pasa a revisión del coordinador (48 horas).</td>
+    </tr>
+    <tr>
+      <td>…llegó incompleta</td>
+      <td>El aviso «Pasó al técnico incompleta. Faltó: …» y qué tarjetas quedaron vacías.</td>
+      <td>Decida con lo que hay. Si no hay valor sugerido, use <span class="ui">Ajustar</span> para escribir el valor, o <span class="ui">Rechazar</span>.</td>
+    </tr>
+    <tr>
+      <td>…el número no está registrado («Sin placa»)</td>
+      <td>El número de teléfono que aparece en lugar del nombre.</td>
+      <td>No se puede aprobar ni ajustar: falta el vehículo. Identifique al conductor por fuera del sistema (él espera su respuesta en el mismo chat) y use <span class="ui">Rechazar</span> con el motivo.</td>
+    </tr>
+    <tr>
+      <td>…el cálculo dice que no necesita tanquear</td>
+      <td>La razón «No necesita tanquear según el cálculo» y el paso «A cargar».</td>
+      <td>Si el conductor aceptó, la solicitud ya está <span class="ui">Cerrada sin tanqueo</span>: no hay nada que hacer. Si pidió revisión, llega <span class="ui">En revisión</span> con valor sugerido de $0: use <span class="ui">Ajustar</span> para autorizar un valor con motivo, o <span class="ui">Rechazar</span>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Solicitud de un número no registrado: por qué no se puede aprobar</h3>
+
+<div class="two-col">
+  <figure class="fig">
+    <img src="img/x-consola-sin-placa-no-autoriza.png" alt="Ventana Aprobar con motivo con el mensaje No se puede autorizar sin identificar el vehículo">
+    <figcaption>Intento de aprobar una solicitud «Sin placa».</figcaption>
+  </figure>
+  <div>
+    <p>En una solicitud <span class="ui">Sin placa</span> los tres botones están activos, pero al intentar aprobar o
+    ajustar el sistema responde:</p>
+    <p>«No se puede autorizar sin identificar el vehículo. Rechaza con el motivo o identifica al conductor.»</p>
+    <p class="why">una autorización siempre se habilita para un vehículo concreto; sin placa no hay qué habilitar.</p>
+    <div class="limit"><p>El prototipo no tiene una función para asignarle un conductor o un vehículo a una solicitud
+    que llegó sin identificar. La única decisión que se puede guardar es <span class="ui">Rechazar</span>.</p></div>
+  </div>
+</div>
+
+<h3>Solicitud cerrada sin tanqueo: solo consulta</h3>
+
+<p>Cuando el cálculo da 0 o menos y el conductor responde que está de acuerdo, la solicitud se cierra sola. Aparece en
+la cola como <span class="ui">Cerrada sin tanqueo</span>, con semáforo «Amarillo · 0 puntos» y valor $0. No tiene
+botones para decidir.</p>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig">
+    <img src="img/x-consola-panel-cerrada-sin-tanqueo.png" alt="Panel de la placa ZZA902 cerrada sin tanqueo, con valor sugerido de 0 pesos">
+    <figcaption>El panel de una solicitud cerrada sin tanqueo.</figcaption>
+  </figure>
+  <div>
+    <p>En el caso VEH902, con ⅞ de tanque (10,50 gal) y 2 servicios pendientes, el paso «A cargar» del cálculo da
+    −3,65 gal. El cálculo termina en el paso 7, «Valor sugerido», con $0 y la frase «A cargar es 0 o menos: no necesita
+    tanquear ahora».</p>
+    <p>El panel dice «Cerrada sin tanqueo: el vehículo no necesita cargar ahora y el conductor lo aceptó.» La tarjeta de
+    razones muestra el dato «No necesita tanquear según el cálculo».</p>
+  </div>
+</div>
+
+<figure class="fig w-75 fig--bare">
+  <img src="img/x-consola-razones-no-necesita.png" alt="Tarjeta Razones del semáforo con el dato No necesita tanquear según el cálculo">
+  <figcaption>La razón que deja la solicitud en amarillo con 0 puntos: es un dato, no una regla.</figcaption>
+</figure>
+
+
+<div class="tip keep">
+  <p><strong>Puntos clave del capítulo</strong></p>
+  <ul>
+    <li>Una solicitud, una decisión: no se puede deshacer y solo cuenta la primera.</li>
+    <li><span class="ui">Aprobar en un clic</span> solo existe en verde; en amarillo y rojo el botón es <span class="ui">Aprobar con motivo</span>.</li>
+    <li><span class="ui">Ajustar</span> y <span class="ui">Rechazar</span> siempre piden motivo, de mínimo 5 caracteres.</li>
+    <li>Un ajuste nunca pasa del tope del vehículo y conserva el valor sugerido original.</li>
+    <li>El conductor recibe el mensaje al <span class="ui">Confirmar</span> la habilitación, no antes. La autorización vale 2 horas.</li>
+    <li>Autorizar en rojo no se bloquea: al confirmar nace una alerta <span class="code">C03</span> para el coordinador, con plazo de 48 horas.</li>
+    <li>Deciden el <span class="role">Técnico de Control y Monitoreo</span> y el <span class="role">Coordinador</span>; <span class="role">Finanzas</span> y <span class="role">Soporte</span> solo consultan.</li>
+  </ul>
+</div>

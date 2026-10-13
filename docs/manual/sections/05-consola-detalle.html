@@ -1,0 +1,484 @@
+<h1 id="detalle">El detalle de la solicitud</h1>
+
+<p class="lead">En este capítulo: cómo leer, bloque por bloque, la pantalla que se abre al revisar una solicitud:
+el panel de decisión, las razones del semáforo, la foto del tablero, el libro único de tanqueos, el cálculo del valor
+sugerido paso a paso y la bitácora. Las decisiones (aprobar, ajustar, rechazar) se explican en el <a class="xref" href="#decidir"></a>.</p>
+
+<h2 id="detalle-mapa">Cómo está organizada la pantalla</h2>
+
+<p>El detalle reúne en un solo lugar todo lo que usted necesita para decidir. El ejemplo de este capítulo es el
+<strong>caso verde</strong>: la placa <strong>ZZA901</strong> (vehículo VEH901), con un valor sugerido de
+<strong>$90.000</strong>.</p>
+
+<p class="why">usted decide con la evidencia a la vista, sin abrir otros sistemas ni hacer cuentas a mano.</p>
+
+<figure class="fig">
+  <img src="img/consola-10-detalle-verde-arriba.png" alt="Detalle de la solicitud ZZA901: tarjetas de información a la izquierda y panel de decisión a la derecha">
+  <figcaption>Parte de arriba del detalle: a la izquierda, las tarjetas de información; a la derecha, el panel de decisión.</figcaption>
+</figure>
+
+<table>
+  <thead>
+    <tr><th>Bloque</th><th>Dónde está</th><th>Qué responde</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Panel de decisión</strong></td><td>Columna derecha</td><td>¿De quién es la solicitud, de qué color está, cuánto se sugiere y cuánto tiempo me queda?</td></tr>
+    <tr><td><span class="ui">Razones del semáforo</span></td><td>Primera tarjeta</td><td>¿Por qué está en ese color?</td></tr>
+    <tr><td><span class="ui">Foto del tablero y lectura</span></td><td>Segunda tarjeta</td><td>¿Qué kilometraje y qué nivel de combustible tiene el vehículo?</td></tr>
+    <tr><td><span class="ui">Libro único de tanqueos</span></td><td>Tercera tarjeta</td><td>¿Cuándo tanqueó por última vez, cuánto ha recorrido y qué servicios tiene?</td></tr>
+    <tr><td><span class="ui">Cálculo del valor sugerido</span></td><td>Cuarta tarjeta (hay que bajar)</td><td>¿De dónde sale el valor que propone el sistema?</td></tr>
+    <tr><td><span class="ui">Bitácora de la solicitud</span></td><td>Última tarjeta</td><td>¿Quién hizo qué y cuándo?</td></tr>
+  </tbody>
+</table>
+
+<figure class="fig">
+  <img src="img/consola-11-detalle-verde-abajo.png" alt="Parte de abajo del detalle con el cálculo del valor sugerido y la bitácora">
+  <figcaption>La misma pantalla, desplazada hacia abajo: el cálculo y la bitácora. El panel de decisión sigue a la derecha.</figcaption>
+</figure>
+
+<div class="note">
+  <p>La pantalla se actualiza sola cada 3 segundos. Si otra persona decide la solicitud mientras usted la mira,
+  verá el cambio sin recargar.</p>
+</div>
+
+<div class="note">
+  <p>Mientras el asistente todavía conversa con el conductor, las tarjetas aparecen vacías con estos textos:
+  <span class="ui">Aún sin evaluar</span>, <span class="ui">Sin foto del tablero</span>,
+  <span class="ui">Sin contexto todavía</span> y <span class="ui">Sin cálculo todavía</span>. El panel muestra
+  <span class="ui">Sin evaluar</span> y no ofrece botones para decidir.</p>
+</div>
+
+<h2 id="detalle-panel">El panel de decisión</h2>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig">
+    <img src="img/consola-13-panel-de-decision.png" alt="Panel de decisión de la solicitud ZZA901 en verde con valor sugerido de $90.000">
+    <figcaption>Panel de decisión del caso verde.</figcaption>
+  </figure>
+  <div>
+    <dl class="fields">
+      <dt>Flecha</dt><dd>Vuelve a la cola de solicitudes.</dd>
+      <dt>Placa</dt><dd><strong>ZZA901</strong>. Si el número no está registrado dice <span class="ui">Sin placa</span>.</dd>
+      <dt>Estado</dt><dd><span class="ui">En revisión</span>: está esperando su decisión. Los demás estados están en la <a class="xref" href="#cola-estados"></a>.</dd>
+      <dt>Semáforo y puntos</dt><dd><span class="light light-green">Verde</span> · 0 puntos. Los puntos son la suma de las reglas que se cumplen.</dd>
+      <dt>Conductor</dt><dd>Carlos Andrés Pérez, identificado por su número de teléfono.</dd>
+      <dt>Vehículo</dt><dd>Código y tipo de combustible: <strong>VEH901 · Gasolina</strong>.</dd>
+      <dt>Solicitud</dt><dd><strong>Solicitud n.º 1 · Pedida a las 9:40 a. m.</strong> Es la hora del caso (la hora simulada en la demo).</dd>
+      <dt>Valor sugerido</dt><dd><strong>$90.000</strong>: lo que el sistema propone autorizar. Después de aprobar o ajustar, el rótulo cambia a <span class="ui">Valor autorizado</span>.</dd>
+      <dt>SLA</dt><dd><span class="ui">SLA: quedan 09:24</span>: minutos y segundos que faltan del plazo de 10 minutos.</dd>
+      <dt>Botones</dt><dd><span class="ui">Aprobar en un clic</span> (o <span class="ui">Aprobar con motivo</span>), <span class="ui">Ajustar</span> y <span class="ui">Rechazar</span>.</dd>
+    </dl>
+  </div>
+</div>
+
+<p>La franja de color en el borde superior del panel repite el color del semáforo.</p>
+
+<h3>El semáforo</h3>
+
+<p><span class="light light-green">Verde</span> con 0 puntos y ningún dato por aclarar: se puede aprobar en un clic.
+<span class="light light-yellow">Amarillo</span> de 1 a 3 puntos, o con un dato por aclarar aunque no sume puntos: para
+aprobar hay que escribir el motivo. <span class="light light-red">Rojo</span> con 4 puntos o más: también pide motivo y,
+si se autoriza, el coordinador revisa después esa autorización (véase la <a class="xref" href="#decidir-rojo"></a>). La tabla completa está
+en la <a class="xref" href="#anexo-semaforo"></a>.</p>
+
+<p class="why">el semáforo ordena la atención, pero ninguna regla bloquea: la decisión siempre la toma una persona.</p>
+
+<h3>La cuenta regresiva del SLA en el panel</h3>
+
+<table class="ref">
+  <thead>
+    <tr><th>Lo que ve</th><th>Qué significa</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="ui">SLA: quedan 09:24</span> con barra verde</td><td>Quedan más de 3 minutos.</td></tr>
+    <tr><td><span class="ui">SLA: quedan 01:43</span> con barra ámbar</td><td>Quedan 3 minutos o menos.</td></tr>
+    <tr><td><span class="ui">SLA vencido hace 00:49</span> en rojo</td><td>Ya pasaron los 10 minutos. La solicitud se puede decidir igual.</td></tr>
+    <tr><td>No aparece</td><td>La solicitud ya fue decidida o está cerrada.</td></tr>
+  </tbody>
+</table>
+
+<div class="two-col">
+  <figure class="fig w-75">
+    <img src="img/x-consola-panel-sla-por-vencer.png" alt="Panel de decisión con SLA: quedan 01:43 en ámbar">
+    <figcaption>Quedan menos de 3 minutos: texto y barra en ámbar.</figcaption>
+  </figure>
+  <figure class="fig w-75">
+    <img src="img/x-consola-panel-sla-vencido.png" alt="Panel de decisión con SLA vencido hace 00:49 en rojo">
+    <figcaption>Plazo vencido: texto y barra en rojo. Los botones siguen activos.</figcaption>
+  </figure>
+</div>
+
+
+<h2 id="detalle-razones">Razones del semáforo</h2>
+
+<p>Esta tarjeta explica por qué la solicitud tiene ese color. Arriba a la derecha están el total de puntos y la
+versión del catálogo de reglas con la que se evaluó (por ejemplo, <span class="ui">0 puntos · reglas v1</span>).</p>
+
+<figure class="fig w-75">
+  <img src="img/consola-14-razones-verde-sin-alertas.png" alt="Tarjeta Razones del semáforo en verde con el texto Sin alertas">
+  <figcaption>Caso verde: «Sin alertas. Ninguna regla se cumple y las fuentes cuadran: se puede aprobar en un clic.»</figcaption>
+</figure>
+
+<p>Cuando alguna regla se cumple, cada una ocupa un renglón. Así se lee:</p>
+
+<figure class="fig w-75">
+  <img src="img/consola-53-rojo-razones.png" alt="Tres razones del semáforo rojo: R05, R08 y R09 con sus puntos y explicación">
+  <figcaption>Caso rojo (placa ZZA199): tres reglas que suman 7 puntos.</figcaption>
+</figure>
+
+<dl class="fields">
+  <dt>Código</dt><dd>La etiqueta de la izquierda, por ejemplo <span class="code">R05</span>. Identifica la regla en el catálogo (véase el <a class="xref" href="#reglas"></a>).</dd>
+  <dt>Nombre</dt><dd>Lo que la regla vigila: «Recarga sin recorrido».</dd>
+  <dt>Puntos</dt><dd>A la derecha: <strong>+3 puntos</strong>. Es lo que esa regla le suma al semáforo.</dd>
+  <dt>Explicación</dt><dd>La línea gris, con los datos reales de esta solicitud: «Cargó 6,7 m³ de GNV con 22 km desde su carga anterior (típica 9,7 m³)».</dd>
+</dl>
+
+<p>En el ejemplo: 3 + 2 + 2 = <strong>7 puntos</strong>, es decir, <span class="light light-red">Rojo</span>.</p>
+
+<h3>Reglas que se revisan antes de autorizar</h3>
+
+<p>Son diez, de la <span class="code">R01</span> a la <span class="code">R10</span>. El <a class="xref" href="#anexo-reglas"></a> las trae una
+por una, con su umbral inicial y sus puntos. El coordinador puede cambiar los umbrales (véase la <a class="xref" href="#reglas-cambiar"></a>);
+por eso la tarjeta siempre dice con qué versión se evaluó.</p>
+
+<div class="limit">
+  <p>La regla <span class="code">R10</span> no se evalúa en la solicitud: necesita la estación real donde se tanqueó,
+  y ese dato solo llega después, con el archivo del proveedor.</p>
+</div>
+
+<h3>Razones marcadas como «Dato»</h3>
+
+<p>Algunas razones no son reglas. En lugar del código muestran la etiqueta <span class="ui">Dato</span> y, en lugar de
+puntos, la palabra <span class="ui">Inconsistencia</span>. No suman puntos, pero dejan la solicitud por lo menos en
+<span class="light light-yellow">Amarillo</span>, porque hay algo que una persona debe aclarar.</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Nombre que aparece</th><th>Qué pasó</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Número no registrado</td><td>El número que escribió no corresponde a un conductor con asignación vigente.</td></tr>
+    <tr><td>Conductor sin vehículo asignado</td><td>El conductor está registrado, pero no tiene un vehículo asignado hoy.</td></tr>
+    <tr><td>Solicitud incompleta</td><td>Pasaron los 10 minutos y faltó el servicio, la foto o la confirmación del kilometraje.</td></tr>
+    <tr><td>Inconsistencia entre fuentes</td><td>El nivel de combustible leído no cuadra con lo que el vehículo debió consumir desde el último tanqueo.</td></tr>
+    <tr><td>No necesita tanquear según el cálculo</td><td>Con el nivel leído y la ruta pendiente, la cantidad a cargar da 0 o menos.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="detalle-foto">Foto del tablero y lectura</h2>
+
+<p>Aquí está la foto que envió el conductor y lo que se leyó en ella.</p>
+
+<p class="why">la foto es la evidencia del kilometraje y del nivel de combustible; con esos dos datos se hace el cálculo.</p>
+
+<figure class="fig w-75">
+  <img src="img/consola-15-foto-y-lectura.png" alt="Tarjeta Foto del tablero y lectura con 48.352 km y un cuarto de tanque">
+  <figcaption>Lectura del caso verde: 48.352 km y ¼ de tanque.</figcaption>
+</figure>
+
+<dl class="fields">
+  <dt>Miniatura</dt><dd>La foto del tablero. Tiene el botón <span class="ui">Ampliar</span>.</dd>
+  <dt>Kilometraje</dt><dd><strong>48.352 km</strong>: el kilometraje con el que quedó la solicitud.</dd>
+  <dt>Nivel</dt><dd><strong>¼ de tanque</strong>, y entre paréntesis el porcentaje: <strong>25 %</strong>.</dd>
+  <dt>Confianza</dt><dd>Qué tan segura es la lectura de cada dato, de 0 a 100 %. En el ejemplo, 97 % para el kilometraje y 92 % para el nivel.</dd>
+  <dt>Fuente</dt><dd><span class="ui ui--wrap">Fuente: foto del tablero.</span> Si el conductor escribió el número a mano, dice «digitado por el conductor».</dd>
+  <dt>Confirmación</dt><dd><span class="ui ui--wrap">Confirmado por el conductor.</span> o <span class="ui ui--wrap">Sin confirmar por el conductor.</span></dd>
+  <dt>IA</dt><dd>Quién hizo la lectura. Con la demo en modo simulado: <span class="ui ui--wrap">IA: simulada (lectura de ejemplo).</span></dd>
+</dl>
+
+<h3>El color de la barra de confianza</h3>
+
+<table class="ref">
+  <thead>
+    <tr><th>Color de la barra</th><th>Confianza</th><th>Qué conviene hacer</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Verde</td><td>90 % o más</td><td>La lectura es clara.</td></tr>
+    <tr><td>Ámbar</td><td>De 80 % a 89 %</td><td>Amplíe la foto y compare.</td></tr>
+    <tr><td>Rojo</td><td>Menos de 80 %</td><td>Amplíe la foto y verifique el dato usted mismo.</td></tr>
+  </tbody>
+</table>
+
+<h3>«Leído por la IA» frente a «Lectura de ejemplo»</h3>
+
+<p>La etiqueta de la esquina superior derecha de la tarjeta dice de dónde salió la lectura:</p>
+
+<table>
+  <thead>
+    <tr><th>Etiqueta</th><th>Cuándo aparece</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="ui">Leído por la IA</span></td><td>En los modos de IA <span class="ui">Simulada</span> y <span class="ui">Groq</span>. La línea de abajo aclara quién respondió de verdad.</td></tr>
+    <tr><td><span class="ui">Lectura de ejemplo</span></td><td>En el modo <span class="ui">Groq (texto)</span>: la foto no se envía al servicio externo y se usa la lectura de ejemplo guardada en la demo.</td></tr>
+  </tbody>
+</table>
+
+<div class="limit">
+  <p>En el modo <span class="ui">Simulada</span>, que es el de este manual, la etiqueta dice
+  <span class="ui">Leído por la IA</span>, pero la lectura es un dato de ejemplo de la demo. La línea
+  <span class="ui ui--wrap">IA: simulada (lectura de ejemplo)</span> lo dice con claridad, y lo mismo queda en la bitácora.</p>
+</div>
+
+<h3>Ampliar la foto</h3>
+
+<ol class="steps">
+  <li>En la miniatura, haga clic en <span class="ui">Ampliar</span>.</li>
+  <li>Compare los números de la foto con el kilometraje y el nivel de la tarjeta.</li>
+  <li>Para cerrar, haga clic en la X de la ventana, haga clic fuera de ella o presione <span class="kbd">Esc</span>.</li>
+</ol>
+
+<div class="result">
+  <p>Se abre la ventana <span class="ui">Foto del tablero</span> con la imagen en grande.</p>
+</div>
+
+<figure class="fig w-75">
+  <img src="img/consola-19-foto-ampliada.png" alt="Ventana Foto del tablero con la foto ampliada">
+  <figcaption>La foto ampliada.</figcaption>
+</figure>
+
+<h3>Cuando el kilometraje se corrigió</h3>
+
+<p>Si la lectura parece tener un dígito equivocado, el asistente le propone al conductor el valor corregido. En la
+tarjeta aparece una franja amarilla con lo leído y lo corregido.</p>
+
+<figure class="fig w-75">
+  <img src="img/consola-34-amarillo-foto-y-correccion.png" alt="Lectura de la placa ZZA015 con la nota de corrección de 24.086 km a 34.086 km">
+  <figcaption>Placa ZZA015: «La foto se leyó como 24.086 km (dígito cambiado); corregido a 34.086 km.» La confianza del kilometraje es 78 %, con barra roja.</figcaption>
+</figure>
+
+<div class="note">
+  <p>Si la solicitud llegó sin foto, la tarjeta dice <span class="ui">Sin foto del tablero</span> y
+  «La solicitud llegó sin evidencia.»</p>
+</div>
+
+<h2 id="detalle-libro">Libro único de tanqueos</h2>
+
+<p>El libro único junta, en una sola tarjeta, los tanqueos del vehículo en todos los proveedores y sus servicios
+programados en EOM (la fuente de donde el sistema toma los servicios de cada vehículo). Por eso arriba a la derecha
+dice <span class="ui">Todos los proveedores y EOM</span>.</p>
+
+<p class="why">un solo proveedor no ve todo el consumo de un vehículo; al juntarlos, se nota una recarga sin recorrido o un tanqueo sin servicio.</p>
+
+<figure class="fig w-75">
+  <img src="img/consola-16-libro-unico.png" alt="Libro único de tanqueos del vehículo VEH901">
+  <figcaption>Libro único del caso verde (VEH901).</figcaption>
+</figure>
+
+<table>
+  <thead>
+    <tr><th>Dato</th><th>Qué muestra</th><th>En el ejemplo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="ui">Último tanqueo</span></td><td>Valor y cantidad; debajo, proveedor y estación; debajo, fecha, hora y producto.</td><td>$80.000 · 5 gal · Terpel · EDS Cereté Norte · 12/10/2026, 5:30 p. m. · Gasolina Corriente</td></tr>
+    <tr><td><span class="ui">Km recorridos</span></td><td>Kilómetros desde el último tanqueo y número de cargas en las últimas 24 horas.</td><td>142 km · 2 cargas en 24 h</td></tr>
+    <tr><td><span class="ui">Servicios de hoy en EOM</span></td><td>Cuántos servicios le faltan del total de hoy, la hora del próximo y su recorrido.</td><td>6 pendientes de 9 · Próximo: 10:30 a. m. · Montería → Planeta Rica</td></tr>
+    <tr><td><span class="ui ui--wrap">Rendimiento frente a su grupo</span></td><td>Kilómetros por unidad de combustible del vehículo, comparados con la mediana de los vehículos de su mismo tipo.</td><td>Vehículo 40,5 · Su grupo 41,8 · «En su rango»</td></tr>
+    <tr><td><span class="ui ui--wrap">Reglas por vehículo (V01 a V08)</span></td><td>Señales que el vehículo arrastra por su comportamiento de los últimos 90 días.</td><td>«Sin banderas activas para este vehículo.»</td></tr>
+  </tbody>
+</table>
+
+<h3>Cuando no hay servicios</h3>
+
+<p>Si el vehículo no tiene servicios hoy, el dato aparece en rojo: <span class="ui">Sin servicios hoy</span>. Debajo
+se lee una de estas dos líneas, y la respuesta que dio el conductor cuando el asistente le preguntó para qué
+recorrido necesitaba el combustible:</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Línea</th><th>Qué significa</th><th>Ejemplo de la demo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Tampoco en las últimas 24 h</td><td>El vehículo sí opera en EOM, pero no tiene servicios cercanos.</td><td>VEH199 · Motivo dado: «No tengo servicio asignado»</td></tr>
+    <tr><td>El vehículo no aparece en EOM</td><td>El vehículo no tiene ningún servicio registrado en EOM.</td><td>VEH015 · Motivo dado: «Traslado no programado»</td></tr>
+  </tbody>
+</table>
+
+<h3>Cómo leer el rendimiento</h3>
+
+<figure class="fig w-75">
+  <img src="img/consola-56-rojo-libro-unico.png" alt="Libro único del vehículo VEH199 con la bandera V08">
+  <figcaption>Libro único del VEH199: sin servicios hoy, rendimiento «En su rango» (16,2 frente a 18,0 km/m³) y una bandera activa, V08.</figcaption>
+</figure>
+
+<dl class="fields">
+  <dt>Vehículo</dt><dd>Barra con el rendimiento de este vehículo.</dd>
+  <dt>Su grupo</dt><dd>Barra azul oscuro con la mediana de su grupo (Gasolina, Bicombustible, Gas…).</dd>
+  <dt>Marca punteada</dt><dd>El límite de rendimiento bajo: 75 % de la mediana del grupo.</dd>
+  <dt>Etiqueta</dt><dd><span class="ui">En su rango</span> (verde), <span class="ui">Bajo: 50 % menos</span> (rojo), <span class="ui">Alto</span> con su porcentaje (amarillo) o <span class="ui">No concluyente</span>.</dd>
+</dl>
+
+<p>La unidad depende del combustible: km/gal en gasolina, km/m³ en gas.</p>
+
+<h3>Reglas por vehículo (V01 a V08)</h3>
+
+<p>Estas banderas describen al vehículo, no a la solicitud. <strong>No suman puntos al semáforo</strong> de la
+solicitud; le sirven a usted como contexto y al coordinador para su revisión por vehículo.</p>
+
+<p>Las ocho banderas, con el umbral de cada una, están en el <a class="xref" href="#anexo-reglas"></a>.</p>
+
+<p>Ejemplos de la demo: el VEH199 tiene <span class="code">V08</span> («96 % de sus tanqueos con al menos una
+alerta»). El VEH015 tiene <span class="code">V01</span> («Rinde 26,3 km/gal-eq frente a la mediana de su grupo,
+52,7 (50 % menos); el límite es 39,5») y <span class="code">V05</span> («99 tanqueos por $5,0 M sin un solo servicio
+en EOM en los 90 días»).</p>
+
+<h2 id="detalle-calculo">Cálculo del valor sugerido, paso a paso</h2>
+
+<p>El sistema no adivina el valor: lo calcula con una fórmula fija y muestra cada paso. Arriba a la derecha de la
+tarjeta está el <strong>tope</strong> del vehículo, que es lo máximo que se le puede autorizar
+(<span class="ui">Tope: $190.000</span> en el ejemplo).</p>
+
+<p class="why">si usted puede seguir la cuenta, puede confiar en el valor o saber exactamente en qué paso no está de acuerdo.</p>
+
+<figure class="fig">
+  <img src="img/consola-17-calculo-valor-sugerido.png" alt="Cálculo del valor sugerido de la placa ZZA901 en diez pasos, con resultado de $90.000">
+  <figcaption>Los diez pasos del caso verde. El paso 6, «A cargar», va resaltado; el 10 es el resultado.</figcaption>
+</figure>
+
+<p>La idea, en una frase: <strong>cargar lo necesario para terminar la ruta de hoy y quedar con medio tanque de
+reserva, sin pasar de lo que le cabe al tanque</strong>.</p>
+
+<table class="keep">
+  <thead>
+    <tr><th class="num">Paso</th><th>Nombre</th><th>Cuenta del ejemplo</th><th class="num">Resultado</th><th>En palabras sencillas</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="num">1</td><td>Disponible</td><td>25 % de nivel × 12,0 gal de capacidad</td><td class="num nowrap">3,00 gal</td><td>Lo que hay ahora en el tanque: un cuarto de un tanque de 12 galones.</td></tr>
+    <tr><td class="num">2</td><td>Ruta pendiente</td><td>6 servicios en EOM × 18 km típicos por servicio</td><td class="num nowrap">108 km</td><td>Lo que le falta por recorrer hoy: sus 6 servicios pendientes, a 18 km cada uno.</td></tr>
+    <tr><td class="num">3</td><td>Combustible para la ruta</td><td>108 km ÷ 40,5 km/gal</td><td class="num nowrap">2,67 gal</td><td>Lo que gasta en ese recorrido, según lo que rinde este vehículo.</td></tr>
+    <tr><td class="num">4</td><td>Reserva de ½ tanque</td><td>½ × 12,0 gal</td><td class="num nowrap">6,00 gal</td><td>El mínimo con el que debe quedar: medio tanque.</td></tr>
+    <tr><td class="num">5</td><td>Necesidad</td><td>mín(12,0; 2,67 + 6,00) gal</td><td class="num nowrap">8,67 gal</td><td>Ruta más reserva. «mín» quiere decir «el menor de los dos»: nunca más de lo que le cabe al tanque.</td></tr>
+    <tr><td class="num">6</td><td><strong>A cargar</strong></td><td>8,67 − 3,00 gal</td><td class="num nowrap"><strong>5,67 gal</strong></td><td>Lo que necesita menos lo que ya tiene. Es la cantidad que hay que tanquear.</td></tr>
+    <tr><td class="num">7</td><td>Valor</td><td>5,67 gal × $16.000 de referencia</td><td class="num nowrap">$90.667</td><td>Esa cantidad, al precio de referencia del producto.</td></tr>
+    <tr><td class="num">8</td><td>Redondeo</td><td>al múltiplo de $10.000 más cercano</td><td class="num nowrap">$90.000</td><td>Se redondea a decenas de miles, que es como se habilita el valor.</td></tr>
+    <tr><td class="num">9</td><td>Tope del vehículo</td><td>12,0 gal (capacidad registrada) × $16.000, hacia abajo al múltiplo de $10.000</td><td class="num nowrap">$190.000</td><td>Lo que costaría llenar el tanque completo ($192.000), redondeado hacia abajo.</td></tr>
+    <tr><td class="num">10</td><td><strong>Valor sugerido</strong></td><td>mín($90.000; $190.000)</td><td class="num nowrap"><strong>$90.000</strong></td><td>El menor entre el valor redondeado y el tope. Es lo que aparece en el panel de decisión.</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <p>Las cifras de la pantalla van redondeadas a dos decimales, pero el sistema calcula con los valores exactos. Por
+  eso el paso 7 muestra $90.667: la cantidad exacta es 5,6667 gal, y 5,6667 × $16.000 = $90.667.</p>
+</div>
+
+<h3>De dónde sale cada dato</h3>
+
+<table class="ref">
+  <thead>
+    <tr><th>Dato</th><th>Origen</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Nivel (25 %)</td><td>La foto del tablero.</td></tr>
+    <tr><td>Capacidad (12,0 gal)</td><td>La ficha del vehículo («capacidad registrada»).</td></tr>
+    <tr><td>Servicios pendientes (6)</td><td>EOM: los servicios de hoy que faltan.</td></tr>
+    <tr><td>18 km por servicio</td><td>El recorrido típico de un servicio en la zona del piloto (CARIBE COR).</td></tr>
+    <tr><td>Rendimiento (40,5 km/gal)</td><td>El rendimiento del vehículo, que también se ve en el libro único.</td></tr>
+    <tr><td>Precio de referencia</td><td>Un valor fijo por producto en el prototipo: $16.000 por galón de Gasolina Corriente; $3.200 por m³ de GNV.</td></tr>
+  </tbody>
+</table>
+
+<h3>El control cruzado</h3>
+
+<p>Debajo de los pasos hay una franja que compara dos fuentes: el nivel que se leyó en la foto y lo que el vehículo
+debió consumir desde su último tanqueo.</p>
+
+<ul>
+  <li><strong>Franja verde:</strong> «Control cruzado. Consumo desde el último tanqueo: 142 km ÷ 40,5 km/gal = 3,51 gal.
+  Cuadra con el nivel leído.»</li>
+  <li><strong>Franja amarilla:</strong> el nivel leído es mayor de lo posible o menor de lo esperado. En ese caso
+  aparece además la razón «Inconsistencia entre fuentes» y la solicitud queda por lo menos en
+  <span class="light light-yellow">Amarillo</span>.</li>
+</ul>
+
+<p class="why">el indicador de combustible no es un instrumento exacto, así que el sistema acepta una diferencia razonable (15 % de la capacidad del tanque) antes de avisar.</p>
+
+<h3>Otras líneas que pueden aparecer</h3>
+
+<table class="ref">
+  <thead>
+    <tr><th>Lo que ve</th><th>Qué significa</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>«El conductor pidió 6,7 m³; el cálculo da 3,5 m³.»</td><td>El conductor escribió una cantidad. Se muestra junto a la del cálculo para que usted compare (caso VEH199).</td></tr>
+    <tr><td>Paso «Valor sugerido»: «A cargar es 0 o menos: no necesita tanquear ahora» y $0</td><td>Con lo que tiene le alcanza para la ruta y la reserva. El cálculo termina ahí, sin los pasos de valor, redondeo y tope.</td></tr>
+    <tr><td>«Sin vehículo identificado: el técnico define el valor.»</td><td>El número no está registrado: no hay vehículo y no se puede calcular.</td></tr>
+    <tr><td>«No se puede calcular el valor: falta el nivel de combustible. El técnico lo define.»</td><td>No se pudo leer el nivel (o falta la capacidad o el rendimiento del vehículo).</td></tr>
+    <tr><td><span class="ui">Sin cálculo todavía</span></td><td>La solicitud aún no se ha evaluado.</td></tr>
+  </tbody>
+</table>
+
+<figure class="fig w-75">
+  <img src="img/consola-57-rojo-calculo.png" alt="Cálculo del valor sugerido de la placa ZZA199 con tope de $40.000 y valor sugerido de $10.000">
+  <figcaption>Cálculo del VEH199 (gas, en m³): sin servicios pendientes, solo se completa la reserva de medio tanque. Valor sugerido: $10.000; tope: $40.000.</figcaption>
+</figure>
+
+<h2 id="detalle-bitacora">Bitácora de la solicitud</h2>
+
+<p>La bitácora es el historial de la solicitud: cada cosa que pasó, en orden, de la más antigua a la más reciente.
+Su subtítulo lo resume: <span class="ui ui--wrap">Solo inserción: quién, qué, cuándo, antes y después</span>.</p>
+
+<figure class="fig w-75">
+  <img src="img/consola-29-bitacora-completa.png" alt="Bitácora de la solicitud ZZA901 con cinco registros, desde que se recibió hasta la habilitación">
+  <figcaption>Bitácora del caso verde ya autorizado: cinco registros.</figcaption>
+</figure>
+
+<h3>Cómo leer un registro</h3>
+
+<dl class="fields">
+  <dt>Cuándo</dt><dd>Fecha y hora. Es la <strong>hora real</strong> del reloj, no la hora simulada del caso.</dd>
+  <dt>Quién</dt><dd><strong>Asistente</strong> (lo hizo el asistente del chat), <strong>Sistema</strong> (lo hizo el sistema solo) o el nombre de la persona con su rol.</dd>
+  <dt>Qué</dt><dd>La frase en negrita: «Laura Mendoza aprobó la solicitud por $90.000 en un clic».</dd>
+  <dt>Antes</dt><dd>Cómo estaban los datos antes de esa acción. Una raya (—) significa que no había nada antes.</dd>
+  <dt>Después</dt><dd>Cómo quedaron los datos.</dd>
+  <dt>Etiqueta v1</dt><dd>La versión del catálogo de reglas vigente en ese registro.</dd>
+</dl>
+
+<p>El punto de la izquierda es azul oscuro cuando se aprueba o se ajusta, rojo cuando se rechaza y verde en la
+habilitación; en los demás registros es blanco.</p>
+
+<h3>Qué queda registrado</h3>
+
+<table class="ref">
+  <thead>
+    <tr><th>Momento</th><th>Quién</th><th>Ejemplo del texto</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Llega la solicitud</td><td>Asistente</td><td>Solicitud de Carlos Andrés Pérez para VEH901 (ZZA901) recibida por WhatsApp</td></tr>
+    <tr><td>Se lee la foto</td><td>Asistente</td><td>Foto del tablero leída: 48.352 km, nivel ¼ de tanque (25 %)</td></tr>
+    <tr><td>El conductor escribe el kilometraje</td><td>Asistente</td><td>El conductor digitó el kilometraje: … km</td></tr>
+    <tr><td>Se calcula el semáforo</td><td>Sistema</td><td>Semáforo verde con 0 puntos (sin reglas); valor sugerido $90.000; reglas v1</td></tr>
+    <tr><td>Se cumple el plazo sin completar</td><td>Sistema</td><td>SLA de 10 minutos cumplido: pasa al técnico. Faltó: …</td></tr>
+    <tr><td>Alguien decide</td><td>La persona</td><td>Laura Mendoza aprobó la solicitud por $90.000 en un clic</td></tr>
+    <tr><td>Se confirma la habilitación</td><td>La persona</td><td>Laura Mendoza habilitó el chip en Terpel: $90.000 de Gasolina Corriente, referencia TER-261013-0001, vigente 2 horas</td></tr>
+    <tr><td>Autorización de una solicitud en rojo</td><td>Sistema</td><td>Por estar en rojo, la autorización pasó a revisión del coordinador: alerta C03 de prioridad alta (plazo de 48 horas)</td></tr>
+    <tr><td>Se cierra sin tanqueo</td><td>Asistente</td><td>Solicitud cerrada sin tanqueo: a cargar es 0 o menos</td></tr>
+  </tbody>
+</table>
+
+<h3>Por qué no se puede modificar</h3>
+
+<p>«Solo inserción» quiere decir que a la bitácora solo se le <strong>agregan</strong> registros. Nadie puede cambiar
+ni borrar uno que ya existe: ni el técnico, ni el coordinador, ni soporte. El propio sistema rechaza el intento.
+En la pantalla tampoco hay botones para editarla.</p>
+
+<p class="why">si mañana alguien pregunta por qué se autorizó un valor, la respuesta está ahí tal como ocurrió, con el cálculo original, la persona y el motivo.</p>
+
+<div class="warn">
+  <p>Lo que usted escribe como motivo queda guardado para siempre con su nombre. Escríbalo claro y completo.</p>
+</div>
+
+<div class="limit">
+  <p>El botón <span class="ui">Reiniciar demo</span> sí borra todo, incluida la bitácora, porque vuelve a cargar los
+  datos de ejemplo. Es una función de la demostración, no del uso diario.</p>
+</div>
+
+<div class="tip keep">
+  <p><strong>Puntos clave del capítulo</strong></p>
+  <ul>
+    <li>El panel de la derecha resume la solicitud: placa, semáforo, conductor, valor sugerido y tiempo restante.</li>
+    <li>Cada razón del semáforo trae su código, sus puntos y la explicación con los datos de esta solicitud.</li>
+    <li>Verde: 0 puntos. Amarillo: de 1 a 3 puntos o un dato por aclarar. Rojo: 4 puntos o más.</li>
+    <li>Si la confianza de la lectura es baja o hubo corrección, amplíe la foto y compare.</li>
+    <li>El valor sugerido sale de diez pasos visibles: ruta pendiente más medio tanque de reserva, menos lo que ya tiene, sin pasar del tope.</li>
+    <li>La bitácora guarda quién, qué y cuándo, y no se puede cambiar ni borrar.</li>
+  </ul>
+</div>

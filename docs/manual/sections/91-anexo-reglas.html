@@ -1,0 +1,121 @@
+<h1 id="anexo-reglas">Catálogo de reglas</h1>
+
+<p class="lead">En este anexo: las 25 reglas vigentes del sistema, con su código, lo que detectan en palabras
+sencillas, su umbral inicial y sus puntos. Al final, cómo los puntos se convierten en semáforo y en prioridad.</p>
+
+<div class="note"><p>Los umbrales y puntos de este anexo son los de la <strong>versión 1</strong>, la que queda
+después de <span class="ui">Reiniciar demo</span>. Si el coordinador cambió alguno, el valor vigente es el que
+muestra la pestaña <span class="ui">Reglas y umbrales</span> (véase el <a class="xref" href="#reglas"></a>).</p></div>
+
+<h2 id="anexo-leer">Cómo leer la tabla</h2>
+
+<dl class="fields">
+  <dt>Código</dt><dd><span class="code">R</span>: reglas sobre un tanqueo. <span class="code">C</span>: controles de conciliación y de autorización. <span class="code">V</span>: reglas sobre el comportamiento de un vehículo.</dd>
+  <dt>Tratamiento</dt><dd><strong>Automática</strong>: el sistema la marca sola. <strong>Revisión</strong>: genera una alerta para que una persona la revise. En ningún caso rechaza ni bloquea el vehículo.</dd>
+  <dt>Puntos</dt><dd>Lo que suma la regla cuando se cumple.</dd>
+</dl>
+
+<h2 id="anexo-tabla">Las 25 reglas</h2>
+
+<table class="ref">
+  <thead>
+    <tr><th>Código</th><th>Regla</th><th>Qué detecta</th><th>Umbral (versión 1)</th><th>Tratamiento</th><th class="num">Puntos</th></tr>
+  </thead>
+  <tbody>
+    <tr class="group"><td colspan="6">Antes de autorizar: se evalúan cuando llega la solicitud</td></tr>
+    <tr><td><span class="code">R01</span></td><td>Odómetro sin dato</td><td>No hay lectura del kilometraje.</td><td>Sin lectura de odómetro</td><td>Automática</td><td class="num">1</td></tr>
+    <tr><td><span class="code">R02</span></td><td>Odómetro con error de digitación</td><td>El kilometraje no cuadra, pero se explica por un solo dígito mal leído o mal escrito.</td><td>Lectura atípica explicable por un dígito (cambiado, faltante, de más o invertido). Margen del valor corregido: 20 km</td><td>Automática</td><td class="num">1</td></tr>
+    <tr><td><span class="code">R03</span></td><td>Odómetro inconsistente</td><td>El kilometraje no cuadra y no tiene explicación sencilla.</td><td>Retrocede más de 50 km o implica más de 1.200 km por día</td><td>Revisión</td><td class="num">2</td></tr>
+    <tr><td><span class="code">R04</span></td><td>Salto de kilometraje</td><td>Recorrió demasiado desde el último tanqueo: puede haber cargas que no pasaron por estos proveedores.</td><td>Más de 1.000 km desde el último tanqueo, en 10 días o menos</td><td>Revisión</td><td class="num">2</td></tr>
+    <tr><td><span class="code">R05</span></td><td>Recarga sin recorrido</td><td>Vuelve a cargar casi sin haber andado.</td><td>Menos de 30 km desde la carga del mismo combustible y 50 % o más de su carga típica</td><td>Revisión</td><td class="num">3</td></tr>
+    <tr><td><span class="code">R06</span></td><td>Frecuencia excesiva</td><td>Demasiadas cargas en un día.</td><td>Más de 3 cargas de líquido o más de 5 de gas en 24 h</td><td>Automática</td><td class="num">2</td></tr>
+    <tr><td><span class="code">R07</span></td><td>Carga superior a su capacidad típica</td><td>Pide mucho más de lo que suele cargar.</td><td>Más de 1,5 veces sus cargas más grandes del mismo combustible</td><td>Revisión</td><td class="num">3</td></tr>
+    <tr><td><span class="code">R08</span></td><td>Sin servicios en EOM</td><td>El vehículo no tiene servicios cerca de la hora del tanqueo.</td><td>Sin servicios con desplazamiento en ±24 h</td><td>Revisión</td><td class="num">2</td></tr>
+    <tr><td><span class="code">R09</span></td><td>Tanqueo nocturno sin servicio</td><td>Tanquea de noche sin un servicio cercano.</td><td>Entre las 22 y las 4 h sin servicio en ±3 h</td><td>Revisión</td><td class="num">2</td></tr>
+    <tr><td><span class="code">R10</span></td><td>Estación fuera de la zona de operación</td><td>La estación no corresponde a la zona donde trabaja el vehículo.</td><td>Regional incompatible con los departamentos de sus servicios</td><td>Revisión</td><td class="num">3</td></tr>
+
+    <tr class="group"><td colspan="6">Al conciliar: se evalúan cuando se carga el archivo del proveedor</td></tr>
+    <tr><td><span class="code">R11</span></td><td>Venta fuera del sistema o recuperada</td><td>La venta no se registró por el canal normal.</td><td>Tipo de venta distinto de «En línea»</td><td>Revisión</td><td class="num">2</td></tr>
+    <tr><td><span class="code">R12</span></td><td>Carga fraccionada sobre el tope</td><td>Varias ventas seguidas que, sumadas, superan el tope.</td><td>Mismo producto en 30 min por más de $150.000</td><td>Revisión</td><td class="num">2</td></tr>
+    <tr><td><span class="code">R13</span></td><td>Transacción de valor mínimo</td><td>Una venta por un valor muy pequeño.</td><td>Transacción de menos de $2.000</td><td>Automática</td><td class="num">1</td></tr>
+    <tr><td><span class="code">R14</span></td><td>Precio unitario atípico</td><td>El precio por unidad se aleja del habitual en esa estación.</td><td>±15 % frente a la mediana de la estación (±7 días)</td><td>Automática</td><td class="num">1</td></tr>
+    <tr><td><span class="code">C01</span></td><td>Producto distinto al de la ficha técnica</td><td>Cargó un combustible más caro que el que le corresponde.</td><td>Gasolina Extra en un vehículo cuya ficha pide Corriente</td><td>Automática</td><td class="num">2</td></tr>
+    <tr><td><span class="code">C02</span></td><td>Valor distinto al autorizado</td><td>El proveedor cobró un valor diferente al que se autorizó.</td><td>Diferencia de más de 5 % entre lo autorizado y lo registrado por el proveedor</td><td>Automática</td><td class="num">2</td></tr>
+
+    <tr class="group"><td colspan="6">Después de autorizar (control posterior)</td></tr>
+    <tr><td><span class="code">C03</span></td><td>Autorización de solicitud en rojo</td><td>El técnico autorizó una solicitud que estaba en rojo. La revisa después el coordinador.</td><td>Solicitud con semáforo en rojo que el técnico aprueba o ajusta</td><td>Revisión</td><td class="num">4</td></tr>
+
+    <tr class="group"><td colspan="6">Por vehículo (análisis de 90 días)</td></tr>
+    <tr><td><span class="code">V01</span></td><td>Rendimiento bajo</td><td>Rinde mucho menos que los vehículos de su grupo.</td><td>Menos del 75 % de la mediana de su grupo</td><td>Revisión</td><td class="num">3</td></tr>
+    <tr><td><span class="code">V02</span></td><td>Rendimiento alto</td><td>Rinde mucho más que su grupo: puede faltar consumo por registrar.</td><td>Más del 140 % de la mediana de su grupo</td><td>Revisión</td><td class="num">2</td></tr>
+    <tr><td><span class="code">V03</span></td><td>Caída reciente</td><td>Su rendimiento bajó en las últimas cargas.</td><td>Últimas 8 cargas por debajo del 75 % de su rendimiento</td><td>Revisión</td><td class="num">2</td></tr>
+    <tr><td><span class="code">V04</span></td><td>Odómetro congelado</td><td>Reporta el mismo kilometraje en muchos tanqueos.</td><td>30 % o más de los tanqueos con el mismo odómetro (la foto del tablero se vuelve obligatoria)</td><td>Revisión</td><td class="num">3</td></tr>
+    <tr><td><span class="code">V05</span></td><td>Sin servicios en EOM</td><td>Tanquea, pero no tiene ningún servicio registrado.</td><td>Ningún servicio en EOM en 90 días</td><td>Revisión</td><td class="num">3</td></tr>
+    <tr><td><span class="code">V06</span></td><td>Usa los dos proveedores</td><td>Ningún proveedor ve todo su consumo.</td><td>Carga con Terpel y con GoPass</td><td>Revisión</td><td class="num">1</td></tr>
+    <tr><td><span class="code">V07</span></td><td>Odómetro con problemas</td><td>Muchos de sus tanqueos llegan sin kilometraje o con uno raro.</td><td>10 % o más de los tanqueos sin odómetro o con lectura atípica</td><td>Revisión</td><td class="num">1</td></tr>
+    <tr><td><span class="code">V08</span></td><td>Muchas alertas</td><td>Una parte alta de sus tanqueos termina con alerta.</td><td>20 % o más de los tanqueos con alerta (mínimo 10)</td><td>Revisión</td><td class="num">2</td></tr>
+  </tbody>
+</table>
+
+<div class="limit">
+  <p>Tres aclaraciones sobre el prototipo:</p>
+  <ul>
+    <li><span class="code">R10</span> está en el catálogo, pero el prototipo no la evalúa: necesita la estación real del tanqueo.</li>
+    <li>Las reglas <span class="code">V01</span> a <span class="code">V08</span> vienen ya calculadas con los datos de ejemplo.</li>
+    <li>La alerta <span class="code">C03</span> no suma sus 4 puntos de base: toma los puntos de la solicitud que la originó (7 en el caso del VEH199).</li>
+  </ul>
+</div>
+
+<h2 id="anexo-semaforo">De los puntos al semáforo de una solicitud</h2>
+
+<table>
+  <thead><tr><th>Semáforo</th><th>Puntos</th><th>Qué puede hacer el técnico</th></tr></thead>
+  <tbody>
+    <tr><td><span class="light light-green">Verde</span></td><td>0, y sin datos faltantes ni inconsistencias</td><td><span class="ui">Aprobar en un clic</span>, ajustar o rechazar.</td></tr>
+    <tr><td><span class="light light-yellow">Amarillo</span></td><td>1 a 3, o 0 con un dato faltante o inconsistente</td><td><span class="ui">Aprobar con motivo</span>, ajustar o rechazar.</td></tr>
+    <tr><td><span class="light light-red">Rojo</span></td><td>4 o más</td><td>Lo mismo que en amarillo. Si autoriza, se crea la alerta <span class="code">C03</span>.</td></tr>
+  </tbody>
+</table>
+
+<p>Ejemplos de la demo: VEH901, 0 puntos, verde. VEH015, 1 punto (<span class="code">R02</span>), amarillo. VEH199,
+7 puntos (<span class="code">R05</span> + <span class="code">R08</span> + <span class="code">R09</span> = 3 + 2 + 2), rojo.</p>
+
+<h2 id="anexo-prioridad">De los puntos a la prioridad de una alerta</h2>
+
+<table>
+  <thead><tr><th>Prioridad</th><th>Puntos</th><th>Plazo de revisión</th><th>Ejemplo de la demo</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Alta</strong></td><td>4 o más</td><td>48 horas</td><td>VEH129, 8 puntos</td></tr>
+    <tr><td><strong>Media</strong></td><td>2 o 3</td><td>7 días («En la semana»)</td><td>VEH215, 3 puntos</td></tr>
+    <tr><td><strong>Baja</strong></td><td>1</td><td>7 días («En la semana»)</td><td>VEH160, 1 punto</td></tr>
+  </tbody>
+</table>
+
+<h2 id="anexo-grupos">Mediana de rendimiento por grupo de vehículos</h2>
+
+<p>Las reglas <span class="code">V01</span> y <span class="code">V02</span> comparan cada vehículo con la mediana de
+su grupo. Estos son los valores que usa el sistema.</p>
+
+<table>
+  <thead><tr><th>Grupo</th><th class="num">Mediana</th><th>Unidad</th><th class="num">Límite bajo (75 %)</th></tr></thead>
+  <tbody>
+    <tr><td>Gasolina</td><td class="num">41,8</td><td>km/gal</td><td class="num">31,4</td></tr>
+    <tr><td>Bicombustible</td><td class="num">52,7</td><td>km/gal-eq</td><td class="num">39,5</td></tr>
+    <tr><td>Diésel liviano</td><td class="num">34,0</td><td>km/gal</td><td class="num">25,5</td></tr>
+    <tr><td>Diésel pesado</td><td class="num">16,0</td><td>km/gal</td><td class="num">12,0</td></tr>
+    <tr><td>Gas</td><td class="num">18,0</td><td>km/m³</td><td class="num">13,5</td></tr>
+  </tbody>
+</table>
+
+<p>«km/gal-eq» significa kilómetros por galón equivalente: en los vehículos que usan gasolina y gas, el gas se
+convierte a galones para poder sumar los dos consumos.</p>
+
+<div class="tip keep">
+  <p><strong>Puntos clave del anexo</strong></p>
+  <ul>
+    <li>25 reglas: 10 antes de autorizar, 6 al conciliar, 1 después de autorizar y 8 por vehículo.</li>
+    <li>Ninguna regla rechaza ni bloquea: suman puntos y dejan constancia.</li>
+    <li>Semáforo: 0 verde, 1 a 3 amarillo, 4 o más rojo.</li>
+    <li>Prioridad: 4 o más alta (48 horas), 2 o 3 media, 1 baja (en la semana).</li>
+  </ul>
+</div>

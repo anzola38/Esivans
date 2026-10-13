@@ -1,0 +1,680 @@
+<h1 id="simulador">Simulador del conductor</h1>
+
+<p class="lead">En este capítulo: para qué sirve el simulador, sus tres zonas, las formas de conversar con el asistente
+y, paso a paso, los cinco casos de ejemplo. Al final, cómo consultar el estado, qué pasa si la solicitud no se completa
+en 10 minutos y los errores más frecuentes.</p>
+
+<h2 id="simulador-para-que">Para qué sirve</h2>
+
+<p>El simulador hace las veces del chat del conductor. En la operación real el conductor escribiría desde su teléfono;
+aquí usted escribe por él y ve, al mismo tiempo, cómo avanza la solicitud.</p>
+
+<p class="who">Quién lo hace: <span class="role role--all">Todos los roles</span></p>
+
+<p class="why">es la única puerta de entrada de solicitudes. Sin enviar una desde aquí, la cola del técnico queda vacía.</p>
+
+<p>Para llegar, haga clic en <span class="ui">Simulador del conductor</span> en el menú de la izquierda. Es también la
+pantalla que se abre al entrar al sistema.</p>
+
+<div class="limit"><p>El simulador no envía ni recibe mensajes de ningún teléfono. Los cinco casos, sus conductores y sus
+fotos vienen preparados; no se pueden crear casos nuevos ni subir fotos propias.</p></div>
+
+<h2 id="simulador-zonas">Las tres zonas de la pantalla</h2>
+
+<figure class="fig w-75">
+  <img src="img/simulador-01-inicio.png" alt="Simulador del conductor con sus tres zonas: Caso de la demo, teléfono y Estado de la solicitud">
+  <figcaption>El simulador antes de empezar. Izquierda: «Caso de la demo». Centro: el teléfono con el chat. Derecha: «Estado de la solicitud».</figcaption>
+</figure>
+
+<table>
+  <thead>
+    <tr><th>Zona</th><th>Qué muestra</th><th>Para qué la usa</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="ui">Caso de la demo</span></td><td>El caso elegido, sus datos, la hora simulada, la IA y el guion sugerido.</td><td>Elegir el caso y avanzar el guion con un botón.</td></tr>
+    <tr><td>El teléfono</td><td>La conversación entre el conductor y el asistente.</td><td>Escribir, pulsar respuestas rápidas y enviar la foto.</td></tr>
+    <tr><td><span class="ui">Estado de la solicitud</span></td><td>El número, el semáforo, el valor y la línea de estados.</td><td>Ver en qué va la solicitud y abrirla en la consola.</td></tr>
+  </tbody>
+</table>
+
+<h3>Zona 1: «Caso de la demo»</h3>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig">
+    <img src="img/simulador-03-ficha-caso.png" alt="Tarjeta Caso de la demo con el selector de casos y los datos del caso verde">
+    <figcaption>La ficha del caso VEH901.</figcaption>
+  </figure>
+  <div>
+    <dl class="fields">
+      <dt>Selector de casos</dt><dd>Cinco botones: <span class="ui">VEH901</span>, <span class="ui">VEH015</span>, <span class="ui">VEH199</span>, <span class="ui">VEH902</span> y <span class="ui">Sin registro</span>. El elegido queda en azul oscuro.</dd>
+      <dt>Título y descripción</dt><dd>Qué demuestra el caso.</dd>
+      <dt>Conductor</dt><dd>La persona por la que usted va a escribir.</dd>
+      <dt>Vehículo</dt><dd>El código y el tipo de combustible.</dd>
+      <dt>Placa</dt><dd>La placa del vehículo.</dd>
+      <dt>Hora simulada</dt><dd>La hora a la que «ocurre» el caso, en formato de 24 horas.</dd>
+      <dt>IA</dt><dd>Quién entiende los mensajes y lee la foto. Déjela en <span class="ui">Simulada</span>.</dd>
+    </dl>
+    <p>Debajo van dos líneas de ayuda: qué hace la IA activa y la nota de la hora.</p>
+  </div>
+</div>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig">
+    <img src="img/simulador-05-guion-sugerido.png" alt="Guion sugerido del caso verde con cuatro pasos y el botón Siguiente paso del guion">
+    <figcaption>El guion del caso VEH901.</figcaption>
+  </figure>
+  <div>
+    <p>El <span class="ui">Guion sugerido</span> es la lista de mensajes que el conductor enviaría en ese caso, en orden.</p>
+    <ul>
+      <li>El paso que sigue aparece resaltado en naranja.</li>
+      <li>Los pasos ya enviados cambian su número por un chulo.</li>
+      <li>El botón <span class="ui">Siguiente paso del guion</span> envía el paso resaltado.</li>
+      <li>Debajo del botón, una línea dice cuál es: «Paso 1 de 4: «Hola, necesito tanquear»».</li>
+      <li>Al terminar, el botón dice <span class="ui">Guion completo</span> y la línea, «Continúa en la consola del técnico.»</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Zona 2: el teléfono</h3>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig fig--phone">
+    <img src="img/simulador-11-verde-telefono-saludo.png" alt="Teléfono del simulador con el saludo del asistente y las respuestas rápidas">
+    <figcaption>El chat después del primer mensaje.</figcaption>
+  </figure>
+  <div>
+    <dl class="fields">
+      <dt>Hora</dt><dd>Arriba a la izquierda: la hora simulada del caso.</dd>
+      <dt>Encabezado</dt><dd>«Asistente de combustible · Transportes Esivans · en línea». Mientras el asistente responde dice «escribiendo…».</dd>
+      <dt>Mensajes</dt><dd>Los del conductor van a la derecha, en azul claro. Los del asistente, a la izquierda, en blanco.</dd>
+      <dt>Respuestas rápidas</dt><dd>Botones con las respuestas más probables. Aparecen sobre la casilla de texto cuando el asistente hace una pregunta.</dd>
+      <dt>Cámara</dt><dd>Envía la foto de ejemplo del tablero de ese caso.</dd>
+      <dt>Escribe un mensaje</dt><dd>La casilla para escribir a mano.</dd>
+      <dt>Enviar</dt><dd>El botón redondo de la derecha. Se enciende cuando hay texto.</dd>
+    </dl>
+    <p>El primer mensaje del asistente siempre es el aviso de privacidad: «Aviso de privacidad: usamos tu número, tu
+    asignación y las fotos que envíes solo para gestionar el suministro de combustible (Ley 1581 de 2012).»</p>
+  </div>
+</div>
+
+<h3>Zona 3: «Estado de la solicitud»</h3>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig">
+    <img src="img/simulador-19-estado-en-revision.png" alt="Tarjeta Estado de la solicitud con la solicitud en revisión, semáforo verde y valor sugerido de 90.000 pesos" style="max-height: 100mm;">
+    <figcaption>El estado del caso VEH901 al terminar el guion.</figcaption>
+  </figure>
+  <div>
+    <dl class="fields">
+      <dt>Etiqueta de estado</dt><dd>Arriba a la derecha: el estado actual, por ejemplo <span class="ui">En revisión</span>.</dd>
+      <dt>Solicitud</dt><dd>El número de la solicitud: «N.º 1».</dd>
+      <dt>Semáforo</dt><dd>«Sin evaluar» mientras se arma la solicitud; después, el color y los puntos.</dd>
+      <dt>Valor sugerido</dt><dd>Una raya mientras no se ha calculado; después, el valor. Cuando se autoriza, el título cambia a «Valor autorizado».</dd>
+      <dt>Línea de estados</dt><dd>Recibida, Identificada, Esperando evidencia, Lista, En revisión y Autorizada. Cada estado alcanzado muestra su hora y una nota. El estado actual va en naranja.</dd>
+      <dt>Lo que falta</dt><dd>Lo que se necesita para que la solicitud avance.</dd>
+      <dt>SLA de 10 minutos</dt><dd>La cuenta regresiva del plazo de atención, con una barra.</dd>
+      <dt>Botón de abajo</dt><dd><span class="ui">Ir a la consola del técnico</span> si aún no hay solicitud; <span class="ui">Ver en la consola</span> cuando ya existe, para abrir su detalle.</dd>
+    </dl>
+  </div>
+</div>
+
+<p>Antes del primer mensaje, la tarjeta muestra los seis estados vacíos y la nota «Aún no hay solicitud: empieza con el
+primer mensaje del conductor.» En el teléfono, una línea invita a empezar: «Escribe como Carlos Andrés Pérez o usa
+«Siguiente paso del guion» para iniciar la conversación.» (con el nombre del conductor del caso elegido).</p>
+
+<p><span class="ui">Lo que falta</span> cambia con cada paso:</p>
+
+<table>
+  <thead>
+    <tr><th>Texto en «Lo que falta»</th><th>Qué espera el asistente</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>«Confirmar el servicio de EOM o el motivo del recorrido»</td><td>Que el conductor diga para qué recorrido es el combustible.</td></tr>
+    <tr><td>«Foto del tablero (kilometraje y nivel)»</td><td>La foto.</td></tr>
+    <tr><td>«Confirmar el kilometraje y el nivel leídos»</td><td>Que el conductor confirme lo que se leyó en la foto.</td></tr>
+    <tr><td>«Escribir el kilometraje a mano»</td><td>El número del odómetro, porque la foto no se pudo leer o el conductor quiso corregirlo.</td></tr>
+    <tr><td>«Confirmar que no necesita tanquear ahora»</td><td>La respuesta del conductor cuando el cálculo dice que no hace falta cargar.</td></tr>
+    <tr><td>«Decisión del técnico de Control y Monitoreo»</td><td>Ya no depende del conductor: la solicitud está en la cola.</td></tr>
+    <tr><td>«Habilitar el valor en el portal del proveedor y confirmar la referencia»</td><td>El técnico ya decidió; falta la habilitación.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="simulador-conversar">Cómo conversar con el asistente</h2>
+
+<p>Hay cuatro formas de enviar algo. Se pueden combinar, pero conviene escoger una y mantenerla durante el caso.</p>
+
+<table>
+  <thead>
+    <tr><th>Forma</th><th>Cómo</th><th>Cuándo conviene</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>El guion</strong></td><td>Clic en <span class="ui">Siguiente paso del guion</span>. Envía el mensaje o la foto que toca.</td><td>Para ver el caso tal como está previsto, sin escribir nada.</td></tr>
+    <tr><td><strong>Respuestas rápidas</strong></td><td>Clic en uno de los botones que aparecen sobre la casilla de texto.</td><td>Para contestar una pregunta del asistente con una opción distinta a la del guion.</td></tr>
+    <tr><td><strong>Escribir a mano</strong></td><td>Escriba en <span class="ui">Escribe un mensaje</span> y pulse <span class="kbd">Enter</span> o el botón de enviar.</td><td>Para probar con sus propias palabras.</td></tr>
+    <tr><td><strong>La foto</strong></td><td>Clic en el botón de la cámara.</td><td>Cuando el asistente pide la foto y usted no está usando el guion.</td></tr>
+  </tbody>
+</table>
+
+<figure class="fig w-50 fig--bare">
+  <img src="img/x-intro-simulador-01-escribir-a-mano.png" alt="Casilla de texto del chat con un mensaje escrito y el botón de enviar encendido">
+  <figcaption>Al escribir a mano, el botón de enviar se enciende. A la izquierda, el botón de la cámara.</figcaption>
+</figure>
+
+<figure class="fig w-50 fig--bare">
+  <img src="img/simulador-12-respuestas-rapidas.png" alt="Respuestas rápidas Sí, es para esa ruta y Es otro recorrido sobre la casilla de texto">
+  <figcaption>Las respuestas rápidas aparecen sobre la casilla de texto.</figcaption>
+</figure>
+
+<div class="warn"><p>El guion no revisa qué se envió: avanza un paso por cada mensaje del conductor, sin importar cuál
+fue. Si usted escribe un mensaje propio en medio del guion, el botón puede saltarse un paso. Cuando mezcle, fíjese en
+la línea «Paso N de M» antes de pulsar el botón, o siga con las respuestas rápidas.</p></div>
+
+<div class="note"><p>Mientras el asistente está respondiendo aparecen tres puntos en el chat y los botones se apagan un
+momento. El chat se actualiza solo.</p></div>
+
+<h3>Enviar la foto</h3>
+
+<p>El botón de la cámara envía la foto de ejemplo del caso. El asistente la lee y devuelve el kilometraje y el nivel de
+combustible para que el conductor los confirme. Ese mensaje lleva una marca en forma de destello, y bajo la foto aparece
+el rótulo «IA: simulada (lectura de ejemplo)».</p>
+
+<p>A la pregunta «¿Es correcto?» se puede responder de dos maneras:</p>
+
+<ul>
+  <li><span class="ui">Sí, es correcto</span>: se acepta la lectura y la solicitud sigue.</li>
+  <li><span class="ui">No, corregir</span>: el asistente pide «Escríbeme el kilometraje que marca el odómetro, solo el
+  número.» Usted lo escribe a mano y la bitácora registra que el conductor lo digitó.</li>
+</ul>
+
+<p class="why">el kilometraje es el dato que más errores trae. Por eso lo lee la IA, lo confirma el conductor y el
+técnico ve la foto.</p>
+
+<div class="limit"><p>El caso <span class="ui">Sin registro</span> no tiene foto: con él, el botón de la cámara queda
+apagado.</p></div>
+
+<h3>La hora simulada</h3>
+
+<p>Cada caso trae su hora: VEH901 a las 09:40, VEH015 a las 14:20, VEH199 a las 23:14, VEH902 a las 11:05 y
+Sin registro a las 08:15. Así se puede mostrar un caso de las 11:14 p. m. a cualquier hora del día.</p>
+
+<ol class="steps">
+  <li>Antes de enviar el primer mensaje, haga clic en la casilla <span class="ui">Hora simulada</span>.</li>
+  <li>Escriba la hora en formato de 24 horas, por ejemplo <span class="kbd">22:30</span>.</li>
+</ol>
+
+<div class="result">
+  <p>El reloj del teléfono cambia a esa hora. La nota bajo la ficha dice: «Puedes cambiarla antes del primer mensaje: de
+  10 p. m. a 4 a. m. aplica la regla R09.»</p>
+</div>
+
+<ul>
+  <li>La hora cuenta para la regla <span class="code">R09</span> «Tanqueo nocturno sin servicio» y para saber cuántos
+  servicios le quedan al vehículo ese día, de modo que puede cambiar el semáforo y el valor sugerido.</li>
+  <li>Con el primer mensaje, la hora queda fija y la casilla se bloquea. La nota cambia a «La hora quedó fija con el
+  primer mensaje…».</li>
+  <li>Los mensajes siguientes avanzan con el tiempo real: si usted tarda diez minutos, el chat marcará diez minutos más.</li>
+  <li>El chat y la consola muestran la hora del caso. La bitácora guarda la hora real.</li>
+</ul>
+
+<div class="warn"><p>Si cambia la hora de un caso, sus cifras ya no coincidirán con las de este manual. Para volver a
+la hora original, use <span class="ui">Reiniciar demo</span>.</p></div>
+
+<h2 id="simulador-veh901">Caso VEH901: verde, se aprueba en un clic</h2>
+
+<table class="ref keep">
+  <tbody>
+    <tr><td><strong>Conductor</strong></td><td>Carlos Andrés Pérez</td><td><strong>Vehículo</strong></td><td>VEH901 · Gasolina · placa ZZA901</td></tr>
+    <tr><td><strong>Hora simulada</strong></td><td>09:40 (9:40 a. m.)</td><td><strong>Resultado esperado</strong></td><td><span class="light light-green">Verde</span> 0 puntos · valor sugerido $90.000</td></tr>
+  </tbody>
+</table>
+
+<p>Es el caso normal: un vehículo con servicios programados y un kilometraje coherente.</p>
+
+<ol class="steps">
+  <li>En <span class="ui">Caso de la demo</span>, haga clic en <span class="ui">VEH901</span> (viene elegido al entrar).</li>
+  <li>
+    <p>Haga clic en <span class="ui">Siguiente paso del guion</span>. Se envía «Hola, necesito tanquear».</p>
+    <p>El asistente responde con el aviso de privacidad, el saludo «Hola, Carlos. Soy el asistente de combustible de
+    Esivans. Te tengo con el vehículo de placa ZZA901.» y la pregunta «Tu próximo servicio en EOM es a las 10:30 a. m.
+    (Montería → Planeta Rica) y tienes 5 más pendientes hoy. ¿El tanqueo es para esa ruta?»</p>
+  </li>
+  <li>
+    <p>Haga clic otra vez en <span class="ui">Siguiente paso del guion</span>. Se envía «Sí, es para esa ruta».</p>
+    <p>El asistente pide: «Perfecto. Envíame una foto del tablero donde se vean el kilometraje y el nivel de combustible.»</p>
+  </li>
+  <li>
+    <p>Haga clic en <span class="ui">Siguiente paso del guion</span>. Se envía la foto del tablero.</p>
+    <p>El asistente responde: «Leí en la foto 48.352 km y nivel de ¼ de tanque (25 %). ¿Es correcto?»</p>
+  </li>
+  <li>
+    <p>Haga clic en <span class="ui">Siguiente paso del guion</span>. Se envía «Sí, es correcto».</p>
+    <p>El asistente cierra: «Gracias, Carlos. Tu solicitud está en revisión con el técnico de Control y Monitoreo. Te
+    aviso por aquí apenas haya respuesta.»</p>
+  </li>
+</ol>
+
+<figure class="fig">
+  <img src="img/simulador-16-verde-foto-y-lectura.png" alt="Simulador tras enviar la foto del caso verde: la foto, la lectura de 48.352 km y las respuestas rápidas">
+  <figcaption>Después del cuarto paso del procedimiento: la foto enviada, la lectura y, a la derecha, «Lo que falta: Confirmar el kilometraje y el nivel leídos».</figcaption>
+</figure>
+
+<p>Mientras avanza, <span class="ui">Estado de la solicitud</span> cambia así:</p>
+
+<table>
+  <thead>
+    <tr><th>Después de…</th><th>Estado</th><th>Lo que falta</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>«Hola, necesito tanquear»</td><td>Esperando evidencia · Semáforo «Sin evaluar»</td><td>Confirmar el servicio de EOM o el motivo del recorrido</td></tr>
+    <tr><td>«Sí, es para esa ruta»</td><td>Esperando evidencia</td><td>Foto del tablero (kilometraje y nivel)</td></tr>
+    <tr><td>La foto</td><td>Esperando evidencia</td><td>Confirmar el kilometraje y el nivel leídos</td></tr>
+    <tr><td>«Sí, es correcto»</td><td>En revisión · <span class="light light-green">Verde</span> 0 puntos · $90.000</td><td>Decisión del técnico de Control y Monitoreo</td></tr>
+  </tbody>
+</table>
+
+<div class="result">
+  <p>El botón dice <span class="ui">Guion completo</span>. A la derecha: estado <span class="ui">En revisión</span>,
+  «Verde · 0 puntos», «Valor sugerido $90.000» y la cuenta «SLA de 10 minutos: quedan…». La solicitud ya está en la cola
+  de la consola.</p>
+</div>
+
+<figure class="fig">
+  <img src="img/simulador-18-verde-en-revision.png" alt="Simulador al terminar el guion del caso verde, con la solicitud en revisión">
+  <figcaption>El caso VEH901 al terminar el guion: en revisión, en verde y con $90.000 de valor sugerido.</figcaption>
+</figure>
+
+<h3>Cómo termina</h3>
+
+<ol class="steps">
+  <li>Haga clic en <span class="ui">Ver en la consola</span>. Se abre el detalle de la solicitud.</li>
+  <li>Con el rol <span class="role">Técnico de Control y Monitoreo</span>, apruebe y confirme la habilitación, como
+  explican las secciones <a class="xref" href="#decidir-un-clic" data-short></a> y <a class="xref" href="#decidir-habilitar" data-short></a>.</li>
+  <li>Vuelva a <span class="ui">Simulador del conductor</span>. El caso VEH901 sigue elegido.</li>
+</ol>
+
+<div class="result">
+  <p>En el chat aparece, en verde, el mensaje «Autorizado, Carlos: $90.000 de Gasolina Corriente. Referencia: … Vigencia:
+  2 horas (hasta las 11:40 a. m.). Tu chip ya está habilitado solo por ese valor.» A la derecha, el estado es
+  <span class="ui">Autorizada</span>, el título cambia a «Valor autorizado» y un recuadro verde repite el valor, la
+  referencia y la vigencia.</p>
+</div>
+
+<div class="two-col">
+  <figure class="fig fig--phone">
+    <img src="img/simulador-23-mensaje-de-autorizacion.png" alt="Teléfono con el mensaje de autorización que recibe el conductor">
+    <figcaption>El mensaje de autorización.</figcaption>
+  </figure>
+  <figure class="fig fig--phone">
+    <img src="img/simulador-24-estado-autorizada-ver-en-consola.png" alt="Tarjeta Estado de la solicitud con la solicitud autorizada">
+    <figcaption>El estado «Autorizada».</figcaption>
+  </figure>
+</div>
+
+<div class="note"><p>Entre la aprobación y la confirmación de la referencia, el simulador muestra la etiqueta
+<span class="ui">Por habilitar</span> y, bajo «En revisión», la nota «Decidida: falta habilitar en el portal del
+proveedor». El conductor todavía no ha recibido nada.</p></div>
+
+<h2 id="simulador-veh015">Caso VEH015: error de digitación en el kilometraje</h2>
+
+<table class="ref keep">
+  <tbody>
+    <tr><td><strong>Conductor</strong></td><td>Jorge Iván Castaño</td><td><strong>Vehículo</strong></td><td>VEH015 · Bicombustible · placa ZZA015</td></tr>
+    <tr><td><strong>Hora simulada</strong></td><td>14:20 (2:20 p. m.)</td><td><strong>Resultado esperado</strong></td><td><span class="light light-yellow">Amarillo</span> 1 punto (<span class="code">R02</span>) · valor sugerido $50.000</td></tr>
+  </tbody>
+</table>
+
+<p>La foto se lee con un dígito equivocado. El asistente lo nota al compararla con el último registro del vehículo y
+propone el número corregido.</p>
+
+<ol class="steps">
+  <li>Haga clic en <span class="ui">VEH015</span>.</li>
+  <li>
+    <p>Clic en <span class="ui">Siguiente paso del guion</span>. Se envía «Buenas, necesito combustible».</p>
+    <p>Este vehículo no tiene servicios programados. Por eso el asistente pregunta: «No veo servicios tuyos pendientes en
+    EOM. ¿Para qué recorrido necesitas el combustible? Tu respuesta le llega al técnico.» Ofrece tres respuestas
+    rápidas: <span class="ui">Traslado no programado</span>, <span class="ui">Apoyo a otra zona</span> y
+    <span class="ui">No tengo servicio asignado</span>.</p>
+  </li>
+  <li>Clic en <span class="ui">Siguiente paso del guion</span>. Se envía «Traslado no programado» y el asistente pide la foto.</li>
+  <li>
+    <p>Clic en <span class="ui">Siguiente paso del guion</span>. Se envía la foto.</p>
+    <p>El asistente responde: «En la foto leí 24.086 km y nivel de ¼ de tanque (25 %). Tu último registro es de 33.948
+    km, así que parece un error de un dígito (el 3 quedó como 2). ¿El kilometraje correcto es 34.086 km?»</p>
+  </li>
+  <li>Haga clic en la respuesta rápida <span class="ui">Sí, es 34.086</span> (o en <span class="ui">Siguiente paso del
+  guion</span>, que envía lo mismo).</li>
+</ol>
+
+<div class="two-col two-col--narrow">
+  <figure class="fig fig--phone">
+    <img src="img/simulador-32-veh015-telefono-propuesta.png" alt="Teléfono del caso VEH015 con la foto del tablero y la propuesta de corrección a 34.086 km">
+    <figcaption>La propuesta de corrección.</figcaption>
+  </figure>
+  <div>
+    <div class="result">
+      <p>El asistente responde «Gracias, Jorge. Tu solicitud está en revisión con el técnico de Control y Monitoreo. Te
+      aviso por aquí apenas haya respuesta.» El estado pasa a <span class="ui">En revisión</span>, con semáforo
+      amarillo de 1 punto y valor sugerido de $50.000.</p>
+    </div>
+    <p class="why">un kilometraje de 24.086 después de uno de 33.948 es imposible. En vez de rechazar el dato, el sistema
+    propone la corrección más probable y deja que el conductor la confirme.</p>
+    <p><strong>Cómo termina:</strong> en la consola, el técnico ya no tiene «Aprobar en un clic». El botón dice
+    <span class="ui">Aprobar con motivo</span> y debe escribir por qué aprueba (véase la <a class="xref" href="#decidir-con-motivo"></a>).</p>
+    <div class="tip"><p>Para ver el caso tal como está previsto, acepte la propuesta con <span class="ui">Sí, es
+    34.086</span>. Si pulsa <span class="ui">No, corregir</span> y escribe otro número, el resultado puede ser
+    distinto.</p></div>
+  </div>
+</div>
+
+<h2 id="simulador-veh199">Caso VEH199: solicitud nocturna en rojo</h2>
+
+<table class="ref keep">
+  <tbody>
+    <tr><td><strong>Conductor</strong></td><td>Wilson Darío Hoyos</td><td><strong>Vehículo</strong></td><td>VEH199 · Gas · placa ZZA199</td></tr>
+    <tr><td><strong>Hora simulada</strong></td><td>23:14 (11:14 p. m.)</td><td><strong>Resultado esperado</strong></td><td><span class="light light-red">Rojo</span> 7 puntos (<span class="code">R05</span>, <span class="code">R08</span>, <span class="code">R09</span>) · valor sugerido $10.000</td></tr>
+  </tbody>
+</table>
+
+<p>A las 11:14 p. m., un vehículo de gas pide 6,7 m³ con solo 22 km recorridos desde su carga anterior y sin servicios
+programados.</p>
+
+<ol class="steps">
+  <li>Haga clic en <span class="ui">VEH199</span>. Compruebe que <span class="ui">Hora simulada</span> dice 23:14.</li>
+  <li>
+    <p>Clic en <span class="ui">Siguiente paso del guion</span>. Se envía «Necesito tanquear 6,7 m3 de gas».</p>
+    <p>El asistente saluda a Wilson y pregunta: «No veo servicios tuyos pendientes en EOM. ¿Para qué recorrido necesitas
+    el combustible? Tu respuesta le llega al técnico.»</p>
+  </li>
+  <li>Clic en <span class="ui">Siguiente paso del guion</span>. Se envía «No tengo servicio asignado» y el asistente pide la foto.</li>
+  <li>Clic en <span class="ui">Siguiente paso del guion</span>. Se envía la foto. El asistente responde: «Leí en la foto
+  195.406 km y nivel de ¼ de tanque (25 %). ¿Es correcto?»</li>
+  <li>Clic en <span class="ui">Siguiente paso del guion</span>. Se envía «Sí, es correcto».</li>
+</ol>
+
+<div class="result">
+  <p>El asistente responde «Gracias, Wilson. Tu solicitud está en revisión…». A la derecha: <span class="ui">En
+  revisión</span>, «Rojo · 7 puntos» y «Valor sugerido $10.000».</p>
+</div>
+
+<figure class="fig">
+  <img src="img/simulador-43-veh199-en-revision.png" alt="Simulador al terminar el guion del caso VEH199: en revisión, rojo con 7 puntos y valor sugerido de 10.000 pesos">
+  <figcaption>El caso VEH199 al terminar el guion. El conductor recibe el mismo mensaje amable de siempre: el semáforo solo lo ve el personal.</figcaption>
+</figure>
+
+<div class="keep">
+<p>Los 7 puntos salen de tres reglas:</p>
+
+<table>
+  <thead>
+    <tr><th>Regla</th><th>Qué detecta</th><th class="num">Puntos</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="code">R05</span> Recarga sin recorrido</td><td>Menos de 30 km desde la carga anterior y una carga de la mitad o más de la típica.</td><td class="num">3</td></tr>
+    <tr><td><span class="code">R08</span> Sin servicios en EOM</td><td>Sin servicios con desplazamiento 24 horas antes ni después.</td><td class="num">2</td></tr>
+    <tr><td><span class="code">R09</span> Tanqueo nocturno sin servicio</td><td>Entre las 10 p. m. y las 4 a. m., sin servicio 3 horas antes ni después.</td><td class="num">2</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="warn"><p>La cantidad debe ir en el primer mensaje y con su unidad: «6,7 m3». La regla
+<span class="code">R05</span> compara lo que el conductor pide con su carga típica. Si usted escribe a mano solo
+«Necesito tanquear», la regla se evalúa con otra cantidad y el caso puede no sumar los 7 puntos.</p></div>
+
+<h3>Cómo termina</h3>
+
+<p>En la consola, el técnico ve las tres razones y decide (véase la <a class="xref" href="#decidir-recorridos"></a>). Hay dos finales posibles:</p>
+
+<ul>
+  <li><strong>Autoriza</strong> (aprueba con motivo o ajusta el valor). El conductor recibe su autorización igual que
+  en el caso verde. Además, el coordinador recibe una alerta de prioridad alta para revisar esa autorización después.</li>
+  <li><strong>Rechaza</strong>, escribiendo el motivo. El conductor recibe un mensaje en rojo con ese motivo.</li>
+</ul>
+
+<div class="two-col">
+  <figure class="fig fig--phone">
+    <img src="img/simulador-71-mensaje-de-rechazo.png" alt="Teléfono con el mensaje de rechazo que recibe el conductor">
+    <figcaption>El mensaje de rechazo, con el motivo que escribió el técnico.</figcaption>
+  </figure>
+  <figure class="fig fig--phone">
+    <img src="img/simulador-72-estado-rechazada.png" alt="Tarjeta Estado de la solicitud con la solicitud rechazada">
+    <figcaption>El estado «Rechazada».</figcaption>
+  </figure>
+</div>
+
+<h2 id="simulador-veh902">Caso VEH902: no necesita tanquear</h2>
+
+<table class="ref keep">
+  <tbody>
+    <tr><td><strong>Conductor</strong></td><td>Luis Fernando Ortega</td><td><strong>Vehículo</strong></td><td>VEH902 · Gasolina · placa ZZA902</td></tr>
+    <tr><td><strong>Hora simulada</strong></td><td>11:05 (11:05 a. m.)</td><td><strong>Resultado esperado</strong></td><td>Cerrada sin tanqueo · valor sugerido $0</td></tr>
+  </tbody>
+</table>
+
+<p>El vehículo tiene el tanque casi lleno y le quedan pocos servicios. El cálculo dice que no hace falta cargar, y el
+asistente se lo explica al conductor sin pasar por el técnico.</p>
+
+<ol class="steps">
+  <li>Haga clic en <span class="ui">VEH902</span>. El guion tiene cinco pasos.</li>
+  <li>Clic en <span class="ui">Siguiente paso del guion</span>. Se envía «Necesito tanquear». El asistente saluda a Luis
+  y pregunta: «Tu próximo servicio en EOM es a las 12:00 p. m. (Planeta Rica → Sahagún) y tienes 1 más pendiente hoy.
+  ¿El tanqueo es para esa ruta?»</li>
+  <li>Clic en <span class="ui">Siguiente paso del guion</span>. Se envía «Sí, es para esa ruta» y el asistente pide la foto.</li>
+  <li>Clic en <span class="ui">Siguiente paso del guion</span>. Se envía la foto. El asistente responde: «Leí en la foto
+  61.512 km y nivel de ⅞ de tanque (88 %). ¿Es correcto?»</li>
+  <li>
+    <p>Clic en <span class="ui">Siguiente paso del guion</span>. Se envía «Sí, es correcto».</p>
+    <p>El asistente explica: «Luis, con el nivel que leí (10,50 gal) te alcanza para tu ruta pendiente y la reserva de ½
+    tanque: por ahora no necesitas tanquear (-3,6 gal a cargar). ¿Lo dejamos así?» Ofrece dos respuestas rápidas:
+    <span class="ui">Entendido, gracias</span> y <span class="ui">Que lo revise el técnico</span>.</p>
+    <p>En este punto el estado es <span class="ui">Lista</span>, con «Amarillo · 0 puntos», «Valor sugerido $0» y «Lo
+    que falta: Confirmar que no necesita tanquear ahora».</p>
+  </li>
+  <li>Clic en <span class="ui">Siguiente paso del guion</span>. Se envía «Entendido, gracias».</li>
+</ol>
+
+<div class="result">
+  <p>El asistente se despide: «De acuerdo, Luis. Cuando bajes de ½ tanque me escribes y lo gestionamos de una.» El
+  estado queda en <span class="ui">Cerrada sin tanqueo</span>; «En revisión» aparece como «No aplica», y una nota dice
+  «Cerrada sin tanqueo: el vehículo no necesita cargar ahora.» La solicitud nunca le quitó tiempo al técnico.</p>
+</div>
+
+<div class="two-col">
+  <figure class="fig fig--phone">
+    <img src="img/simulador-52-veh902-telefono-dos-respuestas.png" alt="Teléfono del caso VEH902 con la explicación de que no necesita tanquear y dos respuestas rápidas">
+    <figcaption>La explicación y las dos respuestas posibles.</figcaption>
+  </figure>
+  <figure class="fig fig--phone">
+    <img src="img/simulador-56-veh902-estado-cerrada.png" alt="Tarjeta Estado de la solicitud cerrada sin tanqueo">
+    <figcaption>El estado «Cerrada sin tanqueo».</figcaption>
+  </figure>
+</div>
+
+<h3>La otra respuesta: «Que lo revise el técnico»</h3>
+
+<p>Si el conductor no está de acuerdo, puede pedir una revisión. En el paso de la explicación, en vez de seguir el
+guion, haga clic en la respuesta rápida <span class="ui">Que lo revise el técnico</span>.</p>
+
+<div class="result">
+  <p>El asistente responde «Listo, Luis. Le pasé tu solicitud al técnico de Control y Monitoreo para que la revise.» La
+  solicitud pasa a <span class="ui">En revisión</span> con «Amarillo · 0 puntos» y «Valor sugerido $0». Bajo «En
+  revisión» queda la nota «El cálculo dice que no necesita tanquear; el conductor pidió revisión».</p>
+</div>
+
+<figure class="fig">
+  <img src="img/x-intro-simulador-08-veh902-que-lo-revise-pantalla.png" alt="Simulador del caso VEH902 después de pedir la revisión del técnico">
+  <figcaption>El caso VEH902 cuando el conductor pide que lo revise el técnico: la solicitud llega a la cola en amarillo, con valor sugerido de $0.</figcaption>
+</figure>
+
+<p class="why">el sistema propone, pero no le cierra la puerta al conductor: si insiste, una persona lo revisa.</p>
+
+<h2 id="simulador-sin-registro">Caso «Sin registro»: número no registrado</h2>
+
+<table class="ref keep">
+  <tbody>
+    <tr><td><strong>Conductor</strong></td><td>Número no registrado</td><td><strong>Vehículo y placa</strong></td><td>— (sin datos)</td></tr>
+    <tr><td><strong>Hora simulada</strong></td><td>08:15 (8:15 a. m.)</td><td><strong>Resultado esperado</strong></td><td><span class="light light-yellow">Amarillo</span> 0 puntos · sin valor sugerido · pasa al técnico</td></tr>
+  </tbody>
+</table>
+
+<p>Alguien escribe desde un número que no está entre los conductores. El asistente no puede armar la solicitud y se la
+pasa a una persona.</p>
+
+<ol class="steps">
+  <li>Haga clic en <span class="ui">Sin registro</span>. El guion tiene un solo paso.</li>
+  <li>Clic en <span class="ui">Siguiente paso del guion</span>. Se envía «Buenos días, necesito tanquear la van».</li>
+</ol>
+
+<div class="result">
+  <p>El asistente responde con el aviso de privacidad y con: «No encuentro este número entre los conductores registrados.
+  Ya pasé tu caso al técnico de Control y Monitoreo, que te escribe por este mismo chat. Ten a la mano la placa del
+  vehículo.» El estado pasa directo a <span class="ui">En revisión</span>, con «Amarillo · 0 puntos», el valor en raya
+  y, en «Lo que falta», «Llegó sin: conductor no identificado».</p>
+</div>
+
+<div class="two-col">
+  <figure class="fig fig--phone">
+    <img src="img/simulador-62-sin-registro-telefono.png" alt="Teléfono del caso Sin registro con la respuesta del asistente">
+    <figcaption>La respuesta a un número no registrado.</figcaption>
+  </figure>
+  <figure class="fig fig--phone">
+    <img src="img/simulador-63-sin-registro-estado.png" alt="Tarjeta Estado de la solicitud del caso Sin registro">
+    <figcaption>El estado: en revisión, sin conductor identificado.</figcaption>
+  </figure>
+</div>
+
+<p><strong>Cómo termina:</strong> en la consola la solicitud aparece como «Sin placa», en amarillo, sin foto ni
+cálculo. El técnico decide qué hacer con ella (véase la <a class="xref" href="#cola-no-registrado"></a>).</p>
+
+<div class="limit"><p>El mensaje promete que el técnico «te escribe por este mismo chat», pero el prototipo no tiene una
+forma de que el técnico le escriba al conductor: solo puede decidir sobre la solicitud.</p></div>
+
+<h2 id="simulador-estado">Consultar el estado: «¿ya me autorizaron?»</h2>
+
+<p>El conductor puede preguntar en cualquier momento cómo va su solicitud. Escriba a mano, por ejemplo,
+<span class="kbd">¿ya me autorizaron?</span> y envíe. El asistente responde según el momento:</p>
+
+<table>
+  <thead>
+    <tr><th>Momento</th><th>Respuesta del asistente</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>La solicitud está incompleta</td><td>Dice qué falta. Por ejemplo: «Luis, para continuar me falta que me confirmes el servicio o el motivo y la foto del tablero.»</td></tr>
+    <tr><td>Está en revisión</td><td>«Luis, está en revisión con el técnico de Control y Monitoreo. Te aviso apenas haya respuesta.»</td></tr>
+    <tr><td>El técnico ya aprobó, pero falta habilitar</td><td>«…tu solicitud ya fue aprobada y el técnico está habilitando el medio de pago. En un momento te llega el valor y la referencia.»</td></tr>
+    <tr><td>No hay ninguna solicitud abierta</td><td>«Hola, Luis. No tienes solicitudes abiertas para ZZA902. Si necesitas combustible, escríbeme "Necesito tanquear".»</td></tr>
+  </tbody>
+</table>
+
+<div class="two-col">
+  <figure class="fig fig--phone">
+    <img src="img/x-intro-simulador-03-consulta-estado-incompleta.png" alt="Chat en el que el conductor pregunta ¿ya me autorizaron? con la solicitud incompleta">
+    <figcaption>La consulta con la solicitud incompleta: el asistente dice qué falta.</figcaption>
+  </figure>
+  <figure class="fig fig--phone">
+    <img src="img/x-intro-simulador-07-consulta-estado-en-revision.png" alt="Chat en el que el conductor pregunta por el estado y luego pide tanquear otra vez, con la solicitud en revisión">
+    <figcaption>La consulta con la solicitud en revisión y, debajo, el intento de pedir otra vez.</figcaption>
+  </figure>
+</div>
+
+<p>Si, en vez de preguntar, el conductor vuelve a pedir combustible mientras su solicitud está en revisión, el asistente
+no crea otra: «Luis, ya tienes una solicitud abierta para ZZA902. Está en revisión con el técnico de Control y
+Monitoreo. Te aviso apenas haya respuesta.»</p>
+
+<p>Y si ya fue autorizado y la autorización sigue vigente, cualquier mensaje nuevo recibe: «…ya tienes una autorización
+vigente para…» con el valor, el producto y la referencia, y «No se autoriza dos veces la misma solicitud.»</p>
+
+<div class="note"><p>Con la IA <span class="ui">Simulada</span>, el asistente reconoce una consulta de estado por
+expresiones como «ya me autorizaron», «cómo va», «estado» o «novedad». Recuerde que este mensaje también hace avanzar
+el guion un paso.</p></div>
+
+<h2 id="simulador-sla">Si la solicitud no se completa en 10 minutos</h2>
+
+<p>Desde el primer mensaje corre un plazo de 10 minutos de tiempo real. Lo muestra la línea «SLA de 10 minutos:
+quedan…» con su barra.</p>
+
+<p>Si el plazo se cumple y la solicitud sigue incompleta, el sistema no la deja esperando: la pasa al técnico con lo
+que tenga.</p>
+
+<div class="result">
+  <p>El conductor recibe: «Luis, pasé tu solicitud al técnico de Control y Monitoreo con lo que hay para no hacerte
+  esperar. Te aviso apenas haya respuesta.» El estado salta a <span class="ui">En revisión</span> con la nota «Pasó al
+  técnico por SLA de 10 min. Faltó: …». En «Lo que falta» aparece una línea «Llegó sin: …» por cada dato ausente, y el
+  plazo cambia a «SLA de 10 minutos vencido», en rojo.</p>
+</div>
+
+<figure class="fig">
+  <img src="img/x-intro-simulador-04-sla-vencido-pantalla.png" alt="Simulador con una solicitud que pasó al técnico por cumplirse el SLA de 10 minutos">
+  <figcaption>Una solicitud del VEH902 que se quedó sin recorrido ni foto: a los 10 minutos pasó al técnico. En el ejemplo quedó en amarillo con 1 punto y sin valor sugerido, porque sin foto no hay kilometraje ni nivel.</figcaption>
+</figure>
+
+<p class="why">el conductor no debe quedarse sin respuesta porque le faltó un dato. Una persona decide con lo que hay.</p>
+
+<div class="note"><p>El plazo sigue contando después: mientras el técnico no decida, la consola también muestra el
+tiempo que queda o que el plazo se venció (véase la <a class="xref" href="#cola-sla"></a>).</p></div>
+
+<h2 id="simulador-errores">Errores frecuentes</h2>
+
+<table>
+  <thead>
+    <tr><th>Qué pasa</th><th>Por qué</th><th>Qué hacer</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>El botón dice <span class="ui">Guion completo</span> y está apagado, sin haber hecho nada.</td>
+      <td>Quedó elegido el caso <span class="ui">Sin registro</span> (u otro) que ya se envió. El sistema recuerda el último caso elegido al ir a la consola y volver.</td>
+      <td>Elija otro caso en el selector. Para repetir el mismo, use <span class="ui">Reiniciar demo</span>.</td>
+    </tr>
+    <tr>
+      <td>El asistente contesta «ya tienes una solicitud abierta…» o «ya tienes una autorización vigente…».</td>
+      <td>Ese vehículo ya tiene una solicitud en curso o una autorización que no ha vencido.</td>
+      <td>Termine la solicitud en la consola o use <span class="ui">Reiniciar demo</span>.</td>
+    </tr>
+    <tr>
+      <td>El guion se salta un paso o envía la foto antes de tiempo.</td>
+      <td>Se escribió un mensaje a mano en medio del guion, y el guion cuenta mensajes.</td>
+      <td>Responda lo que el asistente pregunta con las respuestas rápidas o a mano. Para empezar limpio, <span class="ui">Reiniciar demo</span>.</td>
+    </tr>
+    <tr>
+      <td>En el VEH015 no sale el amarillo con <span class="code">R02</span>.</td>
+      <td>No se aceptó la propuesta de 34.086 km, o la IA no está en <span class="ui">Simulada</span>.</td>
+      <td>Reinicie y, en el último paso, pulse la respuesta rápida <span class="ui">Sí, es 34.086</span>.</td>
+    </tr>
+    <tr>
+      <td>En el VEH199 no salen los 7 puntos.</td>
+      <td>El primer mensaje no llevaba la cantidad («6,7 m3»), o se cambió la hora simulada.</td>
+      <td>Reinicie y use el guion, con la hora en 23:14.</td>
+    </tr>
+    <tr>
+      <td>No se puede cambiar la <span class="ui">Hora simulada</span>.</td>
+      <td>El caso ya tiene mensajes: la hora quedó fija con el primero.</td>
+      <td><span class="ui">Reiniciar demo</span> y cambiarla antes de escribir.</td>
+    </tr>
+    <tr>
+      <td>El botón de la cámara está apagado.</td>
+      <td>El caso es <span class="ui">Sin registro</span>, que no tiene foto, o el asistente todavía está respondiendo.</td>
+      <td>Espere la respuesta o elija otro caso.</td>
+    </tr>
+    <tr>
+      <td>Las cifras no coinciden con las de este manual.</td>
+      <td>La IA no está en <span class="ui">Simulada</span>, se cambió la hora o se cambió un umbral en «Reglas y umbrales».</td>
+      <td><span class="ui">Reiniciar demo</span> y revisar que la fila <span class="ui">IA</span> diga <span class="ui">Simulada</span>.</td>
+    </tr>
+    <tr>
+      <td>Aparece «No se pudieron cargar los casos de la demo».</td>
+      <td>El sistema no está respondiendo.</td>
+      <td>Avise a quien administra la instalación.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="tip keep">
+  <p><strong>Puntos clave del capítulo</strong></p>
+  <ul>
+    <li>El simulador tiene tres zonas: el caso con su guion, el teléfono y el estado de la solicitud.</li>
+    <li><span class="ui">Siguiente paso del guion</span> es la forma más segura de recorrer un caso. También puede usar las respuestas rápidas, escribir a mano o enviar la foto con la cámara.</li>
+    <li>Cinco casos, cinco finales: VEH901 verde ($90.000), VEH015 amarillo por un dígito ($50.000), VEH199 rojo con 7 puntos ($10.000), VEH902 cerrado sin tanqueo y «Sin registro», que pasa directo al técnico.</li>
+    <li>La hora simulada solo se cambia antes del primer mensaje.</li>
+    <li>A los 10 minutos, una solicitud incompleta pasa sola al técnico.</li>
+    <li>Para repetir un caso, use <span class="ui">Reiniciar demo</span>.</li>
+  </ul>
+</div>
