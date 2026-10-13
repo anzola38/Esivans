@@ -354,6 +354,9 @@
                 <span>
                   Fuente: {{ (ev.odometer_source_label ?? 'Foto del tablero').toLowerCase() }}.
                   {{ ev.confirmed_by_driver ? 'Confirmado por el conductor.' : 'Sin confirmar por el conductor.' }}
+                  @if (ev.ai_source_label) {
+                    <span data-testid="ai-source">IA: {{ ev.ai_source_label }}.</span>
+                  }
                 </span>
               </div>
             </div>

@@ -77,7 +77,32 @@
               />
             </dd>
           </div>
+          @if (ai.state(); as aiState) {
+            <div class="sim__kv-row">
+              <dt id="sim-ai-label">IA</dt>
+              <dd>
+                <div class="ui-segmented sim__ai-switch" role="group" aria-labelledby="sim-ai-label" data-testid="ai-switch">
+                  @for (option of aiState.options; track option.key) {
+                    <button
+                      type="button"
+                      class="ui-segmented__item"
+                      [attr.aria-pressed]="option.key === aiState.active"
+                      [attr.data-testid]="'ai-option-' + option.key"
+                      [disabled]="!option.available || ai.switching()"
+                      [title]="option.unavailable_reason ?? 'Usar la IA ' + option.label"
+                      (click)="ai.select(option.key)"
+                    >
+                      {{ option.label }}
+                    </button>
+                  }
+                </div>
+              </dd>
+            </div>
+          }
         </dl>
+        @if (ai.state()) {
+          <p class="ui-help sim__ai-note" data-testid="ai-note">{{ aiNote() }}</p>
+        }
         <p class="ui-help sim__clock-help">
           @if (started()) {
             La hora quedó fija con el primer mensaje ({{ phoneTime() }} en el teléfono).
@@ -173,6 +198,12 @@
               }
               <span class="ui-bubble__time">{{ message.timestamp | esTime }}</span>
             </div>
+            @if (showsAiSource(message)) {
+              <div class="sim__ai-source" [class.is-warn]="message.ai!.status !== 'ok'" data-testid="ai-source">
+                <app-icon name="spark" [size]="10" [strokeWidth]="2" />
+                IA: {{ message.ai!.label }}
+              </div>
+            }
           }
           @if (typing()) {
             <div class="ui-bubble sim__typing" data-testid="typing" aria-label="El asistente está escribiendo">

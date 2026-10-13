@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 
 from app.decisions.audit import ASSISTANT, SYSTEM, audit, emit
 from app.integrations import media
-from app.integrations.ai import get_ai_provider
+from app.integrations.ai import get_ai_provider, interpret, read_photo, source_label
 from app.integrations.ai.base import MIN_CONFIDENCE, ExtractedRequest
 from app.integrations.whatsapp import send_message
 from app.ledger import service as ledger
@@ -141,9 +141,11 @@ def _process(db: Session, message: InboundMessage) -> None:
 
     text = (message.text or "").strip()
     req = _open_request(db, vehicle_id=vehicle.id)
-    ai = get_ai_provider()
-    extracted = (ai.extract_request(text, {"last_question": req.step if req else None, "plate": vehicle.plate})
-                 if text else ExtractedRequest())
+    extracted = ExtractedRequest()
+    if text:
+        # Only the text and the step of the conversation reach the provider: no name, phone or plate.
+        extracted, source = interpret(get_ai_provider(), text, {"last_question": req.step if req else None})
+        message.interpretation = {"source": source, "extracted": extracted.model_dump(exclude_none=True)}
 
     created = False
     if req is None:
@@ -292,7 +294,9 @@ def _take_photo(db: Session, req: FuelRequest, message: InboundMessage, data: di
     if downloaded is None:
         data["photo_unreadable"] = True
         return
-    reading = get_ai_provider().read_dashboard(downloaded["content"], downloaded["mime_type"])
+    reading, source = read_photo(get_ai_provider(), downloaded["content"], downloaded["mime_type"])
+    message.interpretation = {"source": source, "reading": reading.model_dump()}
+    evidence.ai_source = source
     evidence.media_id = message.media_id
     evidence.photo_path = downloaded["path"]
     evidence.photo_hash = downloaded["sha256"]
@@ -318,8 +322,10 @@ def _take_photo(db: Session, req: FuelRequest, message: InboundMessage, data: di
     db.flush()
     audit(db, ASSISTANT, "evidence.read", "evidence", evidence.id, request_id=req.id,
           summary=(f"Foto del tablero leída: {fmt_int(evidence.odometer_read)} km, nivel {level_text(evidence.fuel_level)}"
-                   if readable else "Foto del tablero ilegible: se pide el kilometraje al conductor"),
-          after={"odometer_read": evidence.odometer_read, "fuel_level": evidence.fuel_level,
+                   if readable else "Foto del tablero ilegible: se pide el kilometraje al conductor"
+                   if source.get("status") != "failed" else source_label(source)),
+          after={"ai": {**source, "label": source_label(source)},
+                 "odometer_read": evidence.odometer_read, "fuel_level": evidence.fuel_level,
                  "confidence": evidence.confidence, "error_type": evidence.error_type,
                  "proposed_odometer": evidence.proposed_odometer, "photo_hash": evidence.photo_hash})
 

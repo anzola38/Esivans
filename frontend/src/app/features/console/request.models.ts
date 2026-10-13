@@ -169,6 +169,7 @@ export interface Evidence {
   error_label: string | null;
   proposed_odometer: number | null;
   confirmed_by_driver: boolean;
+  ai_source_label: string | null;
 }
 
 export interface Decision {
@@ -331,7 +332,7 @@ const ERRORS: Record<string, string> = {
   extra_digit: 'dígito de más',
   swapped_digits: 'dígitos invertidos',
 };
-const PROVIDERS: Record<string, string> = { terpel: 'Terpel', gopass: 'GoPass' };
+const PROVIDERS: Record<string, string> = { terpel: 'Terpel', gopass: 'GoPass', groq: 'Groq', mock: 'IA simulada' };
 
 const AUDIT_LABELS: Record<string, string> = {
   suggested_amount: 'Valor sugerido',
@@ -352,6 +353,7 @@ const AUDIT_LABELS: Record<string, string> = {
   odometer_km: 'Km',
   proposed_odometer: 'Km propuesto',
   confidence: 'Confianza',
+  ai: 'IA',
   error_type: 'Tipo de error',
   status: 'Estado',
   missing: 'Faltó',
@@ -369,6 +371,9 @@ function auditValue(key: string, value: unknown): string {
     if (typeof c.odometer_km === 'number') parts.push('km ' + formatPercent(c.odometer_km, 0, true));
     if (typeof c.fuel_level === 'number') parts.push('nivel ' + formatPercent(c.fuel_level, 0, true));
     return parts.join(', ');
+  }
+  if (key === 'ai' && value && typeof value === 'object') {
+    return String((value as { label?: string }).label ?? '');
   }
   if (typeof value === 'number') {
     if (key.endsWith('amount')) return formatCop(value);

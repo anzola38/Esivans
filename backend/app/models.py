@@ -178,6 +178,7 @@ class Evidence(Base):
     error_type: Mapped[str | None] = mapped_column(String(20))
     proposed_odometer: Mapped[int | None] = mapped_column(Integer)
     confirmed: Mapped[bool] = mapped_column(Boolean, default=False)
+    ai_source: Mapped[dict | None] = mapped_column(JSONB)  # provider and model that read the photo
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 
     request: Mapped[FuelRequest] = relationship(back_populates="evidence")
@@ -309,6 +310,7 @@ class InboundMessage(Base):
     case_time: Mapped[datetime] = mapped_column(DateTime(timezone=True))  # timestamp sent by WhatsApp
     payload: Mapped[dict] = mapped_column(JSONB, default=dict)
     request_id: Mapped[int | None] = mapped_column(Integer)
+    interpretation: Mapped[dict | None] = mapped_column(JSONB)  # what the AI extracted and which provider did it
     processed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 

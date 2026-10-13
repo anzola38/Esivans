@@ -28,12 +28,15 @@ BASE_URL=http://localhost:9090 npm test           # si la interfaz está en otro
 
 El resultado sale en la consola (reporte `list`) y en `e2e/playwright-report/` (HTML). Si una prueba falla, en `e2e/test-results/` quedan la captura y la traza (`npx playwright show-trace <ruta>/trace.zip`). Ninguna de las dos carpetas se versiona.
 
+**Las pruebas nunca llaman a la IA real:** antes de cada reinicio fijan la IA simulada (`PUT /api/dev/ai` con `pinned`) y al terminar devuelven la configurada en `AI_PROVIDER`.
+
 **Las pruebas reinician la demo** antes de cada caso y al terminar: no las corras mientras alguien presenta. La base de la demo es compartida, por eso hay un solo worker, sin paralelismo y sin reintentos.
 
 ## Qué cubre cada archivo
 
 | Archivo | Qué comprueba |
 |---|---|
+| `ai-switch.spec.mjs` | Conmutador "IA: Groq / Simulada" del simulador: estado real, Groq deshabilitado sin clave con su explicación, cambio en caliente, "Reiniciar demo" vuelve al proveedor configurado, y quién interpretó cada mensaje y leyó la foto (simulador y consola). No llama a Groq. |
 | `shell.spec.mjs` | Las 4 rutas, el menú, el título, el pie exacto, la ruta desconocida, el selector de rol (4 roles y persistencia) y "Reiniciar demo" (aviso, cancelar y efecto real). |
 | `simulator-green.spec.mjs` | Caso verde VEH901 con el botón del guion, escribiendo a mano y con respuestas rápidas: saludo, placa, servicio de EOM, foto, lectura, línea de estados y "Lo que falta". |
 | `console-green.spec.mjs` | Cola (Verde, $90.000, SLA en cuenta regresiva), detalle (foto, confianza, libro único, "Sin alertas", cálculo en 10 pasos), aprobar en un clic, habilitación con copiar, bitácora y mensaje al conductor. |

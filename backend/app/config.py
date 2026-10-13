@@ -16,6 +16,9 @@ class Settings:
     ai_provider: str
     gemini_api_key: str
     gemini_model: str
+    groq_api_key: str
+    groq_text_model: str
+    groq_vision_model: str
     whatsapp_app_secret: str
     whatsapp_verify_token: str
     demo_mode: bool
@@ -44,6 +47,9 @@ def get_settings() -> Settings:
         ai_provider=(os.getenv("AI_PROVIDER") or "mock").strip().lower(),
         gemini_api_key=os.getenv("GEMINI_API_KEY", "").strip(),
         gemini_model=os.getenv("GEMINI_MODEL", "").strip(),
+        groq_api_key=os.getenv("GROQ_API_KEY", "").strip(),
+        groq_text_model=(os.getenv("GROQ_TEXT_MODEL") or "openai/gpt-oss-120b").strip(),
+        groq_vision_model=(os.getenv("GROQ_VISION_MODEL") or "qwen/qwen3.8-27b").strip(),
         whatsapp_app_secret=os.getenv("WHATSAPP_APP_SECRET") or "demo-secret",
         whatsapp_verify_token=os.getenv("WHATSAPP_VERIFY_TOKEN") or "demo-verify-token",
         demo_mode=(os.getenv("DEMO_MODE") or "true").strip().lower() in {"1", "true", "yes", "si"},

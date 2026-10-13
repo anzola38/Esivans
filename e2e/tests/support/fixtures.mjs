@@ -92,7 +92,19 @@ export async function api(path, { method = 'GET', body, role = 'technician' } = 
   return { status: response.status, json, text };
 }
 
+/**
+ * The suite never calls a real AI service: the simulated provider is pinned (it survives every
+ * "Reiniciar demo", also the ones a test clicks in the interface) until the global teardown.
+ */
+export async function pinSimulatedAi() {
+  const response = await api('/dev/ai', { method: 'PUT', body: { provider: 'mock', pinned: true } });
+  expect(response.status, 'PUT /api/dev/ai').toBe(200);
+  expect(response.json.active, 'proveedor de IA de las pruebas').toBe('mock');
+  return response.json;
+}
+
 export async function resetDemo() {
+  await pinSimulatedAi();
   const response = await api('/dev/reset', { method: 'POST' });
   expect(response.status, 'POST /api/dev/reset').toBe(200);
   return response.json;

@@ -10,6 +10,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AiService, AiSource, shortModel } from '../../core/ai.service';
 import { ApiService } from '../../core/api.service';
 import { ClockService } from '../../core/clock.service';
 import { DemoService } from '../../core/demo.service';
@@ -53,6 +54,7 @@ interface ChatMessage {
   media_url: string | null;
   kind: string;
   timestamp: string;
+  ai: AiSource | null;
 }
 
 interface ConversationRequest extends QueueItem {
@@ -115,6 +117,7 @@ const POLL_MS = 1200;
 export class SimulatorPage {
   private readonly api = inject(ApiService);
   private readonly demo = inject(DemoService);
+  protected readonly ai = inject(AiService);
   private readonly clockService = inject(ClockService);
 
   /** Optional query param: opens the case of that phone number (link from the console). */
@@ -145,6 +148,26 @@ export class SimulatorPage {
   protected readonly quickReplies = computed(() =>
     this.typing() ? [] : (this.conversation()?.quick_replies ?? []),
   );
+
+  /** Last message of the driver: its AI source stays visible under the bubble. */
+  private readonly lastInboundId = computed(() => {
+    const inbound = this.messages().filter((m) => m.direction === 'inbound');
+    return inbound.at(-1)?.id ?? null;
+  });
+
+  /** One line under the switch: what the active provider does, or why Groq cannot be chosen. */
+  protected readonly aiNote = computed(() => {
+    const state = this.ai.state();
+    if (!state) return '';
+    const groq = state.options.find((option) => option.key === 'groq');
+    if (state.active === 'groq' && groq) {
+      return (
+        'Groq: ' + shortModel(groq.text_model) + ' (mensajes) y ' + shortModel(groq.vision_model) + ' (foto).'
+      );
+    }
+    if (groq && !groq.available) return 'Groq deshabilitado. ' + (groq.unavailable_reason ?? '');
+    return 'Intérprete local y lecturas de ejemplo, sin internet.';
+  });
 
   protected readonly scriptIndex = computed(() => {
     const total = this.selected()?.script.length ?? 0;
@@ -250,7 +273,10 @@ export class SimulatorPage {
   constructor() {
     effect(() => {
       this.demo.dataVersion();
-      untracked(() => this.loadCases());
+      untracked(() => {
+        this.loadCases();
+        this.ai.load(); // "Reiniciar demo" goes back to the configured provider
+      });
     });
 
     // Link from the console: open the case of that phone number.
@@ -318,6 +344,12 @@ export class SimulatorPage {
 
   protected stepText(step: ScriptStep): string {
     return step.type === 'image' ? 'Adjuntar la foto del tablero' : '«' + (step.text ?? '') + '»';
+  }
+
+  /** Shows who interpreted a driver message: always for the last one and for photos, and whenever it was not the chosen provider. */
+  protected showsAiSource(message: ChatMessage): boolean {
+    if (!message.ai) return false;
+    return message.id === this.lastInboundId() || message.type === 'image' || message.ai.status !== 'ok';
   }
 
   protected isReading(kind: string): boolean {

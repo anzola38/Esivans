@@ -70,5 +70,28 @@ def reading_for_hash(digest: str) -> dict | None:
     return _readings_by_hash().get(digest)
 
 
+RASTER_DIR = "raster"
+
+
+@lru_cache
+def _raster_index() -> dict[str, dict]:
+    index = _library() / RASTER_DIR / "index.json"
+    return json.loads(index.read_text(encoding="utf-8")) if index.is_file() else {}
+
+
+def raster_for(image: bytes) -> tuple[bytes, str] | None:
+    """PNG version of a sample SVG photo, for the vision models that do not accept SVG.
+
+    The PNG files are versioned (see e2e/scripts/rasterize-photos.mjs) and matched by the SHA-256 of
+    the SVG: an SVG that changed and was not rendered again has no PNG, and the caller reports it.
+    """
+    entry = _raster_index().get(hashlib.sha256(image).hexdigest())
+    path = _library() / RASTER_DIR / entry["file"] if entry else None
+    if path is None or not path.is_file():
+        return None
+    return path.read_bytes(), mime_of(path)
+
+
 def reset_cache() -> None:
     _readings_by_hash.cache_clear()
+    _raster_index.cache_clear()

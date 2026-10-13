@@ -142,6 +142,27 @@
   display: none;
 }
 
+.sim__ai-switch .ui-segmented__item {
+  min-height: 1.5rem;
+  padding-inline: 0.55rem;
+  font-size: var(--fs-xs);
+}
+
+.sim__ai-switch .ui-segmented__item[aria-pressed='true'] {
+  color: var(--orange-ink);
+}
+
+.sim__ai-switch .ui-segmented__item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sim__ai-note {
+  margin: var(--space-2) 0 0;
+  line-height: 1.35;
+  color: var(--ink-2);
+}
+
 .sim__clock-help {
   margin: var(--space-2) 0 0;
   line-height: 1.35;
@@ -354,6 +375,29 @@
     inset 3px 0 0 var(--orange),
     0 1px 1.5px rgba(16, 24, 40, 0.12);
   padding-left: 0.85rem;
+}
+
+.sim__ai-source {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  max-width: 92%;
+  margin-top: -0.15rem;
+  font-size: var(--fs-2xs);
+  line-height: 1.25;
+  color: var(--ink-2);
+  text-align: right;
+}
+
+.sim__ai-source app-icon {
+  flex: none;
+  color: var(--orange);
+}
+
+.sim__ai-source.is-warn {
+  color: var(--warn-ink);
+  font-weight: 700;
 }
 
 .sim__ai-mark {

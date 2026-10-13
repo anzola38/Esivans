@@ -18,7 +18,7 @@ from app.config import get_settings
 from app.db import get_db
 from app.decisions.audit import Actor, audit, get_actor
 from app.errors import ApiError
-from app.integrations import media
+from app.integrations import ai, media
 from app.integrations.whatsapp import SIGNATURE_HEADER, build_webhook_payload, encode, sign
 from app.ledger import service as ledger
 from app.models import (Assignment, Authorization, Driver, FuelRequest, InboundMessage, OutboundMessage, OutboxEvent,
@@ -100,17 +100,64 @@ def _case_payload(db: Session, case: dict) -> dict:
 @router.post("/reset", summary="Reiniciar demo: vuelve a cargar la semilla")
 def reset_demo(db: Session = Depends(get_db), actor: Actor = Depends(get_actor)) -> dict:
     summary = loader.reset_and_load(db)
+    ai.restore_configured_provider()       # the presenter's switch goes back to AI_PROVIDER
     audit(db, actor, "demo.reset", "seed", summary["seed_date"], summary=f"{actor.user} reinició la demo")
     db.commit()
     return {"status": "ok", "message": "Demo reiniciada: semilla cargada de nuevo.", **summary}
+
+
+class AiProviderIn(BaseModel):
+    provider: Literal["mock", "groq"]
+    pinned: bool = Field(default=False, description="Se mantiene tras «Reiniciar demo» (lo usan las pruebas automáticas)")
+
+
+@router.get("/ai", summary="Proveedor de IA activo y opciones del conmutador de la demo")
+def ai_provider_state() -> dict:
+    return ai.ai_state()
+
+
+@router.put("/ai", summary="Cambiar el proveedor de IA sin reiniciar (mock o groq)")
+def switch_ai_provider(body: AiProviderIn, db: Session = Depends(get_db), actor: Actor = Depends(get_actor)) -> dict:
+    before = ai.active_provider()
+    try:
+        changed = ai.set_active_provider(body.provider, pinned=body.pinned)
+    except LookupError:
+        raise ApiError(409, "Groq no está disponible: falta GROQ_API_KEY en el archivo .env.",
+                       "ai_provider_unavailable") from None
+    if changed:
+        label = ai.PROVIDER_LABELS[body.provider]
+        audit(db, actor, "demo.ai_provider", "ai", body.provider, summary=f"{actor.user} cambió la IA de la demo a {label}",
+              before={"provider": before}, after={"provider": body.provider})
+        db.commit()
+    return ai.ai_state()
+
+
+@router.post("/ai/restore", summary="Volver al proveedor de IA configurado por AI_PROVIDER")
+def restore_ai_provider(db: Session = Depends(get_db), actor: Actor = Depends(get_actor)) -> dict:
+    before = ai.active_provider()
+    if ai.restore_configured_provider(force=True):
+        audit(db, actor, "demo.ai_provider", "ai", ai.active_provider(),
+              summary=f"{actor.user} devolvió la IA de la demo a la configurada",
+              before={"provider": before}, after={"provider": ai.active_provider()})
+        db.commit()
+    return ai.ai_state()
 
 
 @router.get("/simulator/cases", summary="Casos de demo del simulador del conductor")
 def simulator_cases(db: Session = Depends(get_db)) -> dict:
     current = loader.seed_date(db)
     return {"seed_date": current, "seed_is_stale": current != today().isoformat(),
-            "ai_provider": get_settings().ai_provider,
+            "ai_provider": ai.active_provider(),
             "items": [_case_payload(db, case) for case in seed.DEMO_CASES]}
+
+
+def _ai_payload(interpretation: dict | None) -> dict | None:
+    """Which provider and model interpreted a driver's message (or read its photo)."""
+    source = (interpretation or {}).get("source")
+    if not source:
+        return None
+    return {"kind": source.get("kind"), "provider": source.get("provider"), "model": source.get("model"),
+            "status": source.get("status"), "label": ai.source_label(source)}
 
 
 def _simulated_moment(value: str | None, case: dict | None, wa_id: str, db: Session) -> datetime:
@@ -174,12 +221,13 @@ def simulator_conversation(wa_id: str, db: Session = Depends(get_db)) -> dict:
         messages.append({"id": f"in-{m.id}", "direction": "inbound", "type": m.type, "text": m.text,
                          "media_id": m.media_id, "media_url": media.media_url(m.media_id), "quick_replies": [],
                          "kind": "driver", "timestamp": iso(m.case_time), "created_at": iso(m.created_at),
-                         "request_id": m.request_id, "_order": (to_local(m.created_at), 0, m.id)})
+                         "request_id": m.request_id, "ai": _ai_payload(m.interpretation),
+                         "_order": (to_local(m.created_at), 0, m.id)})
     for m in outbound:
         messages.append({"id": f"out-{m.id}", "direction": "outbound", "type": "text", "text": m.body,
                          "media_id": None, "media_url": None, "quick_replies": m.quick_replies or [],
                          "kind": m.kind, "timestamp": iso(m.case_time), "created_at": iso(m.created_at),
-                         "request_id": m.request_id, "_order": (to_local(m.created_at), 1, m.id)})
+                         "request_id": m.request_id, "ai": None, "_order": (to_local(m.created_at), 1, m.id)})
     messages.sort(key=lambda item: item.pop("_order"))
     pending = any(m.processed_at is None for m in inbound)
 

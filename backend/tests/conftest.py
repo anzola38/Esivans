@@ -17,6 +17,10 @@ TEST_DB = f"{_NAME}_test"
 
 os.environ["DATABASE_URL"] = f"postgresql+psycopg://{_USER}:{_PASSWORD}@{_HOST}:{_PORT}/{TEST_DB}"
 os.environ["AI_PROVIDER"] = "mock"
+# The container may carry a real key: the suite never calls the service. Only the optional live test
+# (RUN_LIVE_AI=1) reads the key kept here; every other test sees an empty one.
+LIVE_GROQ_KEY = os.environ.get("GROQ_API_KEY", "").strip()
+os.environ["GROQ_API_KEY"] = ""
 os.environ["DEMO_MODE"] = "true"
 os.environ["WHATSAPP_APP_SECRET"] = "test-secret"
 os.environ["WHATSAPP_VERIFY_TOKEN"] = "test-verify-token"

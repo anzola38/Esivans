@@ -26,7 +26,15 @@ mkdirSync(outDir, { recursive: true });
 const problems = [];
 const browser = await chromium.launch();
 
+// The walkthrough checks fixed values: it runs with the simulated AI pinned (it never calls a real
+// service) and gives the configured provider back at the end.
 async function reset() {
+  const pinned = await fetch(BASE_URL + '/api/dev/ai', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ provider: 'mock', pinned: true }),
+  });
+  if (!pinned.ok) throw new Error('PUT /api/dev/ai respondio ' + pinned.status);
   const response = await fetch(BASE_URL + '/api/dev/reset', { method: 'POST' });
   if (!response.ok) throw new Error('POST /api/dev/reset respondio ' + response.status);
 }
@@ -506,6 +514,7 @@ for (const viewport of VIEWPORTS.filter((v) => !only || v.name === only)) {
 
 await browser.close();
 await reset();
+await fetch(BASE_URL + '/api/dev/ai/restore', { method: 'POST' });
 console.log('\nDemo reiniciada (POST /api/dev/reset).');
 
 if (problems.length) {

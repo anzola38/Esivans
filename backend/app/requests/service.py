@@ -7,6 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.decisions.audit import ROLE_LABELS, SYSTEM, audit, audit_payload
+from app.integrations.ai import source_label
 from app.integrations.media import media_url
 from app.ledger import service as ledger
 from app.models import AuditLog, Evaluation, FuelRequest, RequestStatusLog
@@ -341,6 +342,8 @@ def evidence_payload(req: FuelRequest) -> dict | None:
         "odometer_source_label": {"photo": "Foto del tablero", "driver": "Digitado por el conductor"}.get(e.odometer_source),
         "fuel_level": e.fuel_level,
         "confidence": e.confidence or {},
+        "ai_source": e.ai_source,
+        "ai_source_label": source_label(e.ai_source),
         "error_type": e.error_type,
         "error_label": odo.ERROR_LABELS.get(e.error_type) if e.error_type else None,
         "proposed_odometer": e.proposed_odometer,

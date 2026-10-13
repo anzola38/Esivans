@@ -294,7 +294,7 @@ def test_conversation_payload_has_the_documented_shape(fresh):
                                                           "outbound", "inbound", "outbound"]
     for message in chat["messages"]:
         assert set(message) == {"id", "direction", "type", "text", "media_id", "media_url", "quick_replies", "kind",
-                                "timestamp", "created_at", "request_id"}
+                                "timestamp", "created_at", "request_id", "ai"}
         assert message["id"].startswith("in-" if message["direction"] == "inbound" else "out-")
     inbound = [m for m in chat["messages"] if m["direction"] == "inbound"]
     assert all(m["kind"] == "driver" and m["quick_replies"] == [] for m in inbound)
