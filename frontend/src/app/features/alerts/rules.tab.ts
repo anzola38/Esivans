@@ -10,6 +10,7 @@ import { RuleItem, RulesResponse } from './alerts.models';
 const STAGES: { key: RuleItem['stage']; label: string }[] = [
   { key: 'before_authorization', label: 'Antes de autorizar' },
   { key: 'reconciliation', label: 'Al conciliar' },
+  { key: 'after_authorization', label: 'Después de autorizar (control posterior)' },
   { key: 'vehicle', label: 'Por vehículo (análisis de 90 días)' },
 ];
 

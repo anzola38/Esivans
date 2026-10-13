@@ -15,6 +15,7 @@ from app.decisions.audit import Actor, audit, audit_payload, emit, get_actor, re
 from app.errors import ApiError
 from app.ledger import service as ledger
 from app.models import AuditLog, Authorization, Decision, FuelRequest
+from app.reconciliation.service import flag_red_authorization
 from app.requests import conversation
 from app.requests.service import (ACTION_LABELS, AUTHORIZATION_VALID_MINUTES, decision_payload, request_detail,
                                   set_status)
@@ -163,6 +164,7 @@ def confirm_authorization(request_id: int, body: AuthorizationIn, db: Session = 
           after={"provider": provider, "reference": reference, "product": authorization.product,
                  "amount": authorization.amount, "expires_at": iso(authorization.expires_at)})
     conversation.notify_authorized(db, req, authorization)
+    flag_red_authorization(db, req)  # later control for the coordinator; never blocks the authorization
     db.commit()
     db.refresh(req)
     return request_detail(db, req)

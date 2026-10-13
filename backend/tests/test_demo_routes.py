@@ -65,7 +65,7 @@ def test_reset_answers_with_the_counts_of_the_seed(fresh):
     assert response.status_code == 200
     assert response.json() == {"status": "ok", "message": "Demo reiniciada: semilla cargada de nuevo.",
                                "seed_date": today().isoformat(), "vehicles": 24, "drivers": 24, "transactions": 878,
-                               "eom_services": 1534, "alerts": 19, "rules": 24}
+                               "eom_services": 1534, "alerts": 19, "rules": 25}
 
 
 def test_reset_restores_the_exact_initial_state_after_a_full_demo(fresh, db):

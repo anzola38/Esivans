@@ -21,11 +21,11 @@ def _catalog(client, headers: dict = COORD) -> dict:
 
 # ----------------------------------------------------------------------------- catalog
 
-def test_catalog_lists_the_24_rules_in_version_1(fresh):
+def test_catalog_lists_the_25_rules_in_version_1(fresh):
     catalog = _catalog(fresh)
     assert catalog["rules_version"] == "v1"
     items = catalog["items"]
-    assert [r["code"] for r in items] == ([f"R{n:02d}" for n in range(1, 15)] + ["C01", "C02"]
+    assert [r["code"] for r in items] == ([f"R{n:02d}" for n in range(1, 15)] + ["C01", "C02", "C03"]
                                           + [f"V{n:02d}" for n in range(1, 9)])
     assert all(r["version"] == 1 and len(r["history"]) == 1 for r in items)
     assert all(r["author"] == "Calibración inicial (análisis de 90 días)" for r in items)
@@ -51,7 +51,7 @@ def test_catalog_item_describes_threshold_points_and_treatment(fresh):
 @pytest.mark.parametrize("headers, can_edit", [(COORD, True), (TECH, False), (FINANCE, False), (SUPPORT, False)])
 def test_only_the_coordinator_sees_the_catalog_as_editable(fresh, headers, can_edit):
     catalog = _catalog(fresh, headers)
-    assert catalog["can_edit"] is can_edit and len(catalog["items"]) == 24
+    assert catalog["can_edit"] is can_edit and len(catalog["items"]) == 25
 
 
 # ----------------------------------------------------------------------------- PUT as coordinator
@@ -72,7 +72,7 @@ def test_coordinator_change_creates_version_2_and_keeps_version_1(fresh, db):
     # Both rows exist in the table: nothing was updated in place.
     rows = db.execute(text("SELECT version, threshold->>'min_km' FROM rule_version WHERE code = 'R05' ORDER BY version")).all()
     assert [tuple(r) for r in rows] == [(1, "30"), (2, "25")]
-    assert db.scalar(text("SELECT count(*) FROM rule_version")) == 25
+    assert db.scalar(text("SELECT count(*) FROM rule_version")) == 26
     assert fresh.get("/api/health").json()["rules_version"] == "v2"
     assert rule(fresh, "R05") == changed and rule(fresh, "R06")["version"] == 1
 

@@ -12,7 +12,7 @@ from statistics import median
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.decisions.audit import Actor, audit, emit
+from app.decisions.audit import SYSTEM, Actor, audit, emit
 from app.errors import ApiError
 from app.ledger import service as ledger
 from app.models import Alert, Authorization, FuelRequest, ImportBatch, ProviderTransaction, Vehicle
@@ -47,6 +47,51 @@ def create_alert(db: Session, *, kind: str, entity: str, entity_id: int, vehicle
                   created_at=created, due_at=due_date(created, level))
     db.add(alert)
     db.flush()
+    return alert
+
+
+RED_AUTHORIZATION_RULE = "C03"
+REQUEST_ENTITY = "fuel_request"
+
+
+def flag_red_authorization(db: Session, req: FuelRequest) -> Alert | None:
+    """Later control: an authorized request whose traffic light was red leaves one alert for the coordinator.
+
+    Nothing is blocked (the driver already has the authorization). One alert per request.
+    """
+    evaluation, decision = req.evaluation, req.decision
+    if (evaluation is None or evaluation.traffic_light != "red" or decision is None
+            or decision.action == "reject" or req.vehicle is None):
+        return None
+    existing = db.scalars(select(Alert).where(Alert.entity == REQUEST_ENTITY, Alert.entity_id == req.id,
+                                              Alert.rule_code == RED_AUTHORIZATION_RULE)).first()
+    if existing is not None:
+        return None
+    rule = current_rules(db)[RED_AUTHORIZATION_RULE]
+    codes = [r["code"] for r in (evaluation.reasons or []) if r.get("kind") == "rule"]
+    points = evaluation.points
+    explanation = (f"El técnico {decision.decided_by} autorizó {fmt_cop(decision.amount)} a {req.vehicle.code} con el "
+                   f"semáforo en rojo ({points} {'punto' if points == 1 else 'puntos'}: {', '.join(codes)}). "
+                   f"Motivo: \"{decision.reason or 'sin motivo'}\". "
+                   f"Valor sugerido: {fmt_cop(evaluation.suggested_amount)}.")
+    authorization = req.authorization
+    evidence = {
+        "source": "Solicitud de tanqueo",
+        "request": {"id": req.id, "action": decision.action, "authorized_amount": decision.amount,
+                    "suggested_amount": evaluation.suggested_amount, "decided_by": decision.decided_by,
+                    "decided_at": iso(decision.decided_at), "reason": decision.reason,
+                    "traffic_light": evaluation.traffic_light, "points": points, "rule_codes": codes,
+                    "reference": authorization.reference if authorization else None},
+    }
+    alert = create_alert(db, kind="refuel", entity=REQUEST_ENTITY, entity_id=req.id, vehicle=req.vehicle,
+                         reasons=[{"code": rule.code, "name": rule.name, "points": rule.points,
+                                   "explanation": explanation}],
+                         evidence=evidence, version=rules_version_label(db))
+    audit(db, SYSTEM, "alert.created", "alert", alert.id, request_id=req.id,
+          summary=(f"Por estar en rojo, la autorización pasó a revisión del coordinador: alerta {rule.code} de prioridad "
+                   f"{PRIORITY_LABELS[alert.priority].lower()} (plazo de {'48 horas' if alert.priority == 'high' else 'una semana'})"),
+          after={"alert_id": alert.id, "rule_codes": alert.rule_codes, "points": alert.points,
+                 "priority": alert.priority, "due_at": iso(alert.due_at)})
     return alert
 
 
@@ -358,5 +403,5 @@ def import_csv(db: Session, provider: str, content: str, filename: str | None, a
     }
 
 
-__all__ = ["PROVIDERS", "REVIEW_RESULTS", "create_alert", "alert_payload", "list_alerts", "review_alert",
+__all__ = ["PROVIDERS", "REVIEW_RESULTS", "create_alert", "flag_red_authorization", "alert_payload", "list_alerts", "review_alert",
            "import_csv", "transaction_hash", "due_date", "CATALOG_BY_CODE", "fmt_unit"]

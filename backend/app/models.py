@@ -208,7 +208,7 @@ class Alert(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     kind: Mapped[str] = mapped_column(String(20), index=True)  # refuel | vehicle | reconciliation
-    entity: Mapped[str] = mapped_column(String(30))  # provider_transaction | vehicle
+    entity: Mapped[str] = mapped_column(String(30))  # provider_transaction | vehicle | fuel_request
     entity_id: Mapped[int] = mapped_column(Integer)
     vehicle_id: Mapped[int] = mapped_column(ForeignKey("vehicle.id"), index=True)
     rule_code: Mapped[str] = mapped_column(String(60))  # "R05, R08"

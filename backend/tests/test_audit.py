@@ -205,7 +205,7 @@ def test_reset_and_seed_load_are_recorded(fresh):
     seed = items[1]
     assert seed["actor"] == "sistema" and seed["role"] is None and seed["role_label"] is None
     assert seed["after"]["vehicles"] == 24 and seed["after"]["transactions"] == 878
-    assert seed["after"]["eom_services"] == 1534 and seed["after"]["alerts"] == 19 and seed["after"]["rules"] == 24
+    assert seed["after"]["eom_services"] == 1534 and seed["after"]["alerts"] == 19 and seed["after"]["rules"] == 25
 
 
 # ----------------------------------------------------------------------------- reading the log

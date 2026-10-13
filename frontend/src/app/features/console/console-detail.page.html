@@ -258,6 +258,19 @@
           </div>
         }
 
+        @if (d.traffic_light === 'red' && d.status !== 'rejected' && d.status !== 'cancelled') {
+          <div class="ui-note" data-testid="red-review-note">
+            <app-icon name="info" [size]="16" />
+            <span>
+              @if (d.authorization) {
+                Por estar en rojo, esta autorización pasó a revisión del coordinador (plazo de 48 horas).
+              } @else {
+                Por estar en rojo, esta autorización pasará a revisión del coordinador (plazo de 48 horas).
+              }
+            </span>
+          </div>
+        }
+
         @if (d.missing.length) {
           <div class="ui-note ui-note--warn">
             <app-icon name="alert" [size]="16" />

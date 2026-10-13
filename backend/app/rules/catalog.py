@@ -11,6 +11,7 @@ from dataclasses import dataclass, field
 BEFORE_AUTH = "before_authorization"
 AT_RECONCILIATION = "reconciliation"
 VEHICLE = "vehicle"
+AFTER_AUTH = "after_authorization"
 
 AUTOMATIC = "automatic"
 REVIEW = "review"
@@ -19,6 +20,7 @@ STAGE_LABELS = {
     BEFORE_AUTH: "Antes de autorizar",
     AT_RECONCILIATION: "Al conciliar",
     VEHICLE: "Por vehículo (revisión semanal)",
+    AFTER_AUTH: "Después de autorizar (control posterior)",
 }
 TREATMENT_LABELS = {AUTOMATIC: "Automática", REVIEW: "Revisión"}
 
@@ -88,6 +90,9 @@ CATALOG: list[RuleDef] = [
     RuleDef("C02", "Valor distinto al autorizado", AT_RECONCILIATION, AUTOMATIC, 2,
             "Diferencia de más de 5 % entre lo autorizado y lo registrado por el proveedor",
             {"max_difference": 0.05}, {"max_difference": "Diferencia máxima (fracción)"}),
+    # Later control: the technician still decides; the coordinator reviews the authorization afterwards.
+    RuleDef("C03", "Autorización de solicitud en rojo", AFTER_AUTH, REVIEW, 4,
+            "Solicitud con semáforo en rojo que el técnico aprueba o ajusta"),
     # Vehicle rules: computed by the 90-day analysis, loaded with the seed.
     RuleDef("V01", "Rendimiento bajo", VEHICLE, REVIEW, 3, "Menos del 75 % de la mediana de su grupo",
             {"factor": 0.75}, {"factor": "Fracción de la mediana del grupo"}),

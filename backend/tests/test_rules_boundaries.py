@@ -24,7 +24,7 @@ from .helpers import WA, conversation, detail, play, send
 RULES = default_rules()
 
 POINTS = {"R01": 1, "R02": 1, "R03": 2, "R04": 2, "R05": 3, "R06": 2, "R07": 3, "R08": 2, "R09": 2, "R10": 3,
-          "R11": 2, "R12": 2, "R13": 1, "R14": 1, "C01": 2, "C02": 2,
+          "R11": 2, "R12": 2, "R13": 1, "R14": 1, "C01": 2, "C02": 2, "C03": 4,
           "V01": 3, "V02": 2, "V03": 2, "V04": 3, "V05": 3, "V06": 1, "V07": 1, "V08": 2}
 
 THRESHOLDS = {
@@ -33,7 +33,7 @@ THRESHOLDS = {
     "R06": {"max_liquid_24h": 3, "max_cng_24h": 5}, "R07": {"factor": 1.5}, "R08": {"window_h": 24},
     "R09": {"night_start_h": 22, "night_end_h": 4, "window_h": 3}, "R10": {}, "R11": {},
     "R12": {"window_min": 30, "amount_cop": 150000}, "R13": {"amount_cop": 2000},
-    "R14": {"max_deviation": 0.15, "window_days": 7}, "C01": {}, "C02": {"max_difference": 0.05},
+    "R14": {"max_deviation": 0.15, "window_days": 7}, "C01": {}, "C02": {"max_difference": 0.05}, "C03": {},
     "V01": {"factor": 0.75}, "V02": {"factor": 1.40}, "V03": {"factor": 0.75, "loads": 8}, "V04": {"share": 0.30},
     "V05": {"days": 90}, "V06": {}, "V07": {"share": 0.10}, "V08": {"share": 0.20, "min_events": 10},
 }
@@ -62,7 +62,7 @@ def _check(code: str, **changes) -> dict:
 
 # ----------------------------------------------------------------------------- catalog
 
-def test_catalog_has_the_24_rules_with_the_points_of_the_sheet():
+def test_catalog_has_the_25_rules_with_the_points_of_the_sheet():
     assert [r.code for r in CATALOG] == list(POINTS)
     assert {r.code: r.points for r in CATALOG} == POINTS
 

@@ -140,6 +140,28 @@
             </div>
           }
 
+          @if (alert.evidence.request; as rq) {
+            <div class="tx-grid" data-testid="alert-request">
+              <div class="tx">
+                <div class="tx__title"><app-icon name="alert" [size]="14" />Autorización en rojo (control posterior)</div>
+                <dl class="ui-kv">
+                  <dt>Valor autorizado</dt>
+                  <dd>{{ rq.authorized_amount | cop }}</dd>
+                  <dt>Valor sugerido</dt>
+                  <dd>{{ rq.suggested_amount | cop }}</dd>
+                  <dt>Autorizó</dt>
+                  <dd>{{ rq.decided_by }} · {{ rq.decided_at | esDateTime }}</dd>
+                  <dt>Semáforo</dt>
+                  <dd>Rojo · {{ rq.points }} puntos ({{ rq.rule_codes.join(', ') }})</dd>
+                  <dt>Motivo</dt>
+                  <dd>{{ rq.reason }}</dd>
+                  <dt>Referencia</dt>
+                  <dd>{{ rq.reference ?? 'Sin dato' }}</dd>
+                </dl>
+              </div>
+            </div>
+          }
+
           @if (alert.evidence.transaction; as tx) {
             <div class="tx-grid">
               <div class="tx">

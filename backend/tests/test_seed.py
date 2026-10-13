@@ -14,7 +14,7 @@ from app.timeutil import at, to_local, today
 
 from .helpers import COORD, TECH, WA, alerts, conversation, detail, imported, plain, play, sample_csv, vehicle_alert
 
-COUNTS = {"vehicles": 24, "drivers": 24, "transactions": 878, "eom_services": 1534, "alerts": 19, "rules": 24}
+COUNTS = {"vehicles": 24, "drivers": 24, "transactions": 878, "eom_services": 1534, "alerts": 19, "rules": 25}
 
 
 def _vehicles(client) -> dict:
@@ -60,7 +60,7 @@ def test_seed_counts(fresh, db):
     assert {k: summary[k] for k in COUNTS} == COUNTS
     assert 20 <= summary["vehicles"] <= 30
     for table, expected in (("vehicle", 24), ("driver", 24), ("assignment", 24), ("provider_transaction", 878),
-                            ("eom_service", 1534), ("alert", 19), ("rule_version", 24)):
+                            ("eom_service", 1534), ("alert", 19), ("rule_version", 25)):
         assert db.scalar(text(f"SELECT count(*) FROM {table}")) == expected, table
     assert summary["seed_date"] == today().isoformat()
 

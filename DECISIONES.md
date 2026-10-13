@@ -67,6 +67,7 @@ Cada decisión con su motivo. Es un prototipo para una demo de 3 minutos, no el 
 | 39 | Las respuestas rápidas van como texto y se limitan a 3 por mensaje. | Es el máximo de botones de respuesta de la Cloud API. |
 | 40 | Una sola convención de hora en la interfaz y en los mensajes del asistente: `h:mm a. m./p. m.` ("11:40 a. m."). Las excepciones son la razón de R09, que conserva "23:14", y el campo del reloj simulado, que es el control de hora del navegador. | El prompt pide una sola convención. La razón de R09 se deja como la escribe el libro de casos ("tanqueo a las 23:14 sin servicios cercanos") porque es una cifra de los documentos. |
 | 48 | Cuando el técnico ajusta el valor, el mensaje de autorización al conductor incluye el motivo; cuando rechaza, también. | HU-04, escenario 3: el conductor recibe el resultado con ese motivo. |
+| 100 | Control posterior de las autorizaciones en rojo (C03): cuando una solicitud con semáforo rojo queda habilitada (aprobada con motivo o ajustada), el sistema crea una sola alerta de prioridad alta para el coordinador (4 puntos, plazo de 48 horas) con quién autorizó, cuánto, las reglas, el motivo y el valor sugerido, y lo deja en la bitácora. Es una revisión después de autorizar, no una aprobación previa: nada se bloquea y el conductor recibe su autorización igual. Rechazo, verde y amarillo no generan alerta. | El técnico sigue decidiendo solo y sin esperas, pero la decisión más sensible no queda sin segunda mirada. Reutiliza el modelo y el catálogo de alertas; no hubo migración. |
 
 ## Conciliación
 

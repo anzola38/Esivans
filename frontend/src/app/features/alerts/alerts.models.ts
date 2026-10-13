@@ -78,6 +78,17 @@ export interface AlertEvidence {
   station_median_price?: number | null;
   product_difference?: ProductDifference | null;
   authorization?: { reference?: string; amount?: number } | null;
+  request?: {
+    id: number;
+    authorized_amount: number;
+    suggested_amount: number | null;
+    decided_by: string;
+    decided_at: string;
+    reason: string | null;
+    points: number;
+    rule_codes: string[];
+    reference: string | null;
+  } | null;
 }
 
 export type AlertKind = 'refuel' | 'vehicle' | 'reconciliation';
@@ -188,7 +199,7 @@ export interface RuleVersion {
 export interface RuleItem {
   code: string;
   name: string;
-  stage: 'before_authorization' | 'reconciliation' | 'vehicle';
+  stage: 'before_authorization' | 'reconciliation' | 'after_authorization' | 'vehicle';
   stage_label: string;
   treatment: 'automatic' | 'review';
   treatment_label: string;

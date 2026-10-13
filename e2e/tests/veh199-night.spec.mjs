@@ -1,11 +1,13 @@
 import {
   api,
+  authorizeViaApi,
   decisionEntries,
   expect,
   openRequest,
   openSimulator,
   referencePrefix,
   seedCase,
+  selectRole,
   simulatorOf,
   test,
 } from './support/fixtures.mjs';
@@ -201,5 +203,44 @@ test.describe('VEH199 a las 11:14 p. m.: rojo con 7 puntos', () => {
     await expect(sim.lastAssistantBubble).toContainText('El técnico ajustó el valor. Motivo: ' + ADJUST_REASON + '.');
     await expect(sim.stage).toHaveText('Autorizada');
     await expect(page.locator('.sim__summary')).toContainText('$20.000');
+  });
+
+  test('ya autorizado en rojo, el coordinador ve la alerta C03 con su razón y el plazo de 48 horas', async ({ page }) => {
+    const request = await seedCase('VEH199');
+    await openRequest(page, request.id);
+    await expect(page.getByTestId('red-review-note')).toHaveText(
+      'Por estar en rojo, esta autorización pasará a revisión del coordinador (plazo de 48 horas).',
+    );
+    expect((await api('/alerts')).json.items.filter((a) => a.rule_code === 'C03')).toHaveLength(0);
+
+    await authorizeViaApi(request.id, { action: 'adjust', amount: 20000, reason: ADJUST_REASON });
+    await page.reload();
+    await expect(page.getByTestId('authorization')).toContainText('Autorizada: $20.000 de GNV.');
+    await expect(page.getByTestId('red-review-note')).toHaveText(
+      'Por estar en rojo, esta autorización pasó a revisión del coordinador (plazo de 48 horas).',
+    );
+    await expect(page.getByTestId('audit-card').locator('[data-action="alert.created"]')).toContainText(
+      'Por estar en rojo, la autorización pasó a revisión del coordinador: alerta C03 de prioridad alta (plazo de 48 horas)',
+    );
+
+    await page.goto('/alertas');
+    await selectRole(page, 'coordinator');
+    await page.getByRole('tab', { name: 'Tanqueos con alerta' }).click();
+    const row = page.getByTestId('alert-list').locator('.item[data-vehicle=VEH199][data-rules=C03]');
+    await expect(row).toHaveCount(1);
+    await row.click();
+    const detail = page.getByTestId('alert-detail');
+    await expect(page.getByTestId('alert-vehicle')).toHaveText('VEH199');
+    await expect(page.getByTestId('alert-priority')).toHaveText('Prioridad alta');
+    await expect(page.getByTestId('alert-deadline')).toContainText('Plazo: 48 horas.');
+    await expect(page.getByTestId('alert-reasons').locator('.reason__name')).toHaveText('Autorización de solicitud en rojo');
+    await expect(page.getByTestId('alert-reasons').locator('.reason__text')).toHaveText(
+      'El técnico Laura Mendoza autorizó $20.000 a VEH199 con el semáforo en rojo (7 puntos: R05, R08, R09). Motivo: "' +
+        ADJUST_REASON +
+        '". Valor sugerido: $10.000.',
+    );
+    await expect(page.getByTestId('alert-request')).toContainText('Valor autorizado');
+    await expect(detail.locator('.tx-grid')).toHaveCount(1);
+    await expect(page.getByTestId('review-save')).toBeEnabled();
   });
 });

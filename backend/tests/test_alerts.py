@@ -8,8 +8,8 @@ import pytest
 
 from app.timeutil import at, now, today
 
-from .helpers import (COORD, FINANCE, SUPPORT, TECH, alerts, audit_items, imported, plain, review, rule, sample_csv,
-                      vehicle_alert)
+from .helpers import (COORD, FINANCE, SUPPORT, TECH, alerts, audit_items, authorize, authorized_green, decide, imported,
+                      in_review, plain, review, rule, sample_csv, vehicle_alert)
 
 PRIORITY_RANK = {"high": 0, "medium": 1, "low": 2}
 
@@ -323,3 +323,69 @@ def test_precision_of_a_reconciliation_rule_appears_after_reviewing_its_alert(fr
     c01 = rule(fresh, "C01")
     assert (c01["reviewed"], c01["confirmed"], c01["precision"]) == (1, 1, 1.0)
     assert alerts(fresh, "kind=reconciliation")["counts"]["reviewed"] == 1
+
+
+# ----------------------------------------------------------------------------- C03: red request authorized
+
+def _red_alerts(client) -> list[dict]:
+    return [a for a in alerts(client)["items"] if a["rule_codes"] == ["C03"]]
+
+
+def _authorized_red(client, **decision) -> dict:
+    request = in_review(client, "VEH199")
+    assert request["evaluation"]["traffic_light"] == "red"
+    assert decide(client, request["id"], **decision).status_code == 200
+    assert _red_alerts(client) == []  # the alert is born with the enablement, not with the decision
+    response = authorize(client, request["id"], "TER-ROJO-1")
+    assert response.status_code == 200, response.text
+    return response.json()
+
+
+def test_red_request_adjusted_and_enabled_leaves_one_high_alert_for_the_coordinator(fresh):
+    request = _authorized_red(fresh, action="adjust", amount=20000, reason="Apoyo nocturno confirmado con el coordinador")
+    assert request["status"] == "authorized" and request["authorization"]["amount"] == 20000
+    [alert] = _red_alerts(fresh)
+    assert alert["kind"] == "refuel" and alert["entity"] == "fuel_request" and alert["entity_id"] == request["id"]
+    assert alert["vehicle"]["code"] == "VEH199" and alert["status"] == "open"
+    assert alert["points"] == 4 and alert["priority"] == "high" and alert["deadline_label"] == "48 horas"
+    due, created = datetime.fromisoformat(alert["due_at"]), datetime.fromisoformat(alert["created_at"])
+    assert due - created == timedelta(hours=48)
+    assert plain(alert["reasons"][0]["explanation"]) == (
+        'El técnico Laura Gomez autorizó $20.000 a VEH199 con el semáforo en rojo (7 puntos: R05, R08, R09). '
+        'Motivo: "Apoyo nocturno confirmado con el coordinador". Valor sugerido: $10.000.')
+    assert plain(alert["reason"]).startswith("C03 Autorización de solicitud en rojo: El técnico Laura Gomez")
+    assert alert["evidence"]["request"]["reference"] == "TER-ROJO-1"
+    log = [i for i in audit_items(fresh, f"request_id={request['id']}") if i["action"] == "alert.created"]
+    assert len(log) == 1 and log[0]["actor"] == "sistema" and log[0]["after"]["alert_id"] == alert["id"]
+    assert rule(fresh, "C03")["stage"] == "after_authorization" and rule(fresh, "C03")["points"] == 4
+
+
+def test_red_request_approved_with_reason_also_leaves_the_alert(fresh):
+    _authorized_red(fresh, action="approve", reason="Servicio urgente confirmado")
+    [alert] = _red_alerts(fresh)
+    assert "autorizó $10.000 a VEH199" in plain(alert["reason"]) and alert["priority"] == "high"
+
+
+def test_red_request_rejected_leaves_no_alert(fresh):
+    request = in_review(fresh, "VEH199")
+    before = alerts(fresh)["counts"]["total"]
+    assert decide(fresh, request["id"], action="reject", reason="Sin servicio asignado").status_code == 200
+    assert authorize(fresh, request["id"]).status_code == 409
+    assert _red_alerts(fresh) == [] and alerts(fresh)["counts"]["total"] == before
+
+
+def test_green_request_authorized_leaves_no_alert(fresh):
+    before = alerts(fresh)["counts"]["total"]
+    authorized_green(fresh)
+    assert _red_alerts(fresh) == [] and alerts(fresh)["counts"]["total"] == before
+
+
+def test_red_authorization_alert_is_created_only_once(fresh, db):
+    from app.models import FuelRequest
+    from app.reconciliation.service import flag_red_authorization
+
+    request = _authorized_red(fresh, action="adjust", amount=20000, reason="Apoyo nocturno confirmado con el coordinador")
+    assert authorize(fresh, request["id"], "TER-ROJO-2").status_code == 409  # a second enablement does not pass
+    assert flag_red_authorization(db, db.get(FuelRequest, request["id"])) is None
+    db.commit()
+    assert len(_red_alerts(fresh)) == 1
