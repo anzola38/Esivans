@@ -31,7 +31,7 @@ export const ROLE_OPTIONS: readonly RoleOption[] = [
 ];
 
 const PERMISSIONS: Record<Permission, readonly Role[]> = {
-  'request.decide': ['technician'],
+  'request.decide': ['technician', 'coordinator'],
   'alert.review': ['coordinator'],
   'rules.edit': ['coordinator'],
   'provider.import': ['coordinator', 'finance'],

@@ -19,7 +19,7 @@ REVIEW = "review"
 STAGE_LABELS = {
     BEFORE_AUTH: "Antes de autorizar",
     AT_RECONCILIATION: "Al conciliar",
-    VEHICLE: "Por vehículo (revisión semanal)",
+    VEHICLE: "Por vehículo (análisis de 90 días)",
     AFTER_AUTH: "Después de autorizar (control posterior)",
 }
 TREATMENT_LABELS = {AUTOMATIC: "Automática", REVIEW: "Revisión"}

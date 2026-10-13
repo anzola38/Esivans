@@ -14,6 +14,13 @@ async function openRules(page, role = 'coordinator') {
 }
 
 test.describe('Reglas y umbrales', () => {
+  test('el grupo por vehículo se llama igual en la tabla y en el detalle de la regla', async ({ page }) => {
+    await openRules(page);
+    await expect(page.getByTestId('rules-table').locator('tr.rules__group').last()).toContainText('Por vehículo (análisis de 90 días)');
+    await page.getByTestId('rule-row-V01').click();
+    await expect(page.getByTestId('rule-detail').locator('.rule__meta')).toContainText('Por vehículo (análisis de 90 días) · Revisión.');
+  });
+
   test('el catálogo trae R01 a R14 y V01 a V08, con umbral, tratamiento, puntos y versión', async ({ page }) => {
     await openRules(page);
     const table = page.getByTestId('rules-table');

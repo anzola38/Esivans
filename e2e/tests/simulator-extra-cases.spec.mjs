@@ -24,7 +24,7 @@ test.describe('Simulador: casos extra', () => {
     await expect(sim.driverBubbles.first()).toContainText('Buenos días, necesito tanquear la van');
     await expect(sim.lastAssistantBubble).toHaveAttribute('data-kind', 'handoff');
     await expect(sim.lastAssistantBubble).toContainText(
-      'No encuentro este número entre los conductores registrados. Ya pasé tu caso al técnico de Control y Monitoreo, que te escribe por este mismo chat. Ten a la mano la placa del vehículo.',
+      'No encuentro este número entre los conductores registrados. Ya pasé tu caso al técnico de Control y Monitoreo para que lo revise. Ten a la mano la placa del vehículo.',
     );
     await expect(sim.chat.locator('[data-kind=greeting]')).toHaveCount(0);
 

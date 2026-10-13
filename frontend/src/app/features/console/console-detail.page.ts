@@ -89,9 +89,7 @@ export class ConsoleDetailPage {
   protected readonly photoOpen = signal(false);
 
   /** The backend lets the technician and the coordinator decide and enable. */
-  protected readonly canDecide = computed(() =>
-    ['technician', 'coordinator'].includes(this.roles.role()),
-  );
+  protected readonly canDecide = computed(() => this.roles.can('request.decide'));
 
   protected readonly isPendingDecision = computed(() => {
     const d = this.detail();

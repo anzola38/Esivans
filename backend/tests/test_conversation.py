@@ -292,7 +292,7 @@ def test_unregistered_number_goes_straight_to_the_technician(fresh):
     assert kinds(chat) == ["privacy_notice", "handoff"]
     assert chat["messages"][-1]["text"] == (
         "No encuentro este número entre los conductores registrados. Ya pasé tu caso al técnico de Control y "
-        "Monitoreo, que te escribe por este mismo chat. Ten a la mano la placa del vehículo.")
+        "Monitoreo para que lo revise. Ten a la mano la placa del vehículo.")
     assert _statuses(chat) == ["received", "in_review"]
     request = detail(fresh, chat["request"]["id"])
     assert request["driver"] is None and request["vehicle"] is None and request["wa_id"] == UNREGISTERED
@@ -311,8 +311,17 @@ def test_unregistered_number_writing_again_does_not_open_another_request(fresh, 
     send(fresh, case="UNREGISTERED", text="¿Hola? Necesito combustible")
     chat = conversation(fresh, UNREGISTERED)
     assert chat["messages"][-1]["kind"] == "status"
-    assert chat["messages"][-1]["text"] == "Tu caso ya está con el técnico de Control y Monitoreo. Te responde por este mismo chat."
+    assert chat["messages"][-1]["text"] == "Tu caso ya está con el técnico de Control y Monitoreo para que lo revise."
     assert kinds(chat).count("privacy_notice") == 1 and _requests(db) == 1
+
+
+def test_handoff_to_the_technician_does_not_promise_a_reply_in_the_chat(fresh):
+    # The technician cannot write to the driver from the console: the assistant only says the case is under review.
+    play(fresh, "UNREGISTERED")
+    send(fresh, case="UNREGISTERED", text="¿Hola? Necesito combustible")
+    texts = [m["text"] for m in conversation(fresh, UNREGISTERED)["messages"] if m["kind"] in ("handoff", "status")]
+    assert len(texts) == 2 and all(t.endswith("para que lo revise.") or "para que lo revise. " in t for t in texts)
+    assert not any("por este mismo chat" in t or "te escribe" in t or "Te responde" in t for t in texts)
 
 
 def test_driver_without_a_current_assignment_goes_to_the_technician(fresh, db):
@@ -323,7 +332,7 @@ def test_driver_without_a_current_assignment_goes_to_the_technician(fresh, db):
     chat = conversation(fresh, WA["VEH903"])
     assert kinds(chat) == ["privacy_notice", "handoff"]
     assert chat["messages"][-1]["text"] == ("María, no veo un vehículo asignado a tu nombre hoy. Ya pasé tu caso al "
-                                            "técnico de Control y Monitoreo, que te escribe por este mismo chat.")
+                                            "técnico de Control y Monitoreo para que lo revise.")
     request = chat["request"]
     assert request["status"] == "in_review" and request["vehicle"] is None
     assert request["driver"]["name"] == "María Fernanda Lozano"

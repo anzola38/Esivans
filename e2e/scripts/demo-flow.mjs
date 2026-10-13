@@ -405,7 +405,7 @@ for (const viewport of VIEWPORTS.filter((v) => !only || v.name === only)) {
 
   // (d) Reglas y umbrales: solo el coordinador cambia un umbral y crea una version nueva.
   await page.getByTestId('tab-rules').click();
-  await expect(page.getByTestId('rules-table').locator('tbody tr.is-clickable')).toHaveCount(24);
+  await expect(page.getByTestId('rules-table').locator('tbody tr.is-clickable')).toHaveCount(25);
   await expect(page.getByTestId('rules-version')).toHaveText('v1');
   await page.getByTestId('rule-row-R08').click();
   await page.getByTestId('role-select').selectOption('technician');

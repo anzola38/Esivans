@@ -46,6 +46,7 @@ def test_catalog_item_describes_threshold_points_and_treatment(fresh):
     r13 = rule(fresh, "R13")
     assert r13["threshold"] == {"amount_cop": 2000} and r13["treatment"] == "automatic" and r13["stage_label"] == "Al conciliar"
     assert rule(fresh, "R01")["threshold"] == {} and rule(fresh, "V06")["threshold"] == {}
+    assert rule(fresh, "V01")["stage_label"] == "Por vehículo (análisis de 90 días)"
 
 
 @pytest.mark.parametrize("headers, can_edit", [(COORD, True), (TECH, False), (FINANCE, False), (SUPPORT, False)])

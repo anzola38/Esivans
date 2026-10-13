@@ -71,6 +71,29 @@ test.describe('Roles: consola del técnico', () => {
     await expect(decision.locator('td').nth(1)).toHaveText(/^\s*Carlos Rivas\s*Coordinador\s*$/);
   });
 
+  test('el coordinador ve activos los tres botones de decisión y confirma la habilitación', async ({ page }) => {
+    const request = await seedCase('VEH199');
+    await openRequest(page, request.id);
+    await selectRole(page, 'coordinator');
+    await expect(page.getByTestId('read-only')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Aprobar con motivo' })).toBeEnabled();
+    await expect(page.getByRole('button', { name: 'Ajustar' })).toBeEnabled();
+    await expect(page.getByRole('button', { name: 'Rechazar' })).toBeEnabled();
+
+    // Lo que aprobó el técnico lo puede habilitar el coordinador desde la pantalla.
+    const green = await seedCase('GREEN');
+    const decided = await api('/requests/' + green.id + '/decision', { method: 'POST', body: { action: 'approve' } });
+    expect(decided.status).toBe(200);
+    await openRequest(page, green.id);
+    await expect(page.getByTestId('read-only')).toHaveCount(0);
+    const enablement = page.getByTestId('enablement');
+    await expect(enablement.getByRole('textbox', { name: 'Referencia del portal' })).toBeEnabled();
+    await enablement.getByRole('textbox', { name: 'Referencia del portal' }).fill('TER-COORD-UI');
+    await enablement.getByRole('button', { name: 'Confirmar' }).click();
+    await expect(page.getByTestId('authorization')).toContainText('Referencia TER-COORD-UI en Terpel (chip), habilitada por Carlos Rivas.');
+    expect((await api('/requests/' + green.id)).json.authorization.enabled_by).toBe('Carlos Rivas');
+  });
+
   test('al volver a Técnico las acciones se habilitan sin recargar', async ({ page }) => {
     const request = await seedCase('VEH199');
     await openRequest(page, request.id);

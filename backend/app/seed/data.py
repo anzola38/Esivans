@@ -193,7 +193,7 @@ REFUEL_ALERTS = [
      "review": ("confirmed", "Venta fuera del sistema sin soporte de la estación.", 44)},
 ]
 
-# Vehicle alerts: one per vehicle with rules V01..V08 (weekly review). Reviewed ones carry the result.
+# Vehicle alerts: one per vehicle with rules V01..V08 (90-day analysis). Reviewed ones carry the result.
 VEHICLE_ALERT_REVIEWS = {
     "VEH916": ("confirmed", "Mantenimiento encontró inyectores sucios. Vuelve a medición por 4 semanas.", 30),
     "VEH915": ("data_error", "La estación omite el odómetro: se pidió al proveedor exigirlo en la venta.", 28),

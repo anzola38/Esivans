@@ -208,7 +208,7 @@ def _handle_unidentified(db: Session, message: InboundMessage, driver: Driver | 
     if existing:
         message.request_id = existing.id
         _say(db, existing, wa_id, kind="status",
-             body="Tu caso ya está con el técnico de Control y Monitoreo. Te responde por este mismo chat.")
+             body="Tu caso ya está con el técnico de Control y Monitoreo para que lo revise.")
         return
     reason = "driver" if driver is None else "vehicle"
     created_at = now()
@@ -228,10 +228,10 @@ def _handle_unidentified(db: Session, message: InboundMessage, driver: Driver | 
     set_status(db, req, "in_review", note)
     _say(db, req, wa_id, kind="handoff",
          body=("No encuentro este número entre los conductores registrados. Ya pasé tu caso al técnico de Control y "
-               "Monitoreo, que te escribe por este mismo chat. Ten a la mano la placa del vehículo."
+               "Monitoreo para que lo revise. Ten a la mano la placa del vehículo."
                if driver is None else
                f"{first_name(driver)}, no veo un vehículo asignado a tu nombre hoy. Ya pasé tu caso al técnico de "
-               "Control y Monitoreo, que te escribe por este mismo chat."))
+               "Control y Monitoreo para que lo revise."))
 
 
 def _apply(db: Session, req: FuelRequest, message: InboundMessage, extracted: ExtractedRequest, created: bool) -> None:
