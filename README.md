@@ -419,9 +419,11 @@ docker compose logs --tail 100 db
 docker compose logs --tail 100 frontend
 ```
 
-En el registro de la API, un arranque normal muestra las migraciones de Alembic, la línea `Semilla: cargada`, `recargada` o `vigente` y el inicio de Uvicorn. Si se repite `Esperando la base de datos (n/60)`, el problema está en `db`. Si nada lo resuelve y los datos no importan, [empezar desde cero](#empezar-desde-cero) deja el proyecto como recién instalado.
+En el registro de la API, un arranque normal muestra la línea `Semilla: cargada`, `recargada` o `vigente` y después el inicio de Uvicorn. Si se repite `Esperando la base de datos (n/60)`, el problema está en `db`. Si nada lo resuelve y los datos no importan, [empezar desde cero](#empezar-desde-cero) deja el proyecto como recién instalado.
 
 ## Pruebas
+
+Qué hace falta para correrlas: el stack levantado y sano, `DEMO_MODE=true` (valor por defecto) y, solo para la suite E2E y para el script único, Node 22 o superior con `npm` en el equipo. Las pruebas del backend corren dentro del contenedor y no necesitan nada más. **No las corras mientras alguien presenta:** la suite E2E reinicia la demo antes de cada prueba.
 
 Hay dos suites y un script que corre las dos:
 
