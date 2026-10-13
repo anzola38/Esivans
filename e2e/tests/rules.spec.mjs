@@ -17,7 +17,7 @@ test.describe('Reglas y umbrales', () => {
   test('el catálogo trae R01 a R14 y V01 a V08, con umbral, tratamiento, puntos y versión', async ({ page }) => {
     await openRules(page);
     const table = page.getByTestId('rules-table');
-    await expect(table.locator('tbody tr.is-clickable')).toHaveCount(24);
+    await expect(table.locator('tbody tr.is-clickable')).toHaveCount(25);
     for (const code of CODES) {
       await expect(page.getByTestId('rule-row-' + code).locator('td').first()).toHaveText(code);
       await expect(page.getByTestId('rule-row-' + code).locator('td').nth(4)).toHaveText('v1');
@@ -25,10 +25,11 @@ test.describe('Reglas y umbrales', () => {
     await expect(table.locator('tr.rules__group')).toHaveText([
       /Antes de autorizar/,
       /Al conciliar/,
+      /Después de autorizar/,
       /Por vehículo/,
     ]);
     await expect(page.getByTestId('rules-version')).toHaveText('v1');
-    await expect(page.locator('.rules__footer')).toContainText('Catálogo vigente: v1 · 24 reglas');
+    await expect(page.locator('.rules__footer')).toContainText('Catálogo vigente: v1 · 25 reglas');
 
     const r05 = page.getByTestId('rule-row-R05').locator('td');
     await expect(r05.nth(1)).toContainText('Recarga sin recorrido');
@@ -158,7 +159,7 @@ test.describe('Reglas y umbrales', () => {
       await expect(page.getByRole('button', { name: 'Guardar como versión 2' })).toBeDisabled();
       await expect(page.getByRole('button', { name: 'Deshacer' })).toBeDisabled();
       // Consultar sí puede: la tabla y el historial están completos.
-      await expect(page.getByTestId('rules-table').locator('tbody tr.is-clickable')).toHaveCount(24);
+      await expect(page.getByTestId('rules-table').locator('tbody tr.is-clickable')).toHaveCount(25);
       await expect(page.getByTestId('rule-history').locator('li')).toHaveCount(1);
 
       // La API tampoco lo deja, aunque se salte la pantalla.

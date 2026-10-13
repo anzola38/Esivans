@@ -128,7 +128,7 @@ test.describe('Transversales con datos cargados', () => {
     await page.getByRole('tab', { name: 'Tanqueos con alerta' }).click();
     await page.getByTestId('filter-all').click();
     const refuelRows = page.getByTestId('alert-list').locator('.item');
-    await expect(refuelRows).toHaveCount(15);
+    await expect(refuelRows).toHaveCount(16);
     await auditView(page, 'alertas tanqueos');
     await page.getByTestId('alert-list').locator('[data-vehicle=VEH023]').click();
     await expect(page.getByTestId('alert-overpaid')).toBeVisible();
@@ -155,7 +155,7 @@ test.describe('Transversales con datos cargados', () => {
     await auditView(page, 'alertas conciliación con resumen');
 
     await page.getByRole('tab', { name: 'Reglas y umbrales' }).click();
-    await expect(page.getByTestId('rules-table').locator('tbody tr.is-clickable')).toHaveCount(24);
+    await expect(page.getByTestId('rules-table').locator('tbody tr.is-clickable')).toHaveCount(25);
     await auditView(page, 'alertas reglas');
     await page.getByTestId('rule-row-R05').click();
     await auditView(page, 'alertas reglas R05');
