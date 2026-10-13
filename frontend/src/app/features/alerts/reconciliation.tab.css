@@ -323,3 +323,9 @@
   height: auto;
   padding-top: var(--space-8);
 }
+
+/* Nota fija sobre los dos paneles: qué hace la conciliación */
+.rec-purpose {
+  flex: none;
+  margin-bottom: var(--space-3);
+}

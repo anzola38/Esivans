@@ -185,6 +185,15 @@
   flex: none;
 }
 
+/* Qué mide el indicador, en una línea bajo el nombre */
+.kpi__hint {
+  margin: 0.1rem 0 0;
+  font-size: var(--fs-2xs);
+  line-height: var(--lh-snug);
+  color: var(--ink-2);
+  text-wrap: balance;
+}
+
 /* Valor a la izquierda; a la derecha, el riel hacia la meta y de dónde sale el dato. */
 .kpi__measure {
   display: grid;

@@ -17,7 +17,7 @@
         <strong>{{ d.activity.alerts_reviewed }}</strong> alertas revisadas
       </span>
       <span class="ui-badge ui-badge--green ui-badge--lg" data-testid="met-count">
-        <span class="ui-badge__dot"></span>{{ metCount() }} de {{ d.indicators.length }} cumplen la meta
+        <span class="ui-badge__dot"></span>{{ metCount() }} de {{ indicators().length }} cumplen la meta
       </span>
     </div>
 
@@ -29,6 +29,9 @@
             <h3 class="kpi__name">{{ kpi.name }}</h3>
             <span [class]="'ui-badge ui-badge--' + tone(kpi.status)"><span class="ui-badge__dot"></span>{{ kpi.status_label }}</span>
           </header>
+          @if (kpi.hint) {
+            <p class="kpi__hint">{{ kpi.hint }}</p>
+          }
           <div class="kpi__measure">
             <div class="kpi__current">
               <span class="kpi__value" [class.kpi__value--text]="kpi.current_value === null">{{ kpi.current_display }}</span>

@@ -55,6 +55,19 @@ const STATUS_TONE: Record<Indicator['status'], string> = {
   no_data: 'neutral',
 };
 
+/** What each indicator measures, in one line under its name (the API only sends name, target and baseline). */
+const INDICATOR_HINTS: Record<string, string> = {
+  attention_time: 'Del primer mensaje del conductor a la decisión',
+  one_click: 'Solicitudes en verde aprobadas sin ajustes',
+  complete_first_try: 'Solicitudes que llegan al técnico sin datos faltantes',
+  reconciliation: 'Autorizaciones cruzadas con el cobro del proveedor',
+  high_priority_alerts: 'Alertas revisadas que se confirman; las altas, en 48 h',
+  integrations: 'Intercambios con proveedores que llegan sin fallas',
+  technician_load: 'Espera en cola, de solicitud lista a decidida',
+  assistant_usage: 'Solicitudes que entran por el asistente',
+  continuity: 'Vehículos sin combustible por causa del sistema',
+};
+
 const POLL_MS = 5000;
 // Geometry of the context chart, in CSS pixels: the viewBox follows the rendered width so text never scales.
 const CHART = { valueGutter: 64, barHeight: 26, rows: [20, 72], refLabelY: 122, height: 128, radius: 4 };
@@ -102,12 +115,14 @@ export class DashboardPage {
   protected readonly tone = (status: Indicator['status']) => STATUS_TONE[status] ?? 'neutral';
 
   protected readonly indicators = computed(() =>
-    (this.data()?.indicators ?? []).map((indicator) => ({ ...indicator, goal: goalRail(indicator) })),
+    (this.data()?.indicators ?? []).map((indicator) => ({
+      ...indicator,
+      goal: goalRail(indicator),
+      hint: INDICATOR_HINTS[indicator.key] ?? '',
+    })),
   );
 
-  protected readonly metCount = computed(
-    () => (this.data()?.indicators ?? []).filter((i) => i.status === 'met').length,
-  );
+  protected readonly metCount = computed(() => this.indicators().filter((i) => i.status === 'met').length);
 
   /** Bars of "hours of management per day": today, available shifts and with the MVP. */
   protected readonly chart = computed(() => {
