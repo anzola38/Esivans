@@ -347,7 +347,8 @@ def test_red_request_adjusted_and_enabled_leaves_one_high_alert_for_the_coordina
     [alert] = _red_alerts(fresh)
     assert alert["kind"] == "refuel" and alert["entity"] == "fuel_request" and alert["entity_id"] == request["id"]
     assert alert["vehicle"]["code"] == "VEH199" and alert["status"] == "open"
-    assert alert["points"] == 4 and alert["priority"] == "high" and alert["deadline_label"] == "48 horas"
+    # same 7 points the technician saw on the request (R05 + R08 + R09)
+    assert alert["points"] == 7 and alert["priority"] == "high" and alert["deadline_label"] == "48 horas"
     due, created = datetime.fromisoformat(alert["due_at"]), datetime.fromisoformat(alert["created_at"])
     assert due - created == timedelta(hours=48)
     assert plain(alert["reasons"][0]["explanation"]) == (

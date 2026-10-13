@@ -84,7 +84,9 @@ def flag_red_authorization(db: Session, req: FuelRequest) -> Alert | None:
                     "reference": authorization.reference if authorization else None},
     }
     alert = create_alert(db, kind="refuel", entity=REQUEST_ENTITY, entity_id=req.id, vehicle=req.vehicle,
-                         reasons=[{"code": rule.code, "name": rule.name, "points": rule.points,
+                         # The alert carries the points of the request, so the coordinator sees the same
+                         # score the technician saw; the points of the rule are only its floor.
+                         reasons=[{"code": rule.code, "name": rule.name, "points": max(points, rule.points),
                                    "explanation": explanation}],
                          evidence=evidence, version=rules_version_label(db))
     audit(db, SYSTEM, "alert.created", "alert", alert.id, request_id=req.id,
